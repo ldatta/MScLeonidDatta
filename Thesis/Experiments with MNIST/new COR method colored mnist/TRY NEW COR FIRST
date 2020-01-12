@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 15 17:58:53 2019
+
+@author: leoniddatta
+"""
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+import scipy.ndimage.filters as C
+#import FlowNetPytorch.models.util as corr
+#.models.util.correlate as corr #import correlate
+ #FlowNetPytorch.models.util
+#import spatial_correlation_sampler_backend as correlation
+a=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/train.npy')  #red training data 60000*28*28*3
+a2=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/trainlabel.npy')  #red training data labels
+#b=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/test.npy')   #green test data 10000*28*28*3
+#b2=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/testlabel.npy') #green testing data labela
+#c=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/test.npy')   #green test data 10000*28*28*3
+#c2=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/testlabel.npy') #green testing data labela
+img=a[1,:,:,:]
+img2=img
+
+skimage.measure.block_reduce(a, (2,2), np.max)
+
+plt.imshow(img2, interpolation='nearest')
+plt.show()

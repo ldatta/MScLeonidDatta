@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov 28 15:54:53 2019
+
+@author: leoniddatta
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+image=np.load('/Users/leoniddatta/Dropbox/TU Delft/Study material/DL THESIS/Experiments with MNIST/train.npy')
+
+mask=np.zeros((28,28))
+a=np.resize([1,0], (28,28)) 
+def build_checkerboard(w, h) :
+      re = np.r_[ (2*w)*[0,1] ]              # even-numbered rows
+      ro = np.r_[ (2*h)*[1,0] ]              # odd-numbered rows
+      return np.row_stack((2*h)*(re, ro))
+a= build_checkerboard (14,14)
+
+
+img=image[1,:,:,0]
+for i in range(0,28,3):
+    mask[i,:]=1
+    mask[:,i]=1
+
+    
+
+mask=np.logical_not(mask)
+plt.imshow(mask, cmap='gray', interpolation='nearest')
+plt.show()
+    
+img2=img*mask
+plt.imshow(img2, cmap='gray', interpolation='nearest')
+plt.show()
+
+
+# =============================================================================
+# 
+# for i in range (28):
+#     if (i%2==0):
+#         a[i,:]=0
+# img=image[1,:,:,0]
+# 
+# plt.imshow(a, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# 
+# img2=img*a
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# a=np.logical_not(a)
+# img2=img*a
+# plt.imshow(a, cmap='gray', interpolation='nearest')
+# plt.show()
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# a= build_checkerboard (14,14)
+# img2=img*a
+# plt.imshow(a, cmap='gray', interpolation='nearest')
+# plt.show()
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# b=np.zeros((28,28))   
+# for i in range(0,28,2):
+#     b[i]=1
+#     for j in range(0,28,4):
+#         b[i,j]=0
+# 
+# 
+# plt.imshow(b, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# img=image[1,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[2,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[3,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[4,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[5,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[6,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# 
+# 
+# 
+# 
+# b=b.T
+# plt.imshow(b, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# img=image[1,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[2,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[3,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[4,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[5,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# img=image[6,:,:,0]
+# img2=img*b
+# plt.imshow(img2, cmap='gray', interpolation='nearest')
+# plt.show()
+# 
+# 
+# 
+# 
+# =============================================================================
+
+
+
+
+
+
+
+
+
+
