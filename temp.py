@@ -24,7 +24,7 @@ import torch.utils.data as utils
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-#from attention import AttentionConv, AttentionStem
+from attention import AttentionConv, AttentionStem
 
 
 
