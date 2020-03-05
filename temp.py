@@ -130,7 +130,7 @@ class NetAtt(nn.Module):
         self.att2 =nn.Sequential(AttentionStem(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=2, groups=1))
         self.att3 =nn.Sequential(AttentionStem(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=2, groups=1))
         self.att4 =nn.Sequential(AttentionStem(in_channels=64, out_channels=10, kernel_size=3, stride=1, padding=2, groups=1))
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((1,1), stride=1, padding=0)
             
     def forward(self, x):
         x=x.float()
