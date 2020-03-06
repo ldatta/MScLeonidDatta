@@ -31,7 +31,7 @@ SBATCH --gres=gpu:2
 # Uncomment these lines when your job requires this software
 module use /opt/insy/modulefiles
 module load cuda/10.0 cudnn/10.0-7.3.0.29
-module load cuda/9.0 cudnn/9.0-7.4.2.24
+#module load cuda/9.0 cudnn/9.0-7.4.2.24
 
 
 #module load matlab/R2018b
