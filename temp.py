@@ -487,8 +487,11 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-
+    #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
+    np.save('baseINLresultred.npy',resultred)
+    np.save('baseINLresultgrn.npy',resultgrn)
+    np.save('baseINLresulttrn.npy',resulttrn)
+    np.save('epoch.npy',e)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
