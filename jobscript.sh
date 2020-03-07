@@ -25,12 +25,12 @@
 # Set mail type to 'END' to receive a mail when the job finishes
 # Do not enable mails when submitting large numbers (>20) of jobs at once
 #SBATCH --mail-type=END
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:pascal:1
 # Your job commands go below here
 
 # Uncomment these lines when your job requires this software
-module use /opt/insy/modulefiles
-module load cuda/10.0 cudnn/10.0-7.3.0.29
+#module use /opt/insy/modulefiles
+#module load cuda/10.0 cudnn/10.0-7.3.0.29
 #module load cuda/9.0 cudnn/9.0-7.4.2.24
 
 
