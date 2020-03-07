@@ -25,7 +25,7 @@
 # Set mail type to 'END' to receive a mail when the job finishes
 # Do not enable mails when submitting large numbers (>20) of jobs at once
 #SBATCH --mail-type=END
-SBATCH --gres=gpu:3
+SBATCH --gres=gpu:2
 # Your job commands go below here
 
 # Uncomment these lines when your job requires this software
