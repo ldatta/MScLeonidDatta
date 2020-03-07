@@ -18,7 +18,7 @@ import torchvision
 import torchvision.transforms as transform 
 from torchvision import datasets, transforms
 import numpy as np
-import cv2
+import opencv-python
 import tensorflow as tf
 import torch.utils.data as utils
 import matplotlib.pyplot as plt
