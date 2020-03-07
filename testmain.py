@@ -23,9 +23,7 @@ import tensorflow as tf
 import torch.utils.data as utils
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
-import scipy.ndimage
-import scipy
-import scipy.ndimage.filters as C
+
 from attention import AttentionConv, AttentionStem
 
 
@@ -77,7 +75,7 @@ def plotgraph (xs,y1s,y2s,yts):
     
 class Net28(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(Net28, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
         self.conv3 = nn.Conv2d(64, 10, 3, 1)
@@ -132,7 +130,7 @@ class NetAtt(nn.Module):
         self.att2 =nn.Sequential(AttentionStem(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=2, groups=1))
         self.att3 =nn.Sequential(AttentionStem(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=2, groups=1))
         self.att4 =nn.Sequential(AttentionStem(in_channels=64, out_channels=10, kernel_size=3, stride=1, padding=2, groups=1))
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((1,1), stride=1, padding=0)
             
     def forward(self, x):
         x=x.float()
@@ -176,15 +174,17 @@ def train(args, model, device, train_loader, optimizer, epoch):
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
-        if (epoch==20):
-            weight1 = model.conv1.weight.data.numpy()
-            np.save('LtrainedWeight1.npy',weight1)
-            weight2 = model.conv2.weight.data.numpy()
-            np.save('LtrainedWeight2.npy',weight2)
-            weight3 = model.conv3.weight.data.numpy()
-            np.save('LtrainedWeight3.npy',weight3)
-            weight4 = model.conv4.weight.data.numpy()
-            np.save('LtrainedWeight4.npy',weight4)
+# =============================================================================
+#         if (epoch==20):
+#             weight1 = model.conv1.weight.data.numpy()
+#             np.save('LtrainedWeight1.npy',weight1)
+#             weight2 = model.conv2.weight.data.numpy()
+#             np.save('LtrainedWeight2.npy',weight2)
+#             weight3 = model.conv3.weight.data.numpy()
+#             np.save('LtrainedWeight3.npy',weight3)
+#             weight4 = model.conv4.weight.data.numpy()
+#             np.save('LtrainedWeight4.npy',weight4)
+# =============================================================================
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
         total_train += target.size(0)
@@ -199,8 +199,8 @@ def train(args, model, device, train_loader, optimizer, epoch):
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=test(args, model, device, hortest_loader)
-                    g=test(args, model, device, test_loader)
+                    r=0#test(args, model, device, hortest_loader)
+                    g=0#test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
@@ -276,37 +276,54 @@ def main():
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.test_batch_size, shuffle=True, **kwargs)
-    a=datasets.MNIST('../data', train=True, download=True,
+    aa=datasets.MNIST('../data', train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).train_data.numpy
+                       ])).train_data.numpy()
 
     a2=datasets.MNIST('../data', train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).train_labels.numpy
+                       ])).train_labels.numpy()
 
-    b=datasets.MNIST('../data', train=False, transform=transforms.Compose([
+    bb=datasets.MNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).test_data.numpy
+                       ])).test_data.numpy()
+    
     b2=datasets.MNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).test_labels.numpy
+                       ])).test_labels.numpy()
 
-    c=datasets.MNIST('../data', train=False, transform=transforms.Compose([
+    cc=datasets.MNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).test_data.numpy
+                       ])).test_data.numpy()
+    
     c2=datasets.MNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])).test_labels.numpy
-
-    datasize=28
+                       ])).test_labels.numpy()
+    
+    a=np.zeros((60000,56,56))
+    b=np.zeros((10000,56,56))
+    c=np.zeros((10000,56,56))
+    for i in range (aa.shape[0]):
+        a[i]=cv2.resize(aa[i], (56, 56))
+        
+    
+    for i in range (bb.shape[0]):
+        b[i]=cv2.resize(bb[i], (56, 56))
+        
+    
+    for i in range (cc.shape[0]):
+        c[i]=cv2.resize(cc[i], (56, 56))
+    
+    datasize=56
+    print(a.shape)
 
     a=1*(a>0.5)
     b=1*(b>0.5)
@@ -315,7 +332,23 @@ def main():
 
     for i in range(0,datasize,4):
         for j in range(0,datasize,4):
-            mask[i,j]=1  
+            mask[i,j]=1 
+    
+    
+# =============================================================================
+#     for i in range (aa.shape[0]):
+#         a[i]=a[i]*mask
+#         
+#     
+#     for i in range (bb.shape[0]):
+#         b[i]=b[i]*mask
+#         
+#     
+#     for i in range (cc.shape[0]):
+#         c[i]=c[i]*mask
+# =============================================================================
+        
+        
     a=a*mask
     b=b*mask
     c=c*mask
@@ -367,7 +400,47 @@ def main():
                     c[k,i+1,j+1]=1
 
 
-    
+    print("train data is")
+    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
+    fig.suptitle('Training Data (blue curve train accyracy in graph)')
+    fig.set_figheight(7)
+    fig.set_figwidth(10)
+    ax1.imshow(a[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(a[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(a[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(a[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(a[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(a[5], cmap='gray',  interpolation='nearest')
+    plt.show()
+
+
+    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
+    fig.suptitle('Test data1 - green curve accuracy in graph')
+    fig.set_figheight(7)
+    fig.set_figwidth(10)
+    ax1.imshow(b[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(b[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(b[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(b[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(b[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(b[5], cmap='gray',  interpolation='nearest')
+    plt.show()
+
+    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
+    fig.suptitle('Test data2 - red curve accuracy in graph')
+    fig.set_figheight(7)
+    fig.set_figwidth(10)
+    ax1.imshow(c[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(c[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(c[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(c[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
+    plt.show()
+        
+    a=np.reshape(a,(60000,1,datasize,datasize))
+    b=np.reshape(b,(10000,1,datasize,datasize))
+    c=np.reshape(c,(10000,1,datasize,datasize))
 
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
@@ -399,11 +472,11 @@ def main():
     #print("CONVOLUTION NET")
     #model = Netconv().to(device)
     
-    print("CONVOLUTION NET for 28x28")
-    model = Net28().to(device)
+    #print("CONVOLUTION NET for 28x28")
+    #model = Net28().to(device)
     
-    #print("ATTENTION NET")
-    #model = NetAtt().to(device)
+    print("ATTENTION NET")
+    model = NetAtt().to(device)
 
 
 
@@ -445,6 +518,8 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
+    plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
+
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
