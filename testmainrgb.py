@@ -29,7 +29,7 @@ from attention import AttentionConv, AttentionStem
 from rgbfunctions import plotgraph, train, test
 
 att=0
-red=1
+red=0
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -355,15 +355,13 @@ def main():
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
     
-    np.save('convRedtrainedresultred.npy',resultred)
-    np.save('convRedtrainedresultgrn.npy',resultgrn)
-    np.save('convRedtrainedresulttrn.npy',resulttrn)
+#     np.save('convRedtrainedresultred.npy',resultred)
+#     np.save('convRedtrainedresultgrn.npy',resultgrn)
+#     np.save('convRedtrainedresulttrn.npy',resulttrn)
     
-# =============================================================================
-#     np.save('convGrntrainedresultred.npy',resultred)
-#     np.save('convGrntrainedresultgrn.npy',resultgrn)
-#     np.save('convGrntrainedresulttrn.npy',resulttrn)
-# =============================================================================
+    np.save('convGrntrainedresultred.npy',resultred)
+    np.save('convGrntrainedresultgrn.npy',resultgrn)
+    np.save('convGrntrainedresulttrn.npy',resulttrn)
     
     #np.save('AttRedtrainedresultred.npy',resultred)
     #np.save('AttRedtrainedresultgrn.npy',resultgrn)
