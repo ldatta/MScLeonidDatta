@@ -30,6 +30,7 @@ from rgbfunctions import plotgraph, train, test
 
 att=1
 red=1
+print("Attention model Red Data")
 
 class NetconvwithoutBN(nn.Module):
     def __init__(self):
@@ -283,8 +284,8 @@ def main():
     
     
     
-    b[:,:,:,0]=b22
-    c[:,:,:,1]=c22
+    b[:,:,:,1]=b22
+    c[:,:,:,0]=c22
       
     print("train data is")
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
@@ -408,6 +409,7 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
+    print("Attention model Red Data")
     np.save('AttRedtrainedresultred.npy',resultred)
     np.save('AttRedtrainedresultgrn.npy',resultgrn)
     np.save('AttRedtrainedresulttrn.npy',resulttrn)
