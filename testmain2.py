@@ -169,7 +169,7 @@ class NetAtt(nn.Module):
         super(NetAtt, self).__init__()
     
         #print("hcfcfcgfcgf")
-        self.att1 =nn.Sequential(AttentionStem(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=2, groups=1))
+        self.att1 =nn.Sequential(AttentionStem(in_channels=3, out_channels=16, kernel_size=3, stride=1, padding=2, groups=1))
         self.att2 =nn.Sequential(AttentionStem(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=2, groups=1))
         self.att3 =nn.Sequential(AttentionStem(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=2, groups=1))
         self.att4 =nn.Sequential(AttentionStem(in_channels=64, out_channels=10, kernel_size=3, stride=1, padding=2, groups=1))
@@ -373,22 +373,48 @@ def main():
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])).test_labels.numpy()
     
-    a=np.zeros((60000,56,56))
-    b=np.zeros((10000,56,56))
-    c=np.zeros((10000,56,56))
+#     a=np.zeros((60000,56,56))
+#     b=np.zeros((10000,56,56))
+#     c=np.zeros((10000,56,56))
+#     for i in range (aa.shape[0]):
+#         a[i]=cv2.resize(aa[i], (56, 56))
+        
+    
+#     for i in range (bb.shape[0]):
+#         b[i]=cv2.resize(bb[i], (56, 56))
+        
+    
+#     for i in range (cc.shape[0]):
+#         c[i]=cv2.resize(cc[i], (56, 56))
+#     a=a/255
+#     b=b/255
+#     c=c/255
+    
+    a22=np.zeros((60000,56,56))
+    b22=np.zeros((10000,56,56))
+    c22=np.zeros((10000,56,56))
     for i in range (aa.shape[0]):
-        a[i]=cv2.resize(aa[i], (56, 56))
+        a22[i]=cv2.resize(aa[i], (56, 56))
         
     
     for i in range (bb.shape[0]):
-        b[i]=cv2.resize(bb[i], (56, 56))
+        b22[i]=cv2.resize(bb[i], (56, 56))
         
     
     for i in range (cc.shape[0]):
-        c[i]=cv2.resize(cc[i], (56, 56))
-    a=a/255
-    b=b/255
-    c=c/255
+        c22[i]=cv2.resize(cc[i], (56, 56))
+    a22=a22/255
+    b22=b22/255
+    c22=c22/255
+    
+    a=np.zeros((60000,56,56,3))
+    b=np.zeros((10000,56,56,3))
+    c=np.zeros((10000,56,56,3))
+    
+    a[:,:,:,0]=a22
+    b[:,:,:,0]=b22
+    c[:,:,:,1]=c22
+    
     datasize=56
     print(a.shape)
     print(a[0].max())
@@ -477,9 +503,9 @@ def main():
                     c[k,i,j+1]=1
                     c[k,i+1,j+1]=1
         
-    a=np.reshape(a,(60000,1,datasize,datasize))
-    b=np.reshape(b,(10000,1,datasize,datasize))
-    c=np.reshape(c,(10000,1,datasize,datasize))
+    a=np.reshape(a,(60000,3,datasize,datasize))
+    b=np.reshape(b,(10000,3,datasize,datasize))
+    c=np.reshape(c,(10000,3,datasize,datasize))
 
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
@@ -508,12 +534,12 @@ def main():
     print("test set loaded")
 
 
-    print("CONVOLUTION NET")
-    model = Netconv().to(device)
+#     print("CONVOLUTION NET")
+#     model = Netconv().to(device)
     
     
-    #print("ATTENTION NET")
-    #model = NetAtt().to(device)
+    print("ATTENTION NET")
+    model = NetAtt().to(device)
 
 
 
