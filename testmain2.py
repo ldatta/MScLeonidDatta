@@ -100,7 +100,7 @@ class Netconv(nn.Module):
         
     def forward(self, x):
         x=x.float()
-        m = nn.AvgPool2d(2, 2)
+        m = nn.AvgPool2d((2, 2),(stride=2))
         x=self.conv1(x) 
         x = F.relu(x)
         x=m(x)
@@ -113,8 +113,8 @@ class Netconv(nn.Module):
         x=m(x)
         #s3=x.data.numpy()
         
-        x = F.relu(self.conv4(x))
-        x=m(x)
+        #x = F.relu(self.conv4(x))
+        #x=m(x)
         #x = F.relu(self.conv5(x))
         #s4=x.data.numpy()
         #print(x.shape)
