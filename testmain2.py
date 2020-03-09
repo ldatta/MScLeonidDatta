@@ -361,29 +361,29 @@ def main():
         
 
     #L SHAPE
-#     print("L SHAPED TRAIN DATA")
-#     for k in range(a.shape[0]):
-#         for i in range(0,datasize,maskgap):
-#             for j in range(0,datasize,maskgap):
-#                 if(a[k,i,j]==1):
-#                     a[k,i,j]=0
-#                     a[k,i,j-1]=1
-#                     a[k,i-1,j-1]=1
-#                     a[k,i+1,j-1]=1
-#                     a[k,i+1,j]=1
-     
-    
-    #INVERSE L
-    print("INL SHAPED TRAIN DATA")
+    print("L SHAPED TRAIN DATA")
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
             for j in range(0,datasize,maskgap):
                 if(a[k,i,j]==1):
                     a[k,i,j]=0
-                    a[k,i-1,j]=1
-                    a[k,i-1,j+1]=1
-                    a[k,i,j+1]=1
-                    a[k,i+1,j+1]=1
+                    a[k,i,j-1]=1
+                    a[k,i-1,j-1]=1
+                    a[k,i+1,j-1]=1
+                    a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+#     print("INL SHAPED TRAIN DATA")
+#     for k in range(a.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(a[k,i,j]==1):
+#                     a[k,i,j]=0
+#                     a[k,i-1,j]=1
+#                     a[k,i-1,j+1]=1
+#                     a[k,i,j+1]=1
+#                     a[k,i+1,j+1]=1
 
     for k in range(b.shape[0]):
         for i in range(0,datasize,maskgap):
@@ -485,9 +485,9 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    np.save('INLtrained16_32_64_128resultred.npy',resultred)
-    np.save('INLtrained16_32_64_128resultgrn.npy',resultgrn)
-    np.save('INLtrained16_32_64_128resulttrn.npy',resulttrn)
+    np.save('Ltrained16_32_64_128resultred.npy',resultred)
+    np.save('Ltrained16_32_64_128resultgrn.npy',resultgrn)
+    np.save('Ltrained16_32_64_128resulttrn.npy',resulttrn)
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
 
     if args.save_model:
