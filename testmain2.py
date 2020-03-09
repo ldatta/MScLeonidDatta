@@ -82,8 +82,8 @@ class Netconv(nn.Module):
         self.conv1 = nn.Conv2d(1, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, 2)
         self.conv3 = nn.Conv2d(32, 64, 3, 2)
-        self.conv4 = nn.Conv2d(64, 96, 3, 2)
-        self.conv5 = nn.Conv2d(96, 10, 3, 2)
+        self.conv4 = nn.Conv2d(64, 128, 3, 2)
+        self.conv5 = nn.Conv2d(128, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
         
