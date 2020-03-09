@@ -79,10 +79,10 @@ def plotgraph (xs,y1s,y2s,yts):
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        n1=8
-        n2=16
-        n3=32
-        n4=64
+        n1=16
+        n2=32
+        n3=64
+        n4=128
        
         self.conv1 = nn.Conv2d(1, n1, 3, 1)
         self.conv2 = nn.Conv2d(n1, n2, 3, 2)
