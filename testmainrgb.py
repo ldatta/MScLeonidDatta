@@ -31,6 +31,53 @@ from rgbfunctions import plotgraph, train, test
 att=0
 red=0
 
+class NetconvwithoutBN(nn.Module):
+    def __init__(self):
+        super(NetconvwithoutBN, self).__init__()
+        print("NetconvwithoutBN")
+        self.conv1 = nn.Conv2d(3, 16, 3, 1,padding=2)
+        self.conv2 = nn.Conv2d(16, 32, 3, 1,padding=2)
+        self.conv3 = nn.Conv2d(32, 64, 3, 1,padding=2)
+        self.conv4 = nn.Conv2d(64, 128, 3, 1,padding=2)
+        self.conv5 = nn.Conv2d(128, 10, 3, 1,padding=2)
+        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
+        
+        
+    def forward(self, x):
+        x=x.float()
+        x=self.conv1(x) 
+        x = self.bn1(x)
+        x = F.relu(x)
+        x=self.m(x)
+        #print(x.shape,"after conv 1")
+        #s1=x.data.numpy()
+        #x = F.relu( self.bn2(self.conv2(x)))
+        x = F.relu(self.conv2(x))
+        x=self.m(x)
+        #s2=x.data.numpy()
+        #x = F.relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.conv3(x))
+        x=self.m(x)
+        #print(x.shape,"after conv 3")
+        #s3=x.data.numpy()
+        #x = F.relu(self.bn4(self.conv4(x)))
+        x = F.relu(self.conv4(x))
+        #print(x.shape,"after conv 3")
+        
+        x=self.m(x)
+        #print(x.shape,"after conv 3")
+        x = F.relu(self.conv5(x))
+        #x = F.relu(self.bn5(self.conv5(x)))
+        #s4=x.data.numpy()
+        x=self.m(x)
+        #print(x.shape, "before gap")
+        x = self.GAP(x)
+        x = x.view(-1, 10) 
+        x=F.log_softmax(x, dim=1)
+        return x
+    
+    
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
@@ -307,13 +354,19 @@ def main():
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
-    if(att==0):
-      print("CONVOLUTION  56 x 56 NET")
-      model = Netconv().to(device)
     
-    if(att==1):
-      print("ATTENTION NET")
-      model = NetAtt().to(device)
+    NetconvwithoutBN
+    
+    print("NetconvwithoutBN  56 x 56 NET")
+    model = NetconvwithoutBN().to(device)
+    
+#     if(att==0):
+#       print("CONVOLUTION  56 x 56 NET")
+#       model = Netconv().to(device)
+    
+#     if(att==1):
+#       print("ATTENTION NET")
+#       model = NetAtt().to(device)
     
     print("Net")
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
