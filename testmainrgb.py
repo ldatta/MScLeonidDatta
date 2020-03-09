@@ -29,8 +29,8 @@ from attention import AttentionConv, AttentionStem
 from rgbfunctions import plotgraph, train, test
 
 att=1
-red=1
-print("Attention model Red Data")
+red=0
+print("Attention model Green Data")
 
 class NetconvwithoutBN(nn.Module):
     def __init__(self):
@@ -409,10 +409,10 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    print("Attention model Red Data")
-    np.save('AttRedtrainedresultred.npy',resultred)
-    np.save('AttRedtrainedresultgrn.npy',resultgrn)
-    np.save('AttRedtrainedresulttrn.npy',resulttrn)
+    print("Attention model Green Data")
+    np.save('AttGrntrainedresultred.npy',resultred)
+    np.save('AttGrntrainedresultgrn.npy',resultgrn)
+    np.save('AttGrntrainedresulttrn.npy',resulttrn)
     
     
 #     if((att!=1) and (red==1)):
