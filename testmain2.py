@@ -138,20 +138,25 @@ class Netconv(nn.Module):
         self.conv4 = nn.Conv2d(n3, n4, 3, 2)
         self.conv5 = nn.Conv2d(n4, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
-        
+        self.bn1=nn.BatchNorm2d(16)
+        self.bn2=nn.BatchNorm2d(32)
+        self.bn3=nn.BatchNorm2d(64)
+        self.bn4=nn.BatchNorm2d(128)    
+        self.bn5=nn.BatchNorm2d(10) 
         
         
     def forward(self, x):
         x=x.float()
         x=self.conv1(x) 
+        x = self.bn1(x)
         x = F.relu(x)
         #s1=x.data.numpy()
-        x = F.relu(self.conv2(x))
+        x = F.relu( self.bn2(self.conv2(x)))
         #s2=x.data.numpy()
-        x = F.relu(self.conv3(x))
+        x = F.relu(self.bn3(self.conv3(x)))
         #s3=x.data.numpy()
-        x = F.relu(self.conv4(x))
-        x = F.relu(self.conv5(x))
+        x = F.relu(self.bn4(self.conv4(x)))
+        x = F.relu(self.bn5(self.conv5(x)))
         #s4=x.data.numpy()
         x = self.GAP(x)
         x = x.view(-1, 10) 
@@ -503,12 +508,12 @@ def main():
     print("test set loaded")
 
 
-    #print("CONVOLUTION NET")
-    #model = Netconv().to(device)
+    print("CONVOLUTION NET")
+    model = Netconv().to(device)
     
     
-    print("ATTENTION NET")
-    model = NetAtt().to(device)
+    #print("ATTENTION NET")
+    #model = NetAtt().to(device)
 
 
 
