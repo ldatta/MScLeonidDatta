@@ -361,28 +361,29 @@ def main():
         
 
     #L SHAPE
-    print("L SHAPED TRAIN DATA")
-    for k in range(a.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(a[k,i,j]==1):
-                    a[k,i,j]=0
-                    a[k,i,j-1]=1
-                    a[k,i-1,j-1]=1
-                    a[k,i+1,j-1]=1
-                    a[k,i+1,j]=1
-     
-    
-    #INVERSE L
+#     print("L SHAPED TRAIN DATA")
 #     for k in range(a.shape[0]):
 #         for i in range(0,datasize,maskgap):
 #             for j in range(0,datasize,maskgap):
 #                 if(a[k,i,j]==1):
 #                     a[k,i,j]=0
-#                     a[k,i-1,j]=1
-#                     a[k,i-1,j+1]=1
-#                     a[k,i,j+1]=1
-#                     a[k,i+1,j+1]=1
+#                     a[k,i,j-1]=1
+#                     a[k,i-1,j-1]=1
+#                     a[k,i+1,j-1]=1
+#                     a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+    print("INL SHAPED TRAIN DATA")
+    for k in range(a.shape[0]):
+        for i in range(0,datasize,maskgap):
+            for j in range(0,datasize,maskgap):
+                if(a[k,i,j]==1):
+                    a[k,i,j]=0
+                    a[k,i-1,j]=1
+                    a[k,i-1,j+1]=1
+                    a[k,i,j+1]=1
+                    a[k,i+1,j+1]=1
 
     for k in range(b.shape[0]):
         for i in range(0,datasize,maskgap):
@@ -403,45 +404,6 @@ def main():
                     c[k,i-1,j+1]=1
                     c[k,i,j+1]=1
                     c[k,i+1,j+1]=1
-
-
-    print("train data is")
-    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
-    fig.suptitle('Training Data (blue curve train accyracy in graph)')
-    fig.set_figheight(7)
-    fig.set_figwidth(10)
-    ax1.imshow(a[0], cmap='gray',  interpolation='nearest')
-    ax2.imshow(a[1], cmap='gray',  interpolation='nearest')
-    ax3.imshow(a[2], cmap='gray',  interpolation='nearest')
-    ax4.imshow(a[3], cmap='gray',  interpolation='nearest')
-    ax5.imshow(a[4], cmap='gray',  interpolation='nearest')
-    ax6.imshow(a[5], cmap='gray',  interpolation='nearest')
-    plt.show()
-
-
-    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
-    fig.suptitle('Test data1 - green curve accuracy in graph')
-    fig.set_figheight(7)
-    fig.set_figwidth(10)
-    ax1.imshow(b[0], cmap='gray',  interpolation='nearest')
-    ax2.imshow(b[1], cmap='gray',  interpolation='nearest')
-    ax3.imshow(b[2], cmap='gray',  interpolation='nearest')
-    ax4.imshow(b[3], cmap='gray',  interpolation='nearest')
-    ax5.imshow(b[4], cmap='gray',  interpolation='nearest')
-    ax6.imshow(b[5], cmap='gray',  interpolation='nearest')
-    plt.show()
-
-    fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
-    fig.suptitle('Test data2 - red curve accuracy in graph')
-    fig.set_figheight(7)
-    fig.set_figwidth(10)
-    ax1.imshow(c[0], cmap='gray',  interpolation='nearest')
-    ax2.imshow(c[1], cmap='gray',  interpolation='nearest')
-    ax3.imshow(c[2], cmap='gray',  interpolation='nearest')
-    ax4.imshow(c[3], cmap='gray',  interpolation='nearest')
-    ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
-    ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
-    plt.show()
         
     a=np.reshape(a,(60000,1,datasize,datasize))
     b=np.reshape(b,(10000,1,datasize,datasize))
