@@ -27,7 +27,9 @@ import matplotlib.lines as mlines
 
 from attention import AttentionConv, AttentionStem
 from rgbfunctions import plotgraph, train, test
+
 att=1
+red=0
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -212,12 +214,13 @@ def main():
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
-    #print("GREEN TRAIN DATA") #For green train data 
-    #a[:,:,:,1]=a22
+    if(red==0):
+        print("GREEN TRAIN DATA") #For green train data 
+        a[:,:,:,1]=a22
     
-    print("RED TRAIN DATA") #For red train data
-    a[:,:,:,0]=a22
-    
+    if(red==1):
+        print("RED TRAIN DATA") #For red train data
+        a[:,:,:,0]=a22
     
     b[:,:,:,0]=b22
     c[:,:,:,1]=c22
