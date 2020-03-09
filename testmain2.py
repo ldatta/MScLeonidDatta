@@ -428,80 +428,80 @@ def main():
 
     maskgap=5
     
-    for i in range(0,datasize,maskgap):
-        for j in range(0,datasize,maskgap):
-            mask[i,j]=1
-            #if(i!=datasize or j!=datasize):
+#     for i in range(0,datasize,maskgap):
+#         for j in range(0,datasize,maskgap):
+#             mask[i,j]=1
+#             #if(i!=datasize or j!=datasize):
                  
-    mask[:,0]=0
-    mask[0,:]=0
-    mask[:,55]=0
-    mask[55,:]=0
-    plt.imshow(mask, cmap='gray',  interpolation='nearest')
-    plt.show()
-    a=a*mask
-    b=b*mask
-    c=c*mask
+#     mask[:,0]=0
+#     mask[0,:]=0
+#     mask[:,55]=0
+#     mask[55,:]=0
+#     plt.imshow(mask, cmap='gray',  interpolation='nearest')
+#     plt.show()
+#     a=a*mask
+#     b=b*mask
+#     c=c*mask
     
-# =============================================================================
-#     for i in range (aa.shape[0]):
-#         a[i]=a[i]*mask
-#         
-#     
-#     for i in range (bb.shape[0]):
-#         b[i]=b[i]*mask
-#         
-#     
-#     for i in range (cc.shape[0]):
-#         c[i]=c[i]*mask
-# =============================================================================
+# # =============================================================================
+# #     for i in range (aa.shape[0]):
+# #         a[i]=a[i]*mask
+# #         
+# #     
+# #     for i in range (bb.shape[0]):
+# #         b[i]=b[i]*mask
+# #         
+# #     
+# #     for i in range (cc.shape[0]):
+# #         c[i]=c[i]*mask
+# # =============================================================================
         
         
 
-    #L SHAPE
-    print("L SHAPED TRAIN DATA")
-    for k in range(a.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(a[k,i,j]==1):
-                    a[k,i,j]=0
-                    a[k,i,j-1]=1
-                    a[k,i-1,j-1]=1
-                    a[k,i+1,j-1]=1
-                    a[k,i+1,j]=1
-     
-    
-    #INVERSE L
-#     print("INL SHAPED TRAIN DATA")
+#     #L SHAPE
+#     print("L SHAPED TRAIN DATA")
 #     for k in range(a.shape[0]):
 #         for i in range(0,datasize,maskgap):
 #             for j in range(0,datasize,maskgap):
 #                 if(a[k,i,j]==1):
 #                     a[k,i,j]=0
-#                     a[k,i-1,j]=1
-#                     a[k,i-1,j+1]=1
-#                     a[k,i,j+1]=1
-#                     a[k,i+1,j+1]=1
+#                     a[k,i,j-1]=1
+#                     a[k,i-1,j-1]=1
+#                     a[k,i+1,j-1]=1
+#                     a[k,i+1,j]=1
+     
+    
+#     #INVERSE L
+# #     print("INL SHAPED TRAIN DATA")
+# #     for k in range(a.shape[0]):
+# #         for i in range(0,datasize,maskgap):
+# #             for j in range(0,datasize,maskgap):
+# #                 if(a[k,i,j]==1):
+# #                     a[k,i,j]=0
+# #                     a[k,i-1,j]=1
+# #                     a[k,i-1,j+1]=1
+# #                     a[k,i,j+1]=1
+# #                     a[k,i+1,j+1]=1
 
-    for k in range(b.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(b[k,i,j]==1):
-                    b[k,i,j]=0
-                    b[k,i,j-1]=1
-                    b[k,i-1,j-1]=1
-                    b[k,i+1,j-1]=1
-                    b[k,i+1,j]=1
+#     for k in range(b.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(b[k,i,j]==1):
+#                     b[k,i,j]=0
+#                     b[k,i,j-1]=1
+#                     b[k,i-1,j-1]=1
+#                     b[k,i+1,j-1]=1
+#                     b[k,i+1,j]=1
                     
-    for k in range(c.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(c[k,i,j]==1):
-                    c[k,i,j]=0
-                    c[k,i-1,j]=1
-                    c[k,i-1,j+1]=1
-                    c[k,i,j+1]=1
-                    c[k,i+1,j+1]=1
+#     for k in range(c.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(c[k,i,j]==1):
+#                     c[k,i,j]=0
+#                     c[k,i-1,j]=1
+#                     c[k,i-1,j+1]=1
+#                     c[k,i,j+1]=1
+#                     c[k,i+1,j+1]=1
         
     a=np.reshape(a,(60000,3,datasize,datasize))
     b=np.reshape(b,(10000,3,datasize,datasize))
