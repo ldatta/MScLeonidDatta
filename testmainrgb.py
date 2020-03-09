@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
 from attention import AttentionConv, AttentionStem
-
+from rgbfunctions import plotgraph, train, test
 att=1
 
 class Netconv(nn.Module):
@@ -204,6 +204,10 @@ def main():
     a22=a22/255
     b22=b22/255
     c22=c22/255
+    
+    datasize=56
+    
+    
     a=np.zeros((60000,56,56,3))
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
@@ -211,7 +215,7 @@ def main():
     #print("GREEN TRAIN DATA") #For green train data 
     #a[:,:,:,1]=a22
     
-    #print("GREEN TRAIN DATA") #For red train data
+    print("RED TRAIN DATA") #For red train data
     a[:,:,:,0]=a22
     
     
@@ -270,7 +274,6 @@ def main():
     target2 = torch.tensor(target2, dtype=torch.long)
     my_testdataset = utils.TensorDataset(data2,target2)
 
-
     data2=torch.from_numpy(c)
     target2=torch.from_numpy(c2)
     target2 = torch.tensor(target2, dtype=torch.long)
@@ -279,19 +282,17 @@ def main():
 
     train_loader = torch.utils.data.DataLoader(my_dataset,batch_size=args.batch_size, shuffle=True, **kwargs)
     print("train set loaded" )
-
     test_loader = torch.utils.data.DataLoader(my_testdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
-
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
-    if(att=0):
+    if(att==0):
       print("CONVOLUTION  56 x 56 NET")
       model = Netconv().to(device)
     
-    if(att=1):
-      print("ATTENTION NET")
+    if(att==1):
+      print("ATTENTION NETWORK")
       model = NetAtt().to(device)
     
     print("Net")
@@ -299,14 +300,11 @@ def main():
     epoch_no=(np.arange(1,(args.epochs+1),1 ))
     redacc=(np.arange(1,(args.epochs+1),1 ))
     grnacc=(np.arange(1,(args.epochs+1),1 ))
-
     redaccm=(np.arange(1,(args.epochs+1),1 ))
     grnaccm=(np.arange(1,(args.epochs+1),1 ))
-
     trnacc=(np.arange(1,(args.epochs+1),1 ))
     trnaccm=(np.arange(1,(args.epochs+1),1 ))
     br=0#test(args, model, device, hortest_loader) #RED IS HORIZONTAL
-       
        
     bg=0#test(args, model, device, test_loader)
     for epoch in range(1, args.epochs + 1):    
@@ -341,7 +339,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-
-
-
-
