@@ -79,11 +79,16 @@ def plotgraph (xs,y1s,y2s,yts):
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        self.conv1 = nn.Conv2d(1, 16, 3, 1)
-        self.conv2 = nn.Conv2d(16, 32, 3, 2)
-        self.conv3 = nn.Conv2d(32, 64, 3, 2)
-        self.conv4 = nn.Conv2d(64, 96, 3, 2)
-        self.conv5 = nn.Conv2d(96, 10, 3, 2)
+        n1=8
+        n2=16
+        n3=32
+        n4=64
+       
+        self.conv1 = nn.Conv2d(1, n1, 3, 1)
+        self.conv2 = nn.Conv2d(n1, n2, 3, 2)
+        self.conv3 = nn.Conv2d(n2, n3, 3, 2)
+        self.conv4 = nn.Conv2d(n3, n4, 3, 2)
+        self.conv5 = nn.Conv2d(n4, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
         
