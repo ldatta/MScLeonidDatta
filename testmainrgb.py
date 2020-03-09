@@ -25,9 +25,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-#from attention import AttentionConv, AttentionStem
+from attention import AttentionConv, AttentionStem
 
-
+att=1
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -204,12 +204,17 @@ def main():
     a22=a22/255
     b22=b22/255
     c22=c22/255
-    
     a=np.zeros((60000,56,56,3))
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
+    #print("GREEN TRAIN DATA") #For green train data 
+    #a[:,:,:,1]=a22
+    
+    #print("GREEN TRAIN DATA") #For red train data
     a[:,:,:,0]=a22
+    
+    
     b[:,:,:,0]=b22
     c[:,:,:,1]=c22
       
@@ -288,6 +293,7 @@ def main():
     if(att=1):
       print("ATTENTION NET")
       model = NetAtt().to(device)
+    
     print("Net")
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     epoch_no=(np.arange(1,(args.epochs+1),1 ))
@@ -327,9 +333,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('Ltrainedresultred.npy',resultred)
-    np.save('Ltrainedresultgrn.npy',resultgrn)
-    np.save('Ltrainedresulttrn.npy',resulttrn)
+    np.save('Redtrainedresultred.npy',resultred)
+    np.save('Redtrainedresultgrn.npy',resultgrn)
+    np.save('Redtrainedresulttrn.npy',resulttrn)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
