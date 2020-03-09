@@ -317,9 +317,9 @@ def main():
     print(a[0].max())
     print(a[0].min())
     
-    a=1*(a>0.7)
-    b=1*(b>0.7)
-    c=1*(c>0.7)
+    a=1*(a>0.3)
+    b=1*(b>0.3)
+    c=1*(c>0.3)
     
     mask=np.zeros((datasize,datasize))
 
