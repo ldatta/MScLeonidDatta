@@ -82,8 +82,8 @@ class Netconv(nn.Module):
         self.conv1 = nn.Conv2d(1, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, 2)
         self.conv3 = nn.Conv2d(32, 64, 3, 2)
-        self.conv4 = nn.Conv2d(64, 128, 3, 2)
-        self.conv5 = nn.Conv2d(128, 10, 3, 2)
+        self.conv4 = nn.Conv2d(64, 96, 3, 2)
+        self.conv5 = nn.Conv2d(96, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
         
@@ -317,9 +317,9 @@ def main():
     print(a[0].max())
     print(a[0].min())
     
-    a=1*(a>0.5)
-    b=1*(b>0.5)
-    c=1*(c>0.5)
+    a=1*(a>0.7)
+    b=1*(b>0.7)
+    c=1*(c>0.7)
     
     mask=np.zeros((datasize,datasize))
 
