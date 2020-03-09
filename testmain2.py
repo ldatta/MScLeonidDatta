@@ -75,40 +75,86 @@ def plotgraph (xs,y1s,y2s,yts):
     
 
 
-
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        n1=16
-        n2=32
-        n3=64
-        n4=128
-       
-        self.conv1 = nn.Conv2d(1, n1, 3, 1)
-        self.conv2 = nn.Conv2d(n1, n2, 3, 2)
-        self.conv3 = nn.Conv2d(n2, n3, 3, 2)
-        self.conv4 = nn.Conv2d(n3, n4, 3, 2)
-        self.conv5 = nn.Conv2d(n4, 10, 3, 2)
+        n=16
+        
+        self.conv1 = nn.Conv2d(1, n, 3, 1)
+        self.conv2 = nn.Conv2d(16, 32, 3, 1)
+        self.conv3 = nn.Conv2d(32, 64, 3, 1)
+        self.conv4 = nn.Conv2d(64, 10, 3, 1)
+        self.conv5 = nn.Conv2d(128, 10, 3, 1)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        
+# =============================================================================
+#         self.conv1 = nn.Conv2d(1, n, 3, 1)
+#         self.conv2 = nn.Conv2d(16, 32, 3, 2)
+#         self.conv3 = nn.Conv2d(32, 64, 3, 2)
+#         self.conv4 = nn.Conv2d(64, 128, 3, 2)
+#         self.conv5 = nn.Conv2d(128, 10, 3, 2)
+#         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+# =============================================================================
         
         
         
     def forward(self, x):
         x=x.float()
+        m = nn.AvgPool2d(2, 2)
         x=self.conv1(x) 
         x = F.relu(x)
+        x=m(x)
+        
         #s1=x.data.numpy()
         x = F.relu(self.conv2(x))
         #s2=x.data.numpy()
+        x=m(x)
         x = F.relu(self.conv3(x))
+        x=m(x)
         #s3=x.data.numpy()
+        
         x = F.relu(self.conv4(x))
-        x = F.relu(self.conv5(x))
+        x=m(x)
+        #x = F.relu(self.conv5(x))
         #s4=x.data.numpy()
-        x = self.GAP(x)
+        #print(x.shape)
+        #x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
+# class Netconv(nn.Module):
+#     def __init__(self):
+#         super(Netconv, self).__init__()
+#         n1=16
+#         n2=32
+#         n3=64
+#         n4=128
+       
+#         self.conv1 = nn.Conv2d(1, n1, 3, 1)
+#         self.conv2 = nn.Conv2d(n1, n2, 3, 2)
+#         self.conv3 = nn.Conv2d(n2, n3, 3, 2)
+#         self.conv4 = nn.Conv2d(n3, n4, 3, 2)
+#         self.conv5 = nn.Conv2d(n4, 10, 3, 2)
+#         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        
+        
+        
+#     def forward(self, x):
+#         x=x.float()
+#         x=self.conv1(x) 
+#         x = F.relu(x)
+#         #s1=x.data.numpy()
+#         x = F.relu(self.conv2(x))
+#         #s2=x.data.numpy()
+#         x = F.relu(self.conv3(x))
+#         #s3=x.data.numpy()
+#         x = F.relu(self.conv4(x))
+#         x = F.relu(self.conv5(x))
+#         #s4=x.data.numpy()
+#         x = self.GAP(x)
+#         x = x.view(-1, 10) 
+#         x=F.log_softmax(x, dim=1)
+#         return x
     
 
 class NetAtt(nn.Module):
