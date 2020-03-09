@@ -28,19 +28,20 @@ import matplotlib.lines as mlines
 from attention import AttentionConv, AttentionStem
 from rgbfunctions import plotgraph, train, test
 
-att=1
-red=0
+att=0
+red=1
 
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         print("convolution net")
-        self.conv1 = nn.Conv2d(3, 16, 3, 1)
-        self.conv2 = nn.Conv2d(16, 32, 3, 2)
-        self.conv3 = nn.Conv2d(32, 64, 3, 2)
-        self.conv4 = nn.Conv2d(64, 128, 3, 2)
-        self.conv5 = nn.Conv2d(128, 10, 3, 2)
-        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        self.conv1 = nn.Conv2d(3, 16, 3, 1,padding=2)
+        self.conv2 = nn.Conv2d(16, 32, 3, 1,padding=2)
+        self.conv3 = nn.Conv2d(32, 64, 3, 1,padding=2)
+        self.conv4 = nn.Conv2d(64, 128, 3, 1,padding=2)
+        self.conv5 = nn.Conv2d(128, 10, 3, 1,padding=2)
+        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
         self.bn1=nn.BatchNorm2d(16)
         self.bn2=nn.BatchNorm2d(32)
         self.bn3=nn.BatchNorm2d(64)
@@ -52,14 +53,25 @@ class Netconv(nn.Module):
         x=self.conv1(x) 
         x = self.bn1(x)
         x = F.relu(x)
+        x=self.m(x)
+        #print(x.shape,"after conv 1")
         #s1=x.data.numpy()
         x = F.relu( self.bn2(self.conv2(x)))
+        x=self.m(x)
         #s2=x.data.numpy()
         x = F.relu(self.bn3(self.conv3(x)))
+        x=self.m(x)
+        #print(x.shape,"after conv 3")
         #s3=x.data.numpy()
         x = F.relu(self.bn4(self.conv4(x)))
+        #print(x.shape,"after conv 3")
+        
+        x=self.m(x)
+        #print(x.shape,"after conv 3")
         x = F.relu(self.bn5(self.conv5(x)))
         #s4=x.data.numpy()
+        x=self.m(x)
+        #print(x.shape, "before gap")
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
@@ -222,6 +234,8 @@ def main():
         print("RED TRAIN DATA") #For red train data
         a[:,:,:,0]=a22
     
+    
+    
     b[:,:,:,0]=b22
     c[:,:,:,1]=c22
       
@@ -277,6 +291,7 @@ def main():
     target2 = torch.tensor(target2, dtype=torch.long)
     my_testdataset = utils.TensorDataset(data2,target2)
 
+
     data2=torch.from_numpy(c)
     target2=torch.from_numpy(c2)
     target2 = torch.tensor(target2, dtype=torch.long)
@@ -285,8 +300,10 @@ def main():
 
     train_loader = torch.utils.data.DataLoader(my_dataset,batch_size=args.batch_size, shuffle=True, **kwargs)
     print("train set loaded" )
+
     test_loader = torch.utils.data.DataLoader(my_testdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
+
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
@@ -295,7 +312,7 @@ def main():
       model = Netconv().to(device)
     
     if(att==1):
-      print("ATTENTION NETWORK")
+      print("ATTENTION NET")
       model = NetAtt().to(device)
     
     print("Net")
@@ -303,11 +320,14 @@ def main():
     epoch_no=(np.arange(1,(args.epochs+1),1 ))
     redacc=(np.arange(1,(args.epochs+1),1 ))
     grnacc=(np.arange(1,(args.epochs+1),1 ))
+
     redaccm=(np.arange(1,(args.epochs+1),1 ))
     grnaccm=(np.arange(1,(args.epochs+1),1 ))
+
     trnacc=(np.arange(1,(args.epochs+1),1 ))
     trnaccm=(np.arange(1,(args.epochs+1),1 ))
     br=0#test(args, model, device, hortest_loader) #RED IS HORIZONTAL
+       
        
     bg=0#test(args, model, device, test_loader)
     for epoch in range(1, args.epochs + 1):    
@@ -334,15 +354,31 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    #np.save('Redtrainedresultred.npy',resultred)
-    #np.save('Redtrainedresultgrn.npy',resultgrn)
-    #np.save('Redtrainedresulttrn.npy',resulttrn)
     
-    np.save('Grntrainedresultred.npy',resultred)
-    np.save('Grntrainedresultgrn.npy',resultgrn)
-    np.save('Grntrainedresulttrn.npy',resulttrn)
+    np.save('convRedtrainedresultred.npy',resultred)
+    np.save('convRedtrainedresultgrn.npy',resultgrn)
+    np.save('convRedtrainedresulttrn.npy',resulttrn)
+    
+# =============================================================================
+#     np.save('convGrntrainedresultred.npy',resultred)
+#     np.save('convGrntrainedresultgrn.npy',resultgrn)
+#     np.save('convGrntrainedresulttrn.npy',resulttrn)
+# =============================================================================
+    
+    #np.save('AttRedtrainedresultred.npy',resultred)
+    #np.save('AttRedtrainedresultgrn.npy',resultgrn)
+    #np.save('AttRedtrainedresulttrn.npy',resulttrn)
+    
+    #np.save('AttGrntrainedresultred.npy',resultred)
+    #np.save('AttGrntrainedresultgrn.npy',resultgrn)
+    #np.save('AttGrntrainedresulttrn.npy',resulttrn)
+    
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
 if __name__ == '__main__':
     main()
+
+
+
+
