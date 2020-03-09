@@ -327,6 +327,7 @@ def main():
     a=np.transpose(a, (0,3, 1, 2))
     b=np.transpose(b, (0,3, 1, 2))
     c=np.transpose(c, (0,3, 1, 2))
+    print("shape of a",a.shape)
 #     a=np.reshape(a,(60000,3,datasize,datasize))
 #     b=np.reshape(b,(10000,3,datasize,datasize))
 #     c=np.reshape(c,(10000,3,datasize,datasize))
@@ -358,18 +359,15 @@ def main():
     print("test set loaded")
 
     
-    NetconvwithoutBN
     
-    print("NetconvwithoutBN  56 x 56 NET")
-    model = NetconvwithoutBN().to(device)
     
-#     if(att==0):
-#       print("CONVOLUTION  56 x 56 NET")
-#       model = Netconv().to(device)
+    if(att==0):
+      print("CONVOLUTION  56 x 56 NET")
+      model = Netconv().to(device)
     
-#     if(att==1):
-#       print("ATTENTION NET")
-#       model = NetAtt().to(device)
+    if(att==1):
+      print("ATTENTION NET")
+      model = NetAtt().to(device)
     
     print("Net")
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
