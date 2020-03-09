@@ -492,8 +492,6 @@ def main():
     #print("CONVOLUTION NET")
     #model = Netconv().to(device)
     
-    print("CONVOLUTION NET for 28x28")
-    model = Net28().to(device)
     
     print("ATTENTION NET")
     model = NetAtt().to(device)
