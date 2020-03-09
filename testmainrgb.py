@@ -259,8 +259,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=test(args, model, device, hortest_loader)
-                    g=test(args, model, device, test_loader)
+                    r=0#test(args, model, device, hortest_loader)
+                    g=0#test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
