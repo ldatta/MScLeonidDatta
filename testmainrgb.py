@@ -28,8 +28,8 @@ import matplotlib.lines as mlines
 from attention import AttentionConv, AttentionStem
 from rgbfunctions import plotgraph, train, test
 
-att=0
-red=0
+att=1
+red=1
 
 class NetconvwithoutBN(nn.Module):
     def __init__(self):
@@ -324,9 +324,12 @@ def main():
     ax6.imshow(c[5],    interpolation='nearest')
     plt.show()
 
-    a=np.reshape(a,(60000,3,datasize,datasize))
-    b=np.reshape(b,(10000,3,datasize,datasize))
-    c=np.reshape(c,(10000,3,datasize,datasize))
+    a=np.transpose(a, (0,3, 1, 2))
+    b=np.transpose(b, (0,3, 1, 2))
+    c=np.transpose(c, (0,3, 1, 2))
+#     a=np.reshape(a,(60000,3,datasize,datasize))
+#     b=np.reshape(b,(10000,3,datasize,datasize))
+#     c=np.reshape(c,(10000,3,datasize,datasize))
 
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
@@ -407,6 +410,10 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
+    np.save('AttRedtrainedresultred.npy',resultred)
+    np.save('AttRedtrainedresultgrn.npy',resultgrn)
+    np.save('AttRedtrainedresulttrn.npy',resulttrn)
+    
     
 #     if((att!=1) and (red==1)):
 #         print("Convo model Red Data")
