@@ -169,15 +169,15 @@ class NetAtt(nn.Module):
         self.att3 =nn.Sequential(AttentionStem(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=2, groups=1))
         self.att4 =nn.Sequential(AttentionStem(in_channels=64, out_channels=10, kernel_size=3, stride=1, padding=2, groups=1))
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-            
+        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
+        self.bn1=nn.BatchNorm2d(16)
+        self.bn2=nn.BatchNorm2d(32)
+        self.bn3=nn.BatchNorm2d(64)
+        self.bn4=nn.BatchNorm2d(10)    
     def forward(self, x):
         x=x.float()
         #print(x.shape,"SIZE BEFORE NETWORK STARTS" )
-        m = nn.AvgPool2d((2, 2),stride=(2,2))
-        bn1=nn.BatchNorm2d(16)
-        bn2=nn.BatchNorm2d(32)
-        bn3=nn.BatchNorm2d(64)
-        bn4=nn.BatchNorm2d(10)
+        
         x=self.att1(x) 
         x=bn1(x)
         x = F.relu(x)
@@ -502,8 +502,8 @@ def main():
     #model = Netconv().to(device)
     
     
-    print("ATTENTION NET")
-    model = NetAtt().to(device)
+#     print("ATTENTION NET")
+#     model = NetAtt().to(device)
 
 
 
