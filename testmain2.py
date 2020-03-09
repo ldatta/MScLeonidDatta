@@ -502,8 +502,8 @@ def main():
     #model = Netconv().to(device)
     
     
-#     print("ATTENTION NET")
-#     model = NetAtt().to(device)
+    print("ATTENTION NET")
+    model = NetAtt().to(device)
 
 
 
