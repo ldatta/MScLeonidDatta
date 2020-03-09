@@ -47,7 +47,7 @@ class NetconvwithoutBN(nn.Module):
     def forward(self, x):
         x=x.float()
         x=self.conv1(x) 
-        x = self.bn1(x)
+        #x = self.bn1(x)
         x = F.relu(x)
         x=self.m(x)
         #print(x.shape,"after conv 1")
