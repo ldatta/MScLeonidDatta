@@ -550,9 +550,9 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    np.save('Ltrained16_32_64_128resultred.npy',resultred)
-    np.save('Ltrained16_32_64_128resultgrn.npy',resultgrn)
-    np.save('Ltrained16_32_64_128resulttrn.npy',resulttrn)
+    np.save('Ltrained16_32_64_128attBNresultred.npy',resultred)
+    np.save('Ltrained16_32_64_128attBNresultgrn.npy',resultgrn)
+    np.save('Ltrained16_32_64_128attBNresulttrn.npy',resulttrn)
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
 
     if args.save_model:
