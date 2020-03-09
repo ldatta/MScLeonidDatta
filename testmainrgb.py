@@ -331,9 +331,13 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('Redtrainedresultred.npy',resultred)
-    np.save('Redtrainedresultgrn.npy',resultgrn)
-    np.save('Redtrainedresulttrn.npy',resulttrn)
+    #np.save('Redtrainedresultred.npy',resultred)
+    #np.save('Redtrainedresultgrn.npy',resultgrn)
+    #np.save('Redtrainedresulttrn.npy',resulttrn)
+    
+    np.save('Grntrainedresultred.npy',resultred)
+    np.save('Grntrainedresultgrn.npy',resultgrn)
+    np.save('Grntrainedresulttrn.npy',resulttrn)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
