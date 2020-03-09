@@ -28,7 +28,7 @@ import matplotlib.lines as mlines
 from attention import AttentionConv, AttentionStem
 
 att=1
-red=0
+red=1
 print("Attention model Green Data")
 
 class NetconvwithoutBN(nn.Module):
@@ -527,10 +527,10 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    print("Attention model Green Data")
-    np.save('AttGrntrainedresultred.npy',resultred)
-    np.save('AttGrntrainedresultgrn.npy',resultgrn)
-    np.save('AttGrntrainedresulttrn.npy',resulttrn)
+    print("Attention model Red Data")
+    np.save('AttRedtrainedresultred.npy',resultred)
+    np.save('AttRedtrainedresultgrn.npy',resultgrn)
+    np.save('AttRedtrainedresulttrn.npy',resulttrn)
     
     
 #     if((att!=1) and (red==1)):
