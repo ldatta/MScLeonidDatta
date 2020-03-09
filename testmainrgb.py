@@ -355,21 +355,27 @@ def main():
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
     
-#     np.save('convRedtrainedresultred.npy',resultred)
-#     np.save('convRedtrainedresultgrn.npy',resultgrn)
-#     np.save('convRedtrainedresulttrn.npy',resulttrn)
+#     if((att!=1) and (red==1)):
+#         print("Convo model Red Data")
+#         np.save('convRedtrainedresultred.npy',resultred)
+#         np.save('convRedtrainedresultgrn.npy',resultgrn)
+#         np.save('convRedtrainedresulttrn.npy',resulttrn)
+#     if((att!=1) and (red!=1)):
+#         print("Convo model Green Data")
+#         np.save('convGrntrainedresultred.npy',resultred)
+#         np.save('convGrntrainedresultgrn.npy',resultgrn)
+#         np.save('convGrntrainedresulttrn.npy',resulttrn)
+#     if((att==1) and (red==1)):
+#         print("Attention model Red Data")
+#         np.save('AttRedtrainedresultred.npy',resultred)
+#         np.save('AttRedtrainedresultgrn.npy',resultgrn)
+#         np.save('AttRedtrainedresulttrn.npy',resulttrn)
+#     if((att==1) and (red!=1)):
+#         print("Attention model Greeen Data")
+#         np.save('AttGrntrainedresultred.npy',resultred)
+#         np.save('AttGrntrainedresultgrn.npy',resultgrn)
+#         np.save('AttGrntrainedresulttrn.npy',resulttrn)
     
-    np.save('convGrntrainedresultred.npy',resultred)
-    np.save('convGrntrainedresultgrn.npy',resultgrn)
-    np.save('convGrntrainedresulttrn.npy',resulttrn)
-    
-    #np.save('AttRedtrainedresultred.npy',resultred)
-    #np.save('AttRedtrainedresultgrn.npy',resultgrn)
-    #np.save('AttRedtrainedresulttrn.npy',resulttrn)
-    
-    #np.save('AttGrntrainedresultred.npy',resultred)
-    #np.save('AttGrntrainedresultgrn.npy',resultgrn)
-    #np.save('AttGrntrainedresulttrn.npy',resulttrn)
     
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
