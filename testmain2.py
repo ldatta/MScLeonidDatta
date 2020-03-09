@@ -361,6 +361,7 @@ def main():
         
 
     #L SHAPE
+    print("L SHAPED TRAIN DATA")
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
             for j in range(0,datasize,maskgap):
