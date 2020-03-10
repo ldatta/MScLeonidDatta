@@ -58,12 +58,12 @@ class Netconv(nn.Module):
             p.requires_grad=False
         
         
-#         for p in self.conv2.parameters():
-#             p.requires_grad=False
-        
-        
-        for p in self.conv3.parameters():
+        for p in self.conv2.parameters():
             p.requires_grad=False
+        
+        
+#         for p in self.conv3.parameters():
+#             p.requires_grad=False
             
         for p in self.conv4.parameters():
             p.requires_grad=False
@@ -91,7 +91,7 @@ class Netconv(nn.Module):
         x=F.log_softmax(x, dim=1)
         return x
 
-print("L train data - Layer 2 updating")                      
+print("L train data - Layer 3 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -101,8 +101,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     model.conv1.weight.data = torch.from_numpy(INL1)
-    #model.conv2.weight.data = torch.from_numpy(INL2)
-    model.conv3.weight.data = torch.from_numpy(INL3)
+    model.conv2.weight.data = torch.from_numpy(INL2)
+    #model.conv3.weight.data = torch.from_numpy(INL3)
     model.conv4.weight.data = torch.from_numpy(INL4)
     model.conv5.weight.data = torch.from_numpy(INL5)
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -470,9 +470,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('LtrainCredL2updating.npy',resultred)
-    np.save('LtrainCgrnL2updating.npy',resultgrn)
-    np.save('LtrainCtrnL2updating.npy',resulttrn)
+    np.save('LtrainCredL3updating.npy',resultred)
+    np.save('LtrainCgrnL3updating.npy',resultgrn)
+    np.save('LtrainCtrnL3updating.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
