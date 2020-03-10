@@ -54,14 +54,12 @@ class Netconv(nn.Module):
         self.conv5 = nn.Conv2d(128, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
-# =============================================================================
-#         for p in self.conv1.parameters():
-#             p.requires_grad=False
-# =============================================================================
-        
-        
-        for p in self.conv2.parameters():
+        for p in self.conv1.parameters():
             p.requires_grad=False
+        
+        
+#         for p in self.conv2.parameters():
+#             p.requires_grad=False
         
         
         for p in self.conv3.parameters():
@@ -93,7 +91,7 @@ class Netconv(nn.Module):
         x=F.log_softmax(x, dim=1)
         return x
 
-print("L train data - Layer 1 updating")                      
+print("L train data - Layer 2 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -102,8 +100,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    #model.conv1.weight.data = torch.from_numpy(INL1)
-    model.conv2.weight.data = torch.from_numpy(INL2)
+    model.conv1.weight.data = torch.from_numpy(INL1)
+    #model.conv2.weight.data = torch.from_numpy(INL2)
     model.conv3.weight.data = torch.from_numpy(INL3)
     model.conv4.weight.data = torch.from_numpy(INL4)
     model.conv5.weight.data = torch.from_numpy(INL5)
@@ -472,9 +470,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('LtrainCred.npy',resultred)
-    np.save('LtrainCgrn.npy',resultgrn)
-    np.save('LtrainCtrn.npy',resulttrn)
+    np.save('LtrainCredL2updating.npy',resultred)
+    np.save('LtrainCgrnL2updating.npy',resultgrn)
+    np.save('LtrainCtrnL2updating.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
