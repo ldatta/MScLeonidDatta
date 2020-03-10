@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 # You can control the resources and scheduling with '#SBATCH' settings(updating to commit)
