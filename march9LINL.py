@@ -65,11 +65,11 @@ class Netconv(nn.Module):
         for p in self.conv3.parameters():
             p.requires_grad=False
             
-#         for p in self.conv4.parameters():
-#             p.requires_grad=False
-            
-        for p in self.conv5.parameters():
+        for p in self.conv4.parameters():
             p.requires_grad=False
+            
+#         for p in self.conv5.parameters():
+#             p.requires_grad=False
 
         
         
@@ -91,7 +91,7 @@ class Netconv(nn.Module):
         x=F.log_softmax(x, dim=1)
         return x
 
-print("L train data - Layer 4 updating")                      
+print("L train data - Layer 5 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -103,8 +103,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     model.conv1.weight.data = torch.from_numpy(INL1)
     model.conv2.weight.data = torch.from_numpy(INL2)
     model.conv3.weight.data = torch.from_numpy(INL3)
-    #model.conv4.weight.data = torch.from_numpy(INL4)
-    model.conv5.weight.data = torch.from_numpy(INL5)
+    model.conv4.weight.data = torch.from_numpy(INL4)
+    #model.conv5.weight.data = torch.from_numpy(INL5)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -470,9 +470,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('LtrainCredL4updating.npy',resultred)
-    np.save('LtrainCgrnL4updating.npy',resultgrn)
-    np.save('LtrainCtrnL4updating.npy',resulttrn)
+    np.save('LtrainCredL5updating.npy',resultred)
+    np.save('LtrainCgrnL5updating.npy',resultgrn)
+    np.save('LtrainCtrnL5updating.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
