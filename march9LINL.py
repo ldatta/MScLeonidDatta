@@ -86,7 +86,7 @@ class Netconv(nn.Module):
         s4=x.data.numpy()
         x = F.relu(self.conv5(x))
         s5=x.data.numpy()
-               x = self.GAP(x)
+        x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
