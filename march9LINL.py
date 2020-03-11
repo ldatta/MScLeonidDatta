@@ -50,8 +50,8 @@ class Netconv(nn.Module):
         
     def forward(self, x):
         x=x.float()
-        x2= F.max_pool2d(x,4, 4)
-        x=cor(x,x2)
+        #x2= F.max_pool2d(x,4, 4)
+        x=cor(x,x)
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
@@ -447,9 +447,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('INLtrainCorred.npy',resultred)
-    np.save('INLtrainCorgrn.npy',resultgrn)
-    np.save('INLtrainCortrn.npy',resulttrn)
+    np.save('INLtrainFullCorred.npy',resultred)
+    np.save('INLtrainFullCorgrn.npy',resultgrn)
+    np.save('INLtrainFullCortrn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
