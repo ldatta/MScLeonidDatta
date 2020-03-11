@@ -1,11 +1,4 @@
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 13 12:49:01 2019
-
-@author: leoniddatta
-"""
 
 
 from __future__ import print_function
@@ -19,7 +12,7 @@ import torchvision.transforms as transform
 from torchvision import datasets, transforms
 import tensorflow as tf
 import torch.utils.data as utils
-
+import scipy.ndimage.filters as C
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -28,19 +21,18 @@ import matplotlib.lines as mlines
 #from attention import AttentionConv, AttentionStem
 
 
+def cor(img,img2):
+    #sum1=np.zeros((img.shape[0],28,28))
+    img=img.detach().numpy()
+    img2=img2.detach().numpy()
+    cor=np.zeros((img.shape))#[0],img.shape[1],28,28))
+    for i in range (img.shape[0]):
+        #print("image shape",img.shape,img.shape[0])
+        for j in range (img.shape[1]):
+            cor[i,j,:,:]=C.correlate(img[i,j,:,:],img2[i,j,:,:], output=None, mode='constant', cval=0.0, origin=0)
 
-INL1=np.load('Weightsmarch9/INLtrainedWeight1.npy')
-INL2=np.load('Weightsmarch9/INLtrainedWeight2.npy')
-INL3=np.load('Weightsmarch9/INLtrainedWeight3.npy')
-INL4=np.load('Weightsmarch9/INLtrainedWeight4.npy')
-INL5=np.load('Weightsmarch9/INLtrainedWeight5.npy')
-             
-L1=np.load('Weightsmarch9/LtrainedWeight1.npy')
-L2=np.load('Weightsmarch9/LtrainedWeight2.npy')
-L3=np.load('Weightsmarch9/LtrainedWeight3.npy')
-L4=np.load('Weightsmarch9/LtrainedWeight4.npy')
-L5=np.load('Weightsmarch9/LtrainedWeight5.npy')
-     
+    cor=torch.from_numpy(cor)
+    return cor
 
 
 class Netconv(nn.Module):
@@ -54,44 +46,30 @@ class Netconv(nn.Module):
         self.conv5 = nn.Conv2d(128, 10, 3, 2)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
-        for p in self.conv1.parameters():
-            p.requires_grad=False
-        
-        
-        for p in self.conv2.parameters():
-            p.requires_grad=False
-        
-        
-        for p in self.conv3.parameters():
-            p.requires_grad=False
-            
-        for p in self.conv4.parameters():
-            p.requires_grad=False
-            
-#         for p in self.conv5.parameters():
-#             p.requires_grad=False
 
-        
         
     def forward(self, x):
         x=x.float()
+        x2= F.max_pool2d(x,4, 4)
+        x=cor(x,x2)
+        x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-        s1=x.data.numpy()
+        #s1=x.data.numpy()
         x = F.relu(self.conv2(x))
-        s2=x.data.numpy()
+        #s2=x.data.numpy()
         x = F.relu(self.conv3(x))
-        s3=x.data.numpy()
+        #s3=x.data.numpy()
         x = F.relu(self.conv4(x))
-        s4=x.data.numpy()
+        #s4=x.data.numpy()
         x = F.relu(self.conv5(x))
-        s5=x.data.numpy()
+        #s5=x.data.numpy()
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
 
-print("L train data - Layer 5 updating")                      
+# print("L train data - Layer 5 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -100,10 +78,10 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    model.conv1.weight.data = torch.from_numpy(INL1)
-    model.conv2.weight.data = torch.from_numpy(INL2)
-    model.conv3.weight.data = torch.from_numpy(INL3)
-    model.conv4.weight.data = torch.from_numpy(INL4)
+#     model.conv1.weight.data = torch.from_numpy(INL1)
+#     model.conv2.weight.data = torch.from_numpy(INL2)
+#     model.conv3.weight.data = torch.from_numpy(INL3)
+#     model.conv4.weight.data = torch.from_numpy(INL4)
     #model.conv5.weight.data = torch.from_numpy(INL5)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -470,15 +448,15 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('LtrainCredL5updating.npy',resultred)
-    np.save('LtrainCgrnL5updating.npy',resultgrn)
-    np.save('LtrainCtrnL5updating.npy',resulttrn)
+    np.save('LtrainCorred.npy',resultred)
+    np.save('LtrainCorgrn.npy',resultgrn)
+    np.save('LtrainCortrn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
     #bresulttrn=np.load('Baseresults/INLtrainedresulttrn.npy')
                        
-    #plotgraph(e,resultred,resultgrn, resulttrn,bresultred,bresultgrn, bresulttrn)
+    plotgraph(e,resultred,resultgrn, resulttrn)#,bresultred,bresultgrn, bresulttrn)
 
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
