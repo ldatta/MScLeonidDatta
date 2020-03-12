@@ -23,8 +23,8 @@ import matplotlib.lines as mlines
 
 def cor(img,img2):
     #sum1=np.zeros((img.shape[0],28,28))
-    img=img.detach().numpy()
-    img2=img2.detach().numpy()
+    img=img.cpu().numpy()
+    img2=img2.cpu().numpy()
     cor=np.zeros((img.shape))#[0],img.shape[1],28,28))
     for i in range (img.shape[0]):
         #print("image shape",img.shape,img.shape[0])
