@@ -31,7 +31,7 @@ def cor(img,img2):
         for j in range (img.shape[1]):
             cor[i,j,:,:]=C.correlate(img[i,j,:,:],img2[i,j,:,:], output=None, mode='constant', cval=0.0, origin=0)
 
-    cor=torch.from_numpy(cor)
+    cor=torch.from_numpy(cor).float().to(device)
     return cor
 
 
