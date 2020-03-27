@@ -34,6 +34,58 @@ def cor(img,img2):
     cor=torch.from_numpy(cor).float().cuda()
     return cor
 
+add=64
+
+k=8
+k2=8
+class NetconvDep(nn.Module):
+    def __init__(self):
+        super(NetconvDep, self).__init__()
+        st=1
+        st1=1
+        self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
+        self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
+        self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=32)
+        self.conv33 = nn.Conv2d(k*32, k2*64, 1, st)
+        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=64)
+        self.conv44 = nn.Conv2d(k*64, 10, 1, st)
+        self.conv5 = nn.Conv2d(128, k*128, 3, st1,groups=128)
+        self.conv55 = nn.Conv2d(k*128, 10, 1, st)
+        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+               
+        
+    def forward(self, x):
+        x=x.float()
+        x=self.conv1(x) 
+        x=self.conv11(x) 
+        x = F.relu(x)
+        
+        x = F.max_pool2d(x,2, 2)
+        #s1=x.data.numpy()
+        x = F.relu(self.conv22(self.conv2(x)))
+        x = F.max_pool2d(x,2, 2)
+        #s2=x.data.numpy()
+        x = F.relu(self.conv33(self.conv3(x)))
+        #s3=x.data.numpy()
+        x = F.max_pool2d(x,2, 2)
+        #print(x.shape)
+        x = F.relu(self.conv44(self.conv4(x)))
+        #s4=x.data.numpy()
+        x = F.max_pool2d(x,2, 2)
+        #x=add_channel(x,add)
+        #x=x.float()
+        #print(x.shape)
+        #x = F.relu(self.conv55(self.conv5(x)))
+        #s5=x.data.numpy()
+        #x = F.max_pool2d(x,2, 2)
+        #print(x.shape, "before gap")
+        #x = self.GAP(x)
+        x = x.view(-1, 10) 
+        x=F.log_softmax(x, dim=1)
+        return x
+
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -404,9 +456,11 @@ def main():
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
+    print(" DEPTHWISE CONVOLUTION NET")
+    model = NetconvDep().to(device)
 
-    print("CONVOLUTION NET")
-    model = Netconv().to(device)
+#     print("CONVOLUTION NET")
+#     model = Netconv().to(device)
     
     print("Net")
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
@@ -447,9 +501,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('INLtrainFullCorred.npy',resultred)
-    np.save('INLtrainFullCorgrn.npy',resultgrn)
-    np.save('INLtrainFullCortrn.npy',resulttrn)
+#     np.save('INLtrainFullCorred.npy',resultred)
+#     np.save('INLtrainFullCorgrn.npy',resultgrn)
+#     np.save('INLtrainFullCortrn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
