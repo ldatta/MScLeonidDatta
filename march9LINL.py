@@ -41,7 +41,7 @@ k2=12
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
-        st=2
+        st=1
         st1=1
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
@@ -65,21 +65,21 @@ class NetconvDep(nn.Module):
 #         x = F.max_pool2d(x,2, 2)
         #s1=x.data.numpy()
         x = F.relu(self.conv22(self.conv2(x)))
-#         x = F.max_pool2d(x,2, 2)
+        x = F.max_pool2d(x,2, 2)
         #s2=x.data.numpy()
         x = F.relu(self.conv33(self.conv3(x)))
         #s3=x.data.numpy()
-#         x = F.max_pool2d(x,2, 2)
+        x = F.max_pool2d(x,2, 2)
         #print(x.shape)
         x = F.relu(self.conv44(self.conv4(x)))
         #s4=x.data.numpy()
-#         x = F.max_pool2d(x,2, 2)
+        x = F.max_pool2d(x,2, 2)
         #x=add_channel(x,add)
         #x=x.float()
         #print(x.shape)
         x = F.relu(self.conv55(self.conv5(x)))
         #s5=x.data.numpy()
-        #x = F.max_pool2d(x,2, 2)
+        x = F.max_pool2d(x,2, 2)
         #print(x.shape, "before gap")
         x = self.GAP(x)
         x = x.view(-1, 10) 
@@ -305,7 +305,7 @@ def main():
     
     mask=np.zeros((datasize,datasize))
     
-    maskgap=5
+    maskgap=7
     
     for i in range(0,datasize,maskgap):
         for j in range(0,datasize,maskgap):
