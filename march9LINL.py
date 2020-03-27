@@ -53,7 +53,7 @@ class NetconvDep(nn.Module):
         self.conv44 = nn.Conv2d(k*64, k2*128, 1, st)
         self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=128)
         self.conv55 = nn.Conv2d(k*128, 10, 1, st)
-        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((1,1), stride=1, padding=0)
                
         
     def forward(self, x):
@@ -96,7 +96,7 @@ class Netconv(nn.Module):
         self.conv3 = nn.Conv2d(32, 64, 3, 2)
         self.conv4 = nn.Conv2d(64, 128, 3, 2)
         self.conv5 = nn.Conv2d(128, 10, 3, 2)
-        self.GAP=nn.AvgPool2d((1,1), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
 
         
