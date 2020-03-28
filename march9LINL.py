@@ -36,8 +36,8 @@ def cor(img,img2):
 
 add=64
 
-k=12
-k2=12
+k=8
+k2=8
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
@@ -53,6 +53,7 @@ class NetconvDep(nn.Module):
         self.conv44 = nn.Conv2d(k*64, k2*128, 1, st)
         self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=128)
         self.conv55 = nn.Conv2d(k*128, 10, 1, st)
+        self.pool=nn.AvgPool2d((2,2), stride=1, padding=0)
         self.GAP=nn.AvgPool2d((1,1), stride=1, padding=0)
                
         
@@ -61,25 +62,30 @@ class NetconvDep(nn.Module):
         x=self.conv1(x) 
         x=self.conv11(x) 
         x = F.relu(x)
+#         x=self.pool(x)
         
 #         x = F.max_pool2d(x,2, 2)
         #s1=x.data.numpy()
         x = F.relu(self.conv22(self.conv2(x)))
-        x = F.max_pool2d(x,2, 2)
+#         x = F.max_pool2d(x,2, 2)
+        x=self.pool(x)
         #s2=x.data.numpy()
         x = F.relu(self.conv33(self.conv3(x)))
         #s3=x.data.numpy()
-        x = F.max_pool2d(x,2, 2)
+        x=self.pool(x)
+#         x = F.max_pool2d(x,2, 2)
         #print(x.shape)
         x = F.relu(self.conv44(self.conv4(x)))
         #s4=x.data.numpy()
-        x = F.max_pool2d(x,2, 2)
+        x=self.pool(x)
+#         x = F.max_pool2d(x,2, 2)
         #x=add_channel(x,add)
         #x=x.float()
         #print(x.shape)
         x = F.relu(self.conv55(self.conv5(x)))
         #s5=x.data.numpy()
-        x = F.max_pool2d(x,2, 2)
+        x=self.pool(x)
+#         x = F.max_pool2d(x,2, 2)
         #print(x.shape, "before gap")
         x = self.GAP(x)
         x = x.view(-1, 10) 
@@ -305,7 +311,7 @@ def main():
     
     mask=np.zeros((datasize,datasize))
     
-    maskgap=7
+    maskgap=6
     
     for i in range(0,datasize,maskgap):
         for j in range(0,datasize,maskgap):
