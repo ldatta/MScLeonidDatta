@@ -42,6 +42,60 @@ class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
         st=2
+        st1=1
+        self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
+        self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
+        self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=32)
+        self.conv33 = nn.Conv2d(k*32, k2*64, 1, st)
+        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=64)
+        self.conv44 = nn.Conv2d(k*64, k2*128, 1, st)
+        self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=128)
+        self.conv55 = nn.Conv2d(k*128, 10, 1, st)
+        self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
+        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+               
+        
+    def forward(self, x):
+        x=x.float()
+        x=F.relu(self.conv1(x) )
+        x=self.conv11(x) 
+        x = F.relu(x)
+        #x=self.pool(x)
+        #x = F.max_pool2d(x,2, 2)
+        #s1=x.data.numpy()
+        x = F.relu(self.conv22(F.relu(self.conv2(x))))
+        
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #s2=x.data.numpy()
+        #print(x.shape,"conv3 ")
+        x=F.relu(self.conv3(x))
+        #print(x.shape,"conv3 ")
+        x = F.relu(self.conv33(x))
+        #print(x.shape,"conv3 ")
+        #s3=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #print(x.shape)
+        x = F.relu(self.conv44(F.relu(self.conv4(x))))
+        #s4=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=add_channel(x,add)
+        #x=x.float()
+        #print(x.shape)
+        x = F.relu(self.conv55(F.relu(self.conv5(x))))
+        #s5=x.data.numpy()
+        #x = F.max_pool2d(x,2, 2)
+        print(x.shape, "before gap")
+        x = self.GAP(x)
+        
+        x = x.view(-1, 10) 
+        x=F.log_softmax(x, dim=1)
+        return x
+class NetconvDepW(nn.Module):
+    def __init__(self):
+        super(NetconvDepW, self).__init__()
+        st=2
         st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
