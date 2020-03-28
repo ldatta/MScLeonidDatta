@@ -41,8 +41,8 @@ k2=8
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
-        st=2
-        st1=1
+        st=1
+        st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
         self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
