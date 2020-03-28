@@ -366,29 +366,29 @@ def main():
         
         
 
-    #L SHAPE
-#     for k in range(a.shape[0]):
-#         for i in range(0,datasize,maskgap):
-#             for j in range(0,datasize,maskgap):
-#                 if(a[k,i,j]==1):
-#                     a[k,i,j]=0
-#                     a[k,i,j-1]=1
-#                     a[k,i-1,j-1]=1
-#                     a[k,i+1,j-1]=1
-#                     a[k,i+1,j]=1
-     
-    
-    #INVERSE L
-
+    L SHAPE
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
             for j in range(0,datasize,maskgap):
                 if(a[k,i,j]==1):
                     a[k,i,j]=0
-                    a[k,i-1,j]=1
-                    a[k,i-1,j+1]=1
-                    a[k,i,j+1]=1
-                    a[k,i+1,j+1]=1
+                    a[k,i,j-1]=1
+                    a[k,i-1,j-1]=1
+                    a[k,i+1,j-1]=1
+                    a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+
+#     for k in range(a.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(a[k,i,j]==1):
+#                     a[k,i,j]=0
+#                     a[k,i-1,j]=1
+#                     a[k,i-1,j+1]=1
+#                     a[k,i,j+1]=1
+#                     a[k,i+1,j+1]=1
                     
 
     for k in range(b.shape[0]):
