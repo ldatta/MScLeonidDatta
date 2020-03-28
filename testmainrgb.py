@@ -1,13 +1,3 @@
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 13 12:49:01 2019
-
-@author: leoniddatta
-"""
-
-
 from __future__ import print_function
 import argparse
 import torch
@@ -19,200 +9,143 @@ import torchvision.transforms as transform
 from torchvision import datasets, transforms
 import tensorflow as tf
 import torch.utils.data as utils
-
+import scipy.ndimage.filters as C
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-from attention import AttentionConv, AttentionStem
+#from attention import AttentionConv, AttentionStem
 
-att=1
-red=1
-print("Attention model Green Data")
 
-class NetconvwithoutBN(nn.Module):
+def cor(img,img2):
+    #sum1=np.zeros((img.shape[0],28,28))
+    img=img.cpu().numpy()
+    img2=img2.cpu().numpy()
+    cor=np.zeros((img.shape))#[0],img.shape[1],28,28))
+    for i in range (img.shape[0]):
+        #print("image shape",img.shape,img.shape[0])
+        for j in range (img.shape[1]):
+            cor[i,j,:,:]=C.correlate(img[i,j,:,:],img2[i,j,:,:], output=None, mode='constant', cval=0.0, origin=0)
+
+    cor=torch.from_numpy(cor).float().cuda()
+    return cor
+
+add=64
+
+k=8
+k2=8
+class NetconvDepw2(nn.Module):
     def __init__(self):
-        super(NetconvwithoutBN, self).__init__()
-        print("NetconvwithoutBN")
-        self.conv1 = nn.Conv2d(3, 16, 3, 1,padding=2)
-        self.conv2 = nn.Conv2d(16, 32, 3, 1,padding=2)
-        self.conv3 = nn.Conv2d(32, 64, 3, 1,padding=2)
-        self.conv4 = nn.Conv2d(64, 128, 3, 1,padding=2)
-        self.conv5 = nn.Conv2d(128, 10, 3, 1,padding=2)
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
-        
+        super(NetconvDepw2, self).__init__()
+        st=1
+        st1=2
+        self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
+        self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
+        self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=32)
+        self.conv33 = nn.Conv2d(k*32, k2*64, 1, st)
+        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=64)
+        self.conv44 = nn.Conv2d(k*64, k2*128, 1, st)
+        self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=128)
+        self.conv55 = nn.Conv2d(k*128, 10, 1, st)
+        self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
+        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+               
         
     def forward(self, x):
         x=x.float()
-        x=self.conv1(x) 
-        #x = self.bn1(x)
+        x=F.relu(self.conv1(x) )
+        x=self.conv11(x) 
         x = F.relu(x)
-        x=self.m(x)
-        #print(x.shape,"after conv 1")
-        #s1=x.data.numpy()
-        #x = F.relu( self.bn2(self.conv2(x)))
-        x = F.relu(self.conv2(x))
-        x=self.m(x)
-        #s2=x.data.numpy()
-        #x = F.relu(self.bn3(self.conv3(x)))
-        x = F.relu(self.conv3(x))
-        x=self.m(x)
-        #print(x.shape,"after conv 3")
-        #s3=x.data.numpy()
-        #x = F.relu(self.bn4(self.conv4(x)))
-        x = F.relu(self.conv4(x))
-        #print(x.shape,"after conv 3")
-        
-        x=self.m(x)
-        #print(x.shape,"after conv 3")
-        x = F.relu(self.conv5(x))
-        #x = F.relu(self.bn5(self.conv5(x)))
-        #s4=x.data.numpy()
-        x=self.m(x)
-        #print(x.shape, "before gap")
-        x = self.GAP(x)
-        x = x.view(-1, 10) 
-        x=F.log_softmax(x, dim=1)
-        return x
-    
-    
-class Netconv(nn.Module):
-    def __init__(self):
-        super(Netconv, self).__init__()
-        print("convolution net")
-        self.conv1 = nn.Conv2d(3, 16, 3, 1,padding=2)
-        self.conv2 = nn.Conv2d(16, 32, 3, 1,padding=2)
-        self.conv3 = nn.Conv2d(32, 64, 3, 1,padding=2)
-        self.conv4 = nn.Conv2d(64, 128, 3, 1,padding=2)
-        self.conv5 = nn.Conv2d(128, 10, 3, 1,padding=2)
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
-        self.bn1=nn.BatchNorm2d(16)
-        self.bn2=nn.BatchNorm2d(32)
-        self.bn3=nn.BatchNorm2d(64)
-        self.bn4=nn.BatchNorm2d(128)    
-        self.bn5=nn.BatchNorm2d(10) 
-        
-    def forward(self, x):
-        x=x.float()
-        x=self.conv1(x) 
-        x = self.bn1(x)
-        x = F.relu(x)
-        x=self.m(x)
-        #print(x.shape,"after conv 1")
-        #s1=x.data.numpy()
-        x = F.relu( self.bn2(self.conv2(x)))
-        x=self.m(x)
-        #s2=x.data.numpy()
-        x = F.relu(self.bn3(self.conv3(x)))
-        x=self.m(x)
-        #print(x.shape,"after conv 3")
-        #s3=x.data.numpy()
-        x = F.relu(self.bn4(self.conv4(x)))
-        #print(x.shape,"after conv 3")
-        
-        x=self.m(x)
-        #print(x.shape,"after conv 3")
-        x = F.relu(self.bn5(self.conv5(x)))
-        #s4=x.data.numpy()
-        x=self.m(x)
-        #print(x.shape, "before gap")
-        x = self.GAP(x)
-        x = x.view(-1, 10) 
-        x=F.log_softmax(x, dim=1)
-        return x
-    
-class NetAtt(nn.Module):
-    def __init__(self):
-        super(NetAtt, self).__init__()
-    
-        print("attention net")
-        self.att1 =nn.Sequential(AttentionStem(in_channels=3, out_channels=16, kernel_size=3, stride=1, padding=2, groups=1))
-        self.att2 =nn.Sequential(AttentionStem(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=2, groups=1))
-        self.att3 =nn.Sequential(AttentionStem(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=2, groups=1))
-        self.att4 =nn.Sequential(AttentionStem(in_channels=64, out_channels=10, kernel_size=3, stride=1, padding=2, groups=1))
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-        self.m = nn.AvgPool2d((2, 2),stride=(2,2))
-        self.bn1=nn.BatchNorm2d(16)
-        self.bn2=nn.BatchNorm2d(32)
-        self.bn3=nn.BatchNorm2d(64)
-        self.bn4=nn.BatchNorm2d(10)    
-    def forward(self, x):
-        x=x.float()
-        #print(x.shape,"SIZE BEFORE NETWORK STARTS" )
-        x=self.att1(x) 
-        x = self.bn1(x)
-        x = F.relu(x)
-        x=self.m(x)
+        #x=self.pool(x)
         #x = F.max_pool2d(x,2, 2)
-        #print(x.shape,"SIZE AFTER ATTENTION 1" )
-        x=self.att2(x)
-        x = self.bn2(x)
-        x = F.relu(x)
-        x=self.m(x)
-        #print(x.shape,"SIZE AFTER ATTENTION 2" )
-        x=self.att3(x)
-        x = self.bn3(x)
-        x = F.relu(x)
-        x=self.m(x)
-        #print(x.shape,"SIZE AFTER ATTENTION 3" )
-        x=self.att4(x)
-        x = self.bn4(x)
-        x = F.relu(x)
-        x=self.m(x)
-        #print(x.shape,"SIZE AFTER ATTENTION 4" )
+        #s1=x.data.numpy()
+        x = F.relu(self.conv22(F.relu(self.conv2(x))))
+        
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #s2=x.data.numpy()
+        #print(x.shape,"conv3 ")
+        x=F.relu(self.conv3(x))
+        #print(x.shape,"conv3 ")
+        x = F.relu(self.conv33(x))
+        #print(x.shape,"conv3 ")
+        #s3=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #print(x.shape)
+        x = F.relu(self.conv44(F.relu(self.conv4(x))))
+        #s4=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=add_channel(x,add)
+        #x=x.float()
+        #print(x.shape)
+        x = F.relu(self.conv55(F.relu(self.conv5(x))))
+        #s5=x.data.numpy()
+        #x = F.max_pool2d(x,2, 2)
+#         print(x.shape, "before gap")
         x = self.GAP(x)
-        #print(x.shape,"SIZE AFTER GAP" )
+        
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
-                              
-def plotgraph (xs,y1s,y2s,yts):
-    plt.clf()
+class NetconvDep(nn.Module):
+    def __init__(self):
+        super(NetconvDep, self).__init__()
+        st=2
+        st1=2
+        self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
+        self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
+        self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=32)
+        self.conv33 = nn.Conv2d(k*32, 10, 1, st)
+        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=64)
+        self.conv44 = nn.Conv2d(k*64, 10, 1, st)
+        self.conv5 = nn.Conv2d(128, k*128, 3, st1,groups=128)
+        self.conv55 = nn.Conv2d(k*128, 10, 1, st)
+        self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
+        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+               
+        
+    def forward(self, x):
+        x=x.float()
+        x=F.relu(self.conv1(x) )
+        x=self.conv11(x) 
+        x = F.relu(x)
+        #x=self.pool(x)
+        #x = F.max_pool2d(x,2, 2)
+        #s1=x.data.numpy()
+        x = F.relu(self.conv22(F.relu(self.conv2(x))))
+        
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #s2=x.data.numpy()
+        #print(x.shape,"conv3 ")
+        x=F.relu(self.conv3(x))
+        #print(x.shape,"conv3 ")
+        x = F.relu(self.conv33(x))
+        #print(x.shape,"conv3 ")
+        #s3=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #print(x.shape)
+        #x = F.relu(self.conv44(self.conv4(x)))
+        #s4=x.data.numpy()
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=add_channel(x,add)
+        #x=x.float()
+        #print(x.shape)
+        #x = F.relu(self.conv55(self.conv5(x)))
+        #s5=x.data.numpy()
+        #x = F.max_pool2d(x,2, 2)
+        #print(x.shape, "before gap")
+        x = self.GAP(x)
+        
+        x = x.view(-1, 10) 
+        x=F.log_softmax(x, dim=1)
+        return x
     
-    fig = plt.figure(figsize=(10, 7))
-    plt.plot(xs,y1s,'s:r')
-    plt.ylim(0, 100)
-    #plt.xlim(0,20)
-    fig.suptitle('ACCURACY GRAPH')
-    plt.xlabel('Epoch no')
-    plt.ylabel('Accuracy %')
-    for x,y in zip(xs,y1s):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
     
-    plt.plot(xs,y2s,'^:g')
-    for x,y in zip(xs,y2s):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
-    plt.plot(xs,yts,'*:b')
-    for x,y in zip(xs,yts):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') 
-    blue_line = mlines.Line2D([], [], color='blue', marker='*',
-                          markersize=10, label='training data')
-    red_line = mlines.Line2D([], [], color='red', marker='s',
-                          markersize=10, label='Red test data')
-    green_line = mlines.Line2D([], [], color='green', marker='^',
-                          markersize=10, label='Green test data')
-    plt.legend(handles=[blue_line,red_line,green_line],loc=2)
-    plt.show()   
-    
-    
+# print("L train data - Layer 5 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -221,7 +154,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    
+#     model.conv1.weight.data = torch.from_numpy(INL1)
+#     model.conv2.weight.data = torch.from_numpy(INL2)
+#     model.conv3.weight.data = torch.from_numpy(INL3)
+#     model.conv4.weight.data = torch.from_numpy(INL4)
+    #model.conv5.weight.data = torch.from_numpy(INL5)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -242,8 +179,6 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
 #             np.save('LtrainedWeight3.npy',weight3)
 #             weight4 = model.conv4.weight.data.numpy()
 #             np.save('LtrainedWeight4.npy',weight4)
-#             weight5 = model.conv5.weight.data.numpy()
-#             np.save('LtrainedWeight5.npy',weight5)
 # =============================================================================
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
@@ -259,12 +194,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
-
 
 def test(args, model, device, test_loader):
     #model.eval()
@@ -290,7 +224,6 @@ def test(args, model, device, test_loader):
     acc=int(100. * correct / len(test_loader.dataset))
     return acc
 
-
 def main():
     
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
@@ -298,7 +231,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=20, metavar='N',
+    parser.add_argument('--epochs', type=int, default=100, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -328,6 +261,8 @@ def main():
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
+
+
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.MNIST('../data', train=False, transform=transforms.Compose([
@@ -367,55 +302,138 @@ def main():
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])).test_labels.numpy()
     
-    a22=np.zeros((60000,56,56))
-    b22=np.zeros((10000,56,56))
-    c22=np.zeros((10000,56,56))
-    
+    a=np.zeros((60000,56,56))
+    b=np.zeros((10000,56,56))
+    c=np.zeros((10000,56,56))
     for i in range (aa.shape[0]):
-        a22[i]=cv2.resize(aa[i], (56, 56))
+        a[i]=cv2.resize(aa[i], (56, 56))
         
     
     for i in range (bb.shape[0]):
-        b22[i]=cv2.resize(bb[i], (56, 56))
+        b[i]=cv2.resize(bb[i], (56, 56))
         
     
     for i in range (cc.shape[0]):
-        c22[i]=cv2.resize(cc[i], (56, 56))
-    a22=a22/255
-    b22=b22/255
-    c22=c22/255
-    
+        c[i]=cv2.resize(cc[i], (56, 56))
+    a=a/255
+    b=b/255
+    c=c/255
     datasize=56
+    print(a.shape)
+    print(a[0].max())
+    print(a[0].min())
     
+    a=1*(a>0.3)
+    b=1*(b>0.3)
+    c=1*(c>0.3)
+    
+    mask=np.zeros((datasize,datasize))
+    
+    maskgap=6
+    
+    for i in range(0,datasize,maskgap):
+        for j in range(0,datasize,maskgap):
+            mask[i,j]=1
+            #if(i!=datasize or j!=datasize):
+                 
+    mask[:,0]=0
+    mask[0,:]=0
+    mask[:,55]=0
+    mask[55,:]=0
+    plt.imshow(mask, cmap='gray',  interpolation='nearest')
+    plt.show()
+    
+    plt.imshow(b[0], cmap='gray',  interpolation='nearest')
+    plt.show()
+    
+    a=a*mask
+    b=b*mask
+    c=c*mask
+    
+    
+# =============================================================================
+#     for i in range (aa.shape[0]):
+#         a[i]=a[i]*mask
+#         
+#     
+#     for i in range (bb.shape[0]):
+#         b[i]=b[i]*mask
+#         
+#     
+#     for i in range (cc.shape[0]):
+#         c[i]=c[i]*mask
+# =============================================================================
+        
+        
+
+    #L SHAPE
+#     for k in range(a.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(a[k,i,j]==1):
+#                     a[k,i,j]=0
+#                     a[k,i,j-1]=1
+#                     a[k,i-1,j-1]=1
+#                     a[k,i+1,j-1]=1
+#                     a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+
+    for k in range(a.shape[0]):
+        for i in range(0,datasize,maskgap):
+            for j in range(0,datasize,maskgap):
+                if(a[k,i,j]==1):
+                    a[k,i,j]=0
+                    a[k,i-1,j]=1
+                    a[k,i-1,j+1]=1
+                    a[k,i,j+1]=1
+                    a[k,i+1,j+1]=1
+                    
+
+    for k in range(b.shape[0]):
+        for i in range(0,datasize,maskgap):
+            for j in range(0,datasize,maskgap):
+                if(b[k,i,j]==1):
+                    b[k,i,j]=0
+                    b[k,i,j-1]=1
+                    b[k,i-1,j-1]=1
+                    b[k,i+1,j-1]=1
+                    b[k,i+1,j]=1
+                    
+    for k in range(c.shape[0]):
+        for i in range(0,datasize,maskgap):
+            for j in range(0,datasize,maskgap):
+                if(c[k,i,j]==1):
+                    c[k,i,j]=0
+                    c[k,i-1,j]=1
+                    c[k,i-1,j+1]=1
+                    c[k,i,j+1]=1
+                    c[k,i+1,j+1]=1
+    aaa=a
+    bbb=b
+    ccc=c
     
     a=np.zeros((60000,56,56,3))
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
-    if(red==0):
-        print("GREEN TRAIN DATA") #For green train data 
-        a[:,:,:,1]=a22
+    a[:,:,:,0]=aaa
     
-    if(red==1):
-        print("RED TRAIN DATA") #For red train data
-        a[:,:,:,0]=a22
+    b[:,:,:,1]=bbb
+    c[:,:,:,0]=ccc
     
-    
-    
-    b[:,:,:,1]=b22
-    c[:,:,:,0]=c22
-      
     print("train data is")
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
     fig.suptitle('Training Data (blue curve train accyracy in graph)')
     fig.set_figheight(7)
     fig.set_figwidth(10)
-    ax1.imshow(a[0],    interpolation='nearest')
-    ax2.imshow(a[1],    interpolation='nearest')
-    ax3.imshow(a[2],    interpolation='nearest')
-    ax4.imshow(a[3],    interpolation='nearest')
-    ax5.imshow(a[4],    interpolation='nearest')
-    ax6.imshow(a[5],    interpolation='nearest')
+    ax1.imshow(a[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(a[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(a[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(a[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(a[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(a[5], cmap='gray',  interpolation='nearest')
     plt.show()
 
 
@@ -423,33 +441,32 @@ def main():
     fig.suptitle('Test data1 - green curve accuracy in graph')
     fig.set_figheight(7)
     fig.set_figwidth(10)
-    ax1.imshow(b[0],    interpolation='nearest')
-    ax2.imshow(b[1],    interpolation='nearest')
-    ax3.imshow(b[2],    interpolation='nearest')
-    ax4.imshow(b[3],    interpolation='nearest')
-    ax5.imshow(b[4],    interpolation='nearest')
-    ax6.imshow(b[5],    interpolation='nearest')
+    ax1.imshow(b[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(b[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(b[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(b[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(b[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(b[5], cmap='gray',  interpolation='nearest')
     plt.show()
 
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
     fig.suptitle('Test data2 - red curve accuracy in graph')
     fig.set_figheight(7)
     fig.set_figwidth(10)
-    ax1.imshow(c[0],    interpolation='nearest')
-    ax2.imshow(c[1],    interpolation='nearest')
-    ax3.imshow(c[2],    interpolation='nearest')
-    ax4.imshow(c[3],    interpolation='nearest')
-    ax5.imshow(c[4],    interpolation='nearest')
-    ax6.imshow(c[5],    interpolation='nearest')
+    ax1.imshow(c[0], cmap='gray',  interpolation='nearest')
+    ax2.imshow(c[1], cmap='gray',  interpolation='nearest')
+    ax3.imshow(c[2], cmap='gray',  interpolation='nearest')
+    ax4.imshow(c[3], cmap='gray',  interpolation='nearest')
+    ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
+    ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
     plt.show()
-
+        
     a=np.transpose(a, (0,3, 1, 2))
     b=np.transpose(b, (0,3, 1, 2))
     c=np.transpose(c, (0,3, 1, 2))
-    print("shape of a",a.shape)
-#     a=np.reshape(a,(60000,3,datasize,datasize))
-#     b=np.reshape(b,(10000,3,datasize,datasize))
-#     c=np.reshape(c,(10000,3,datasize,datasize))
+#     a=np.reshape(a,(60000,1,datasize,datasize))
+#     b=np.reshape(b,(10000,1,datasize,datasize))
+#     c=np.reshape(c,(10000,1,datasize,datasize))
 
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
@@ -477,16 +494,11 @@ def main():
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
-    
-    
-    
-    if(att==0):
-      print("CONVOLUTION  56 x 56 NET")
-      model = Netconv().to(device)
-    
-    if(att==1):
-      print("ATTENTION NET")
-      model = NetAtt().to(device)
+    print(" DEPTHWISE CONVOLUTION NET")
+    model = NetconvDep().to(device)
+
+#     print("CONVOLUTION NET")
+#     model = Netconv().to(device)
     
     print("Net")
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
@@ -526,41 +538,19 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    print("Attention model Red Data")
-    np.save('AttRedtrainedresultred.npy',resultred)
-    np.save('AttRedtrainedresultgrn.npy',resultgrn)
-    np.save('AttRedtrainedresulttrn.npy',resulttrn)
+    #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
+    np.save('INLtrainRGBWorkingred.npy',resultred)
+    np.save('INLtrainRGBWorkinggrn.npy',resultgrn)
+    np.save('INLtrainRGBWorkingtrn.npy',resulttrn)
     
-    
-#     if((att!=1) and (red==1)):
-#         print("Convo model Red Data")
-#         np.save('convRedtrainedresultred.npy',resultred)
-#         np.save('convRedtrainedresultgrn.npy',resultgrn)
-#         np.save('convRedtrainedresulttrn.npy',resulttrn)
-#     if((att!=1) and (red!=1)):
-#         print("Convo model Green Data")
-#         np.save('convGrntrainedresultred.npy',resultred)
-#         np.save('convGrntrainedresultgrn.npy',resultgrn)
-#         np.save('convGrntrainedresulttrn.npy',resulttrn)
-#     if((att==1) and (red==1)):
-#         print("Attention model Red Data")
-#         np.save('AttRedtrainedresultred.npy',resultred)
-#         np.save('AttRedtrainedresultgrn.npy',resultgrn)
-#         np.save('AttRedtrainedresulttrn.npy',resulttrn)
-#     if((att==1) and (red!=1)):
-#         print("Attention model Greeen Data")
-#         np.save('AttGrntrainedresultred.npy',resultred)
-#         np.save('AttGrntrainedresultgrn.npy',resultgrn)
-#         np.save('AttGrntrainedresulttrn.npy',resulttrn)
-    
-    
+    #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
+    #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
+    #bresulttrn=np.load('Baseresults/INLtrainedresulttrn.npy')
+                       
+#     plotgraph(e,resultred,resultgrn, resulttrn)#,bresultred,bresultgrn, bresulttrn)
+
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
 if __name__ == '__main__':
     main()
-
-
-
-
