@@ -38,9 +38,9 @@ add=64
 
 k=8
 k2=8
-class NetconvDep(nn.Module):
+class NetconvDepw2(nn.Module):
     def __init__(self):
-        super(NetconvDep, self).__init__()
+        super(NetconvDepw2, self).__init__()
         st=1
         st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
@@ -92,9 +92,9 @@ class NetconvDep(nn.Module):
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
-class NetconvDepW(nn.Module):
+class NetconvDep(nn.Module):
     def __init__(self):
-        super(NetconvDepW, self).__init__()
+        super(NetconvDep, self).__init__()
         st=2
         st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
