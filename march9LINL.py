@@ -86,7 +86,7 @@ class NetconvDep(nn.Module):
         x = F.relu(self.conv55(F.relu(self.conv5(x))))
         #s5=x.data.numpy()
         #x = F.max_pool2d(x,2, 2)
-        print(x.shape, "before gap")
+#         print(x.shape, "before gap")
         x = self.GAP(x)
         
         x = x.view(-1, 10) 
