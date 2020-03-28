@@ -36,8 +36,8 @@ def cor(img,img2):
 
 add=64
 
-k=16
-k2=16
+k=8
+k2=8
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
@@ -59,18 +59,18 @@ class NetconvDep(nn.Module):
         
     def forward(self, x):
         x=x.float()
-        x=self.conv1(x) 
+        x=F.relu(self.conv1(x) )
         x=self.conv11(x) 
         x = F.relu(x)
         #x=self.pool(x)
         #x = F.max_pool2d(x,2, 2)
         #s1=x.data.numpy()
-        x = F.relu(self.conv22(self.conv2(x)))
+        x = F.relu(self.conv22(F.relu(self.conv2(x))))
         
         #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #s2=x.data.numpy()
         #print(x.shape,"conv3 ")
-        x=self.conv3(x)
+        x=F.relu(self.conv3(x))
         #print(x.shape,"conv3 ")
         x = F.relu(self.conv33(x))
         #print(x.shape,"conv3 ")
