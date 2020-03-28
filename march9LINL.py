@@ -41,7 +41,7 @@ k2=8
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
-        st=3
+        st=2
         st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
@@ -54,7 +54,7 @@ class NetconvDep(nn.Module):
         self.conv5 = nn.Conv2d(128, k*128, 3, st1,groups=128)
         self.conv55 = nn.Conv2d(k*128, 10, 1, st)
         self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
-        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
                
         
     def forward(self, x):
