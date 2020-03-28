@@ -41,7 +41,7 @@ k2=8
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
-        st=1
+        st=3
         st1=1
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
@@ -62,20 +62,20 @@ class NetconvDep(nn.Module):
         x=self.conv1(x) 
         x=self.conv11(x) 
         x = F.relu(x)
-        x=self.pool(x)
+        #x=self.pool(x)
         #x = F.max_pool2d(x,2, 2)
         #s1=x.data.numpy()
         x = F.relu(self.conv22(self.conv2(x)))
         
-        x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #s2=x.data.numpy()
         x = F.relu(self.conv33(self.conv3(x)))
         #s3=x.data.numpy()
-        x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #print(x.shape)
         x = F.relu(self.conv44(self.conv4(x)))
         #s4=x.data.numpy()
-        x=self.pool(x)#x = F.max_pool2d(x,2, 2)
+        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #x=add_channel(x,add)
         #x=x.float()
         #print(x.shape)
@@ -83,46 +83,13 @@ class NetconvDep(nn.Module):
         #s5=x.data.numpy()
         #x = F.max_pool2d(x,2, 2)
         #print(x.shape, "before gap")
-        #x = self.GAP(x)
-        
-        x = x.view(-1, 10) 
-        x=F.log_softmax(x, dim=1)
-        return x
-
-class Netconv(nn.Module):
-    def __init__(self):
-        super(Netconv, self).__init__()
-        n=16
-        self.conv1 = nn.Conv2d(1, n, 3, 1)
-        self.conv2 = nn.Conv2d(16, 32, 3, 2)
-        self.conv3 = nn.Conv2d(32, 64, 3, 2)
-        self.conv4 = nn.Conv2d(64, 128, 3, 2)
-        self.conv5 = nn.Conv2d(128, 10, 3, 2)
-        self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
-        
-
-        
-    def forward(self, x):
-        x=x.float()
-        #x2= F.max_pool2d(x,4, 4)
-        x=cor(x,x)
-        x=x.float()
-        x=self.conv1(x) 
-        x = F.relu(x)
-        #s1=x.data.numpy()
-        x = F.relu(self.conv2(x))
-        #s2=x.data.numpy()
-        x = F.relu(self.conv3(x))
-        #s3=x.data.numpy()
-        x = F.relu(self.conv4(x))
-        #s4=x.data.numpy()
-        x = F.relu(self.conv5(x))
-        #s5=x.data.numpy()
         x = self.GAP(x)
+        
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
-
+    
+    
 # print("L train data - Layer 5 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
