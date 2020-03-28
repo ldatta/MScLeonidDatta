@@ -528,9 +528,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-#     np.save('INLtrainFullCorred.npy',resultred)
-#     np.save('INLtrainFullCorgrn.npy',resultgrn)
-#     np.save('INLtrainFullCortrn.npy',resulttrn)
+    np.save('INLtrainWorkingred.npy',resultred)
+    np.save('INLtrainWorkinggrn.npy',resultgrn)
+    np.save('INLtrainWorkingtrn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
