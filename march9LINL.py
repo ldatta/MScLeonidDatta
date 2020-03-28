@@ -42,13 +42,13 @@ class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
         st=3
-        st1=1
+        st1=2
         self.conv1 = nn.Conv2d(1, k*1, 3, 1, groups=1)
         self.conv11 = nn.Conv2d(k*1, k2*16, 1, 1)
         self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=16)
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=32)
-        self.conv33 = nn.Conv2d(k*32, k2*64, 1, st)
+        self.conv33 = nn.Conv2d(k*32, 10, 1, st)
         self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=64)
         self.conv44 = nn.Conv2d(k*64, 10, 1, st)
         self.conv5 = nn.Conv2d(128, k*128, 3, st1,groups=128)
@@ -69,11 +69,15 @@ class NetconvDep(nn.Module):
         
         #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #s2=x.data.numpy()
-        x = F.relu(self.conv33(self.conv3(x)))
+        #print(x.shape,"conv3 ")
+        x=self.conv3(x)
+        #print(x.shape,"conv3 ")
+        x = F.relu(self.conv33(x))
+        #print(x.shape,"conv3 ")
         #s3=x.data.numpy()
         #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #print(x.shape)
-        x = F.relu(self.conv44(self.conv4(x)))
+        #x = F.relu(self.conv44(self.conv4(x)))
         #s4=x.data.numpy()
         #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
         #x=add_channel(x,add)
