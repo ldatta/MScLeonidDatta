@@ -33,8 +33,8 @@ def cor(img,img2):
 
 add=64
 
-k=8
-k2=8
+k=4
+k2=4
 class NetconvDepw2(nn.Module):
     def __init__(self):
         super(NetconvDepw2, self).__init__()
@@ -367,28 +367,28 @@ def main():
         
 
     #L SHAPE
-    for k in range(a.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(a[k,i,j]==1):
-                    a[k,i,j]=0
-                    a[k,i,j-1]=1
-                    a[k,i-1,j-1]=1
-                    a[k,i+1,j-1]=1
-                    a[k,i+1,j]=1
-     
-    
-    #INVERSE L
-
 #     for k in range(a.shape[0]):
 #         for i in range(0,datasize,maskgap):
 #             for j in range(0,datasize,maskgap):
 #                 if(a[k,i,j]==1):
 #                     a[k,i,j]=0
-#                     a[k,i-1,j]=1
-#                     a[k,i-1,j+1]=1
-#                     a[k,i,j+1]=1
-#                     a[k,i+1,j+1]=1
+#                     a[k,i,j-1]=1
+#                     a[k,i-1,j-1]=1
+#                     a[k,i+1,j-1]=1
+#                     a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+
+    for k in range(a.shape[0]):
+        for i in range(0,datasize,maskgap):
+            for j in range(0,datasize,maskgap):
+                if(a[k,i,j]==1):
+                    a[k,i,j]=0
+                    a[k,i-1,j]=1
+                    a[k,i-1,j+1]=1
+                    a[k,i,j+1]=1
+                    a[k,i+1,j+1]=1
                     
 
     for k in range(b.shape[0]):
@@ -418,7 +418,7 @@ def main():
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
-    a[:,:,:,1]=aaa
+    a[:,:,:,0]=aaa
     
     b[:,:,:,1]=bbb
     c[:,:,:,0]=ccc
