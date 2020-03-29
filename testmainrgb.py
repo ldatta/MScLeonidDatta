@@ -539,9 +539,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('GLtrainRGBWorkingred.npy',resultred)
-    np.save('GLtrainRGBWorkinggrn.npy',resultgrn)
-    np.save('GLtrainRGBWorkingtrn.npy',resulttrn)
+    np.save('R7trainRGBWorkingK24red.npy',resultred)
+    np.save('R7trainRGBWorkingK24grn.npy',resultgrn)
+    np.save('R7trainRGBWorkingK24trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
