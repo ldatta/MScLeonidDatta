@@ -231,7 +231,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=200, metavar='N',
+    parser.add_argument('--epochs', type=int, default=250, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -418,7 +418,7 @@ def main():
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
-    a[:,:,:,0]=aaa
+    a[:,:,:,1]=aaa
     
     b[:,:,:,1]=bbb
     c[:,:,:,0]=ccc
