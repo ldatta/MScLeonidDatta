@@ -33,8 +33,8 @@ def cor(img,img2):
 
 add=64
 
-k=8
-k2=8
+k=1
+k2=1
 class NetconvDepw2(nn.Module):
     def __init__(self):
         super(NetconvDepw2, self).__init__()
@@ -539,9 +539,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-#     np.save('GLtrainRGBWorkingK21red.npy',resultred)
-#     np.save('GLtrainRGBWorkingK21grn.npy',resultgrn)
-#     np.save('GLtrainRGBWorkingK21trn.npy',resulttrn)
+    np.save('GLtrainRGBWorkingK21maskgap1red.npy',resultred)
+    np.save('GLtrainRGBWorkingK21maskgap1grn.npy',resultgrn)
+    np.save('GLtrainRGBWorkingK21maskgap1trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
