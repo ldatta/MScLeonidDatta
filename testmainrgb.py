@@ -33,8 +33,8 @@ def cor(img,img2):
 
 add=64
 
-k=12
-k2=12
+k=16
+k2=16
 class NetconvDepw2(nn.Module):
     def __init__(self):
         super(NetconvDepw2, self).__init__()
