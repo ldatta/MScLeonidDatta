@@ -367,28 +367,28 @@ def main():
         
 
     #L SHAPE
-#     for k in range(a.shape[0]):
-#         for i in range(0,datasize,maskgap):
-#             for j in range(0,datasize,maskgap):
-#                 if(a[k,i,j]==1):
-#                     a[k,i,j]=0
-#                     a[k,i,j-1]=1
-#                     a[k,i-1,j-1]=1
-#                     a[k,i+1,j-1]=1
-#                     a[k,i+1,j]=1
-     
-    
-    #INVERSE L
-
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
             for j in range(0,datasize,maskgap):
                 if(a[k,i,j]==1):
                     a[k,i,j]=0
-                    a[k,i-1,j]=1
-                    a[k,i-1,j+1]=1
-                    a[k,i,j+1]=1
-                    a[k,i+1,j+1]=1
+                    a[k,i,j-1]=1
+                    a[k,i-1,j-1]=1
+                    a[k,i+1,j-1]=1
+                    a[k,i+1,j]=1
+     
+    
+    #INVERSE L
+
+#     for k in range(a.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(a[k,i,j]==1):
+#                     a[k,i,j]=0
+#                     a[k,i-1,j]=1
+#                     a[k,i-1,j+1]=1
+#                     a[k,i,j+1]=1
+#                     a[k,i+1,j+1]=1
                     
 
     for k in range(b.shape[0]):
@@ -418,7 +418,7 @@ def main():
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
     
-    a[:,:,:,0]=aaa
+    a[:,:,:,1]=aaa
     
     b[:,:,:,1]=bbb
     c[:,:,:,0]=ccc
@@ -539,9 +539,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('notunR7trainRGBK21K16maskgap5red.npy',resultred)
-    np.save('notunR7trainRGBK21K16maskgap5grn.npy',resultgrn)
-    np.save('notunR7trainRGBK21K16maskgap5trn.npy',resulttrn)
+    np.save('notunGLtrainRGBK21K16maskgap5red.npy',resultred)
+    np.save('notunGLtrainRGBK21K16maskgap5grn.npy',resultgrn)
+    np.save('notunGLtrainRGBK21K16maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
