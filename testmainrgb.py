@@ -16,7 +16,24 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
 #from attention import AttentionConv, AttentionStem
+def sortit(a):
+    a=a.detach().numpy() 
+    z=np.zeros((a.shape))
+    for i in range (a.shape[0]):
+        matrix_mean_list = []
+        for k in a:
+            x = np.mean(k)
+            matrix_mean_list.append((k, x))
 
+        matrix_mean_list = sorted(matrix_mean_list, key=lambda m: m[1])
+        n=np.asarray(matrix_mean_list)
+        #print(n.shape)
+        #print(n[0][0].shape)
+        #z=np.zeros((a.shape))
+        for j in range(a.shape[0]):
+            z[j]=n[j][0]
+    z=torch.from_numpy(z)
+    return z
 
 def cor(img,img2):
     #sum1=np.zeros((img.shape[0],28,28))
@@ -64,6 +81,8 @@ class NetconvDep(nn.Module):
         #x=self.pool(x)
         #x = F.max_pool2d(x,2, 2)
         #s1=x.data.numpy()
+        x=sortit(x)
+        x=x.float()
         x = F.relu(self.conv22(F.relu(self.conv2(x))))
         
         #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
