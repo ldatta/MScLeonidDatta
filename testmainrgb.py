@@ -33,8 +33,9 @@ def cor(img,img2):
 
 add=64
 
-k=4
-k2=1
+k=2
+k2=2
+k3=1
 class NetconvDepw2(nn.Module):
     def __init__(self):
         super(NetconvDepw2, self).__init__()
@@ -96,13 +97,13 @@ class NetconvDep(nn.Module):
         st1=2
         self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
         self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
-        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=k2*16)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=k3*16)
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
-        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k2*32)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
-        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=k2*64)
+        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=k3*64)
         self.conv44 = nn.Conv2d(k*64, 10, 1, st)
-        self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=k2*128)
+        self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=k3*128)
         self.conv55 = nn.Conv2d(k*128, 10, 1, st)
         self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
@@ -539,9 +540,9 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('notunGLtrainRGBK21K4maskgap5red.npy',resultred)
-    np.save('notunGLtrainRGBK21K4maskgap5grn.npy',resultgrn)
-    np.save('notunGLtrainRGBK21K4maskgap5trn.npy',resulttrn)
+    np.save('notunGLtrainRGBK22K2maskgap5red.npy',resultred)
+    np.save('notunGLtrainRGBK22K2maskgap5grn.npy',resultgrn)
+    np.save('notunGLtrainRGBK22K2maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
