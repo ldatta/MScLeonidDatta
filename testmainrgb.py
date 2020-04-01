@@ -432,9 +432,9 @@ def main():
 #     np.save('notun2GLRGBKK2K312maskgap5grn.npy',resultgrn)
 #     np.save('notun2GLRGBKK2K312maskgap5trn.npy',resulttrn)
     
-    np.save('notun2R7RGBKK2K312maskgap5red.npy',resultred)
-    np.save('notun2R7RGBKK2K312maskgap5grn.npy',resultgrn)
-    np.save('notun2R7RGBKK2K312maskgap5trn.npy',resulttrn)
+    np.save('notun2R7RGBKK2K314maskgap5red.npy',resultred)
+    np.save('notun2R7RGBKK2K314maskgap5grn.npy',resultgrn)
+    np.save('notun2R7RGBKK2K314maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
