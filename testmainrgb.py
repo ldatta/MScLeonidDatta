@@ -50,8 +50,8 @@ def cor(img,img2):
 
 # add=64
 
-k=11
-k2=11
+k=9
+k2=9
 k3=1
 
 class NetconvDep(nn.Module):
