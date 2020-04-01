@@ -15,9 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-k=14
-k2=14
-k3=14
+k=13
+k2=13
+k3=13
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -139,7 +139,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=400, metavar='N',
+    parser.add_argument('--epochs', type=int, default=300, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -428,13 +428,13 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-#     np.save('notun2GLRGBKK2K312maskgap5red.npy',resultred)
-#     np.save('notun2GLRGBKK2K312maskgap5grn.npy',resultgrn)
-#     np.save('notun2GLRGBKK2K312maskgap5trn.npy',resulttrn)
+    np.save('notun22GLRGBKK2K313maskgap5red.npy',resultred)
+    np.save('notun22GLRGBKK2K313maskgap5grn.npy',resultgrn)
+    np.save('notun22GLRGBKK2K313maskgap5trn.npy',resulttrn)
     
-    np.save('notun2R7RGBKK2K314maskgap5red.npy',resultred)
-    np.save('notun2R7RGBKK2K314maskgap5grn.npy',resultgrn)
-    np.save('notun2R7RGBKK2K314maskgap5trn.npy',resulttrn)
+#     np.save('notun22R7RGBKK2K313maskgap5red.npy',resultred)
+#     np.save('notun22R7RGBKK2K313maskgap5grn.npy',resultgrn)
+#     np.save('notun22R7RGBKK2K313maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
