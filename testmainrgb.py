@@ -15,44 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-#from attention import AttentionConv, AttentionStem
-def sortit(a):
-    a=a.detach().numpy() 
-    z=np.zeros((a.shape))
-    for i in range (a.shape[0]):
-        matrix_mean_list = []
-        for k in a:
-            x = np.mean(k)
-            matrix_mean_list.append((k, x))
-
-        matrix_mean_list = sorted(matrix_mean_list, key=lambda m: m[1])
-        n=np.asarray(matrix_mean_list)
-        #print(n.shape)
-        #print(n[0][0].shape)
-        #z=np.zeros((a.shape))
-        for j in range(a.shape[0]):
-            z[j]=n[j][0]
-    z=torch.from_numpy(z)
-    return z
-
-def cor(img,img2):
-    #sum1=np.zeros((img.shape[0],28,28))
-    img=img.cpu().numpy()
-    img2=img2.cpu().numpy()
-    cor=np.zeros((img.shape))#[0],img.shape[1],28,28))
-    for i in range (img.shape[0]):
-        #print("image shape",img.shape,img.shape[0])
-        for j in range (img.shape[1]):
-            cor[i,j,:,:]=C.correlate(img[i,j,:,:],img2[i,j,:,:], output=None, mode='constant', cval=0.0, origin=0)
-
-    cor=torch.from_numpy(cor).float().cuda()
-    return cor
-
-# add=64
-
-k=9
-k2=9
-k3=1
+k=13
+k2=13
+k3=13
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -286,9 +251,6 @@ def main():
     plt.imshow(mask, cmap='gray',  interpolation='nearest')
     plt.show()
     
-    plt.imshow(b[0], cmap='gray',  interpolation='nearest')
-    plt.show()
-    
     a=a*mask
     b=b*mask
     c=c*mask
@@ -303,10 +265,8 @@ def main():
 #                     a[k,i-1,j-1]=1
 #                     a[k,i+1,j-1]=1
 #                     a[k,i+1,j]=1
-     
     
     #INVERSE L
-
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
             for j in range(0,datasize,maskgap):
@@ -344,6 +304,8 @@ def main():
     a=np.zeros((60000,56,56,3))
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
+    
+    
     
     a[:,:,:,0]=aaa
     
@@ -466,9 +428,13 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-#     np.save('notunGLtrainRGBK21K1maskgap5red.npy',resultred)
-#     np.save('notunGLtrainRGBK21K1maskgap5grn.npy',resultgrn)
-#     np.save('notunGLtrainRGBK21K1maskgap5trn.npy',resulttrn)
+    np.save('notun2GLRGBKK2K313maskgap5red.npy',resultred)
+    np.save('notun2GLRGBKK2K313maskgap5grn.npy',resultgrn)
+    np.save('notun2GLRGBKK2K313maskgap5trn.npy',resulttrn)
+    
+#     np.save('notun2R7RGBKK2K313maskgap5red.npy',resultred)
+#     np.save('notun2R7RGBKK2K313maskgap5grn.npy',resultgrn)
+#     np.save('notun2R7RGBKK2K313maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
