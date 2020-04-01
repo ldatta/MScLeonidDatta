@@ -15,9 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-k=12
-k2=12
-k3=12
+k=14
+k2=14
+k3=14
 
 class NetconvDep(nn.Module):
     def __init__(self):
