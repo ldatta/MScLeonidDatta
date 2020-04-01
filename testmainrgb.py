@@ -15,9 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-k=10
-k2=10
-k3=1
+k=13
+k2=13
+k3=13
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -440,13 +440,13 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-#     np.save('notun22GLRGBK10K210K31maskgap5red.npy',resultred)
-#     np.save('notun22GLRGBK10K210K31maskgap5grn.npy',resultgrn)
-#     np.save('notun22GLRGBK10K210K31maskgap5trn.npy',resulttrn)
+#     np.save('notun22GLRGBKK2K313maskgap5red.npy',resultred)
+#     np.save('notun22GLRGBKK2K313maskgap5grn.npy',resultgrn)
+#     np.save('notun22GLRGBKK2K313maskgap5trn.npy',resulttrn)
     
-    np.save('notun22R7RGBK10K210K31maskgap5red.npy',resultred)
-    np.save('notun22R7RGBK10K210K31maskgap5grn.npy',resultgrn)
-    np.save('notun22R7RGBK10K210K31maskgap5trn.npy',resulttrn)
+    np.save('notun22R7RGBKK2K313maskgap5red.npy',resultred)
+    np.save('notun22R7RGBKK2K313maskgap5grn.npy',resultgrn)
+    np.save('notun22R7RGBKK2K313maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
