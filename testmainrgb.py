@@ -48,10 +48,10 @@ def cor(img,img2):
     cor=torch.from_numpy(cor).float().cuda()
     return cor
 
-add=64
+# add=64
 
-k=8
-k2=1
+k=10
+k2=10
 k3=1
 
 class NetconvDep(nn.Module):
@@ -65,48 +65,24 @@ class NetconvDep(nn.Module):
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
-        self.conv4 = nn.Conv2d(k2*64, k*64, 3, st1,groups=k3*64)
-        self.conv44 = nn.Conv2d(k*64, 10, 1, st)
-        self.conv5 = nn.Conv2d(k2*128, k*128, 3, st1,groups=k3*128)
-        self.conv55 = nn.Conv2d(k*128, 10, 1, st)
-        self.pool=nn.AvgPool2d((2,2), stride=2, padding=0)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-               
         
     def forward(self, x):
         x=x.float()
-        x=F.relu(self.conv1(x) )
+        x=self.conv1(x) 
+        x = F.relu(x)
         x=self.conv11(x) 
         x = F.relu(x)
-        #x=self.pool(x)
-        #x = F.max_pool2d(x,2, 2)
-        #s1=x.data.numpy()
-        x=sortit(x)
-        x=x.float()
-        x = F.relu(self.conv22(F.relu(self.conv2(x))))
-        
-        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
-        #s2=x.data.numpy()
+        x=self.conv2(x) 
+        x = F.relu(x)
+        x=self.conv22(x) 
+        x = F.relu(x)
+        x=self.conv3(x) 
+        x = F.relu(x)
+        x=self.conv33(x) 
+        x = F.relu(x)
         #print(x.shape,"conv3 ")
-        x=F.relu(self.conv3(x))
-        #print(x.shape,"conv3 ")
-        x = F.relu(self.conv33(x))
-        #print(x.shape,"conv3 ")
-        #s3=x.data.numpy()
-        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
-        #print(x.shape)
-        #x = F.relu(self.conv44(self.conv4(x)))
-        #s4=x.data.numpy()
-        #x=self.pool(x)#x = F.max_pool2d(x,2, 2)
-        #x=add_channel(x,add)
-        #x=x.float()
-        #print(x.shape)
-        #x = F.relu(self.conv55(self.conv5(x)))
-        #s5=x.data.numpy()
-        #x = F.max_pool2d(x,2, 2)
-        #print(x.shape, "before gap")
         x = self.GAP(x)
-        
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
@@ -317,22 +293,6 @@ def main():
     b=b*mask
     c=c*mask
     
-    
-# =============================================================================
-#     for i in range (aa.shape[0]):
-#         a[i]=a[i]*mask
-#         
-#     
-#     for i in range (bb.shape[0]):
-#         b[i]=b[i]*mask
-#         
-#     
-#     for i in range (cc.shape[0]):
-#         c[i]=c[i]*mask
-# =============================================================================
-        
-        
-
     #L SHAPE
     for k in range(a.shape[0]):
         for i in range(0,datasize,maskgap):
