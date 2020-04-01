@@ -15,9 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-k=13
-k2=13
-k3=13
+k=12
+k2=12
+k3=12
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -432,9 +432,9 @@ def main():
 #     np.save('notun2GLRGBKK2K312maskgap5grn.npy',resultgrn)
 #     np.save('notun2GLRGBKK2K312maskgap5trn.npy',resulttrn)
     
-    np.save('notun2R7RGBKK2K313maskgap5red.npy',resultred)
-    np.save('notun2R7RGBKK2K313maskgap5grn.npy',resultgrn)
-    np.save('notun2R7RGBKK2K313maskgap5trn.npy',resulttrn)
+    np.save('notun2R7RGBKK2K312maskgap5red.npy',resultred)
+    np.save('notun2R7RGBKK2K312maskgap5grn.npy',resultgrn)
+    np.save('notun2R7RGBKK2K312maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
