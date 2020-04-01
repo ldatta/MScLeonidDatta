@@ -15,9 +15,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-k=14
-k2=14
-k3=14
+k=13
+k2=13
+k3=13
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -31,20 +31,32 @@ class NetconvDep(nn.Module):
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-        
+        self.bn1=nn.BatchNorm2d(k*3)
+        self.bn11=nn.BatchNorm2d(k2*16)
+        self.bn2=nn.BatchNorm2d(k*16)
+        self.bn22=nn.BatchNorm2d(k2*32)
+        self.bn3=nn.BatchNorm2d(k*32)
+        self.bn33=nn.BatchNorm2d(10)
+    
     def forward(self, x):
         x=x.float()
         x=self.conv1(x) 
+        x = self.bn1(x)
         x = F.relu(x)
         x=self.conv11(x) 
+        x = self.bn11(x)
         x = F.relu(x)
         x=self.conv2(x) 
+        x = self.bn2(x)
         x = F.relu(x)
         x=self.conv22(x) 
+        x = self.bn22(x)
         x = F.relu(x)
         x=self.conv3(x) 
+        x = self.bn3(x)
         x = F.relu(x)
         x=self.conv33(x) 
+        x = self.bn33(x)
         x = F.relu(x)
         #print(x.shape,"conv3 ")
         x = self.GAP(x)
@@ -428,13 +440,13 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('notun22GLRGBKK2K314maskgap5red.npy',resultred)
-    np.save('notun22GLRGBKK2K314maskgap5grn.npy',resultgrn)
-    np.save('notun22GLRGBKK2K314maskgap5trn.npy',resulttrn)
+    np.save('notun22GLbnRGBKK2K313maskgap5red.npy',resultred)
+    np.save('notun22GLbnRGBKK2K313maskgap5grn.npy',resultgrn)
+    np.save('notun22GLbnRGBKK2K313maskgap5trn.npy',resulttrn)
     
-#     np.save('notun22R7RGBKK2K312maskgap5red.npy',resultred)
-#     np.save('notun22R7RGBKK2K312maskgap5grn.npy',resultgrn)
-#     np.save('notun22R7RGBKK2K312maskgap5trn.npy',resulttrn)
+#     np.save('notun22R7bnRGBKK2K312maskgap5red.npy',resultred)
+#     np.save('notun22R7bnRGBKK2K312maskgap5grn.npy',resultgrn)
+#     np.save('notun22R7bnRGBKK2K312maskgap5trn.npy',resulttrn)
     
     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
