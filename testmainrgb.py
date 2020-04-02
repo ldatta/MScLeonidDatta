@@ -15,7 +15,7 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-GL=0
+GL=1
 
 k=14
 k2=14
