@@ -15,9 +15,24 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
+GL=1
+
 k=13
 k2=13
 k3=13
+
+def npsave(resultred,resultgrn,resulttrn):
+    np.save('notunGLRGBKK2K313red.npy',resultred)
+    np.save('notunGLRGBKK2K313grn.npy',resultgrn)
+    np.save('notunGLRGBKK2K313trn.npy',resulttrn)
+    
+#     np.save('notunR7RGBKK2K313red.npy',resultred)
+#     np.save('notunR7RGBKK2K313grn.npy',resultgrn)
+#     np.save('notunR7RGBKK2K313trn.npy',resulttrn)
+    
+
+
+
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -268,27 +283,30 @@ def main():
     c=c*mask
     
     #L SHAPE
-    for k in range(a.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(a[k,i,j]==1):
-                    a[k,i,j]=0
-                    a[k,i,j-1]=1
-                    a[k,i-1,j-1]=1
-                    a[k,i+1,j-1]=1
-                    a[k,i+1,j]=1
     
-    #INVERSE L
-#     for k in range(a.shape[0]):
-#         for i in range(0,datasize,maskgap):
-#             for j in range(0,datasize,maskgap):
-#                 if(a[k,i,j]==1):
-#                     a[k,i,j]=0
-#                     a[k,i-1,j]=1
-#                     a[k,i-1,j+1]=1
-#                     a[k,i,j+1]=1
-#                     a[k,i+1,j+1]=1
+    if(GL==1):
+        for k in range(a.shape[0]):
+            for i in range(0,datasize,maskgap):
+                for j in range(0,datasize,maskgap):
+                    if(a[k,i,j]==1):
+                        a[k,i,j]=0
+                        a[k,i,j-1]=1
+                        a[k,i-1,j-1]=1
+                        a[k,i+1,j-1]=1
+                        a[k,i+1,j]=1
+    
+    else:
+        for k in range(a.shape[0]):
+            for i in range(0,datasize,maskgap):
+                for j in range(0,datasize,maskgap):
+                    if(a[k,i,j]==1):
+                        a[k,i,j]=0
+                        a[k,i-1,j]=1
+                        a[k,i-1,j+1]=1
+                        a[k,i,j+1]=1
+                        a[k,i+1,j+1]=1
                     
+    
 
     for k in range(b.shape[0]):
         for i in range(0,datasize,maskgap):
@@ -318,8 +336,10 @@ def main():
     c=np.zeros((10000,56,56,3))
     
     
-    
-    a[:,:,:,1]=aaa
+    if(GL==1):
+        a[:,:,:,1]=aaa
+    else:
+        a[:,:,:,0]=aaa
     
     b[:,:,:,1]=bbb
     c[:,:,:,0]=ccc
@@ -440,17 +460,18 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
-    np.save('notun22GLRGBKK2K313maskgap5red.npy',resultred)
-    np.save('notun22GLRGBKK2K313maskgap5grn.npy',resultgrn)
-    np.save('notun22GLRGBKK2K313maskgap5trn.npy',resulttrn)
+    npsave(resultred,resultgrn,resulttrn)
+#     np.save('notun22GLRGBKK2K313maskgap5red.npy',resultred)
+#     np.save('notun22GLRGBKK2K313maskgap5grn.npy',resultgrn)
+#     np.save('notun22GLRGBKK2K313maskgap5trn.npy',resulttrn)
     
-#     np.save('notun22R7RGBKK2K313maskgap5red.npy',resultred)
-#     np.save('notun22R7RGBKK2K313maskgap5grn.npy',resultgrn)
-#     np.save('notun22R7RGBKK2K313maskgap5trn.npy',resulttrn)
+# #     np.save('notun22R7RGBKK2K313maskgap5red.npy',resultred)
+# #     np.save('notun22R7RGBKK2K313maskgap5grn.npy',resultgrn)
+# #     np.save('notun22R7RGBKK2K313maskgap5trn.npy',resulttrn)
     
-    #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
-    #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
-    #bresulttrn=np.load('Baseresults/INLtrainedresulttrn.npy')
+#     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
+#     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
+#     #bresulttrn=np.load('Baseresults/INLtrainedresulttrn.npy')
                        
 #     plotgraph(e,resultred,resultgrn, resulttrn)#,bresultred,bresultgrn, bresulttrn)
 
