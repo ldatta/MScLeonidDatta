@@ -17,18 +17,18 @@ import matplotlib.lines as mlines
 
 GL=1
 
-k=14
-k2=14
-k3=14
+k=12
+k2=12
+k3=12
 
 def npsave(resultred,resultgrn,resulttrn):
-    np.save('notunGLRGBKK2K314red.npy',resultred)
-    np.save('notunGLRGBKK2K314grn.npy',resultgrn)
-    np.save('notunGLRGBKK2K314trn.npy',resulttrn)
+    np.save('notunGLRGBKK2K312red.npy',resultred)
+    np.save('notunGLRGBKK2K312grn.npy',resultgrn)
+    np.save('notunGLRGBKK2K312trn.npy',resulttrn)
     
-#     np.save('notunR7RGBKK2K314red.npy',resultred)
-#     np.save('notunR7RGBKK2K314grn.npy',resultgrn)
-#     np.save('notunR7RGBKK2K314trn.npy',resulttrn)
+#     np.save('notunR7RGBKK2K312red.npy',resultred)
+#     np.save('notunR7RGBKK2K312grn.npy',resultgrn)
+#     np.save('notunR7RGBKK2K312trn.npy',resulttrn)
     
 
 
