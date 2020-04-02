@@ -15,20 +15,20 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
-GL=0
+GL=1
 
 k=10
 k2=10
 k3=1
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('notunGLRGBK10K210K31red.npy',resultred)
-#     np.save('notunGLRGBK10K210K31grn.npy',resultgrn)
-#     np.save('notunGLRGBK10K210K31trn.npy',resulttrn)
+    np.save('notunGLRGBK10K210K31red.npy',resultred)
+    np.save('notunGLRGBK10K210K31grn.npy',resultgrn)
+    np.save('notunGLRGBK10K210K31trn.npy',resulttrn)
     
-    np.save('notunR7RGBK10K210K31red.npy',resultred)
-    np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
-    np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
+#     np.save('notunR7RGBK10K210K31red.npy',resultred)
+#     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
+#     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
     
 
 
