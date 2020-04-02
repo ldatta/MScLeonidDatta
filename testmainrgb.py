@@ -29,6 +29,7 @@ def npsave(resultred,resultgrn,resulttrn):
 #     np.save('notunR7RGBK10K210K31red.npy',resultred)
 #     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
 #     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
+    print("hello")
     
 
 
