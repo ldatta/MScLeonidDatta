@@ -489,7 +489,8 @@ def main():
     print("test set loaded")
 
     print(" DEPTHWISE CONVOLUTION NET")
-    model = NetconvDep().to(device)
+    model = NetconvDep()
+    model=model.cuda()
     
     print("Net")
     
