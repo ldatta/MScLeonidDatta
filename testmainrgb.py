@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math 
 
-GL=1
+GL=0
 
 k=14
 k2=14
@@ -48,7 +48,7 @@ def npsave(resultred,resultgrn,resulttrn):
 #     np.save('notunR7RGBK10K210K31red.npy',resultred)
 #     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
 #     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
-    print("hello")
+    print("hello GL=0")
  
     
     
@@ -96,7 +96,6 @@ class NetconvDep(nn.Module):
         x=sortit(x)
         x=x.float()
         x=x.cuda()
-        print("hello")
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
