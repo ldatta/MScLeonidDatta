@@ -22,13 +22,13 @@ k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('notunGLRGBK10K210K31red.npy',resultred)
-#     np.save('notunGLRGBK10K210K31grn.npy',resultgrn)
-#     np.save('notunGLRGBK10K210K31trn.npy',resulttrn)
+    np.save('2notunGLRGBK10K210K31red.npy',resultred)
+    np.save('2notunGLRGBK10K210K31grn.npy',resultgrn)
+    np.save('2notunGLRGBK10K210K31trn.npy',resulttrn)
     
-#     np.save('notunR7RGBK10K210K31red.npy',resultred)
-#     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
-#     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
+#     np.save('2notunR7RGBK10K210K31red.npy',resultred)
+#     np.save('2notunR7RGBK10K210K31grn.npy',resultgrn)
+#     np.save('2notunR7RGBK10K210K31trn.npy',resulttrn)
     print("hello")
     
 
@@ -40,8 +40,8 @@ class NetconvDep(nn.Module):
         super(NetconvDep, self).__init__()
         st=2
         st1=2
-        self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
-        self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
+        self.conv1 = nn.Conv2d(3, 3, 3, 1, groups=3)
+        self.conv11 = nn.Conv2d(3, k2*16, 1, 1)
         self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=k3*16)
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
