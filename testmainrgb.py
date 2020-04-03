@@ -75,22 +75,6 @@ def weightit(in_channel,outc,k,g):
         weightf=np.reshape(weightf,(outc,1,k,k))
     return weightf
 
-
-
-# =============================================================================
-# weight1=weightit(1, k*3, 3,3)
-# weight11=weightit(k*3, k2*16, 1,1)
-# weight2=weightit(k2*16, k*16, 3,k3*16)
-# weight22=weightit(k*16, k2*32, 1,1)
-# weight3=weightit(k2*32, k*32, 3,k3*32)
-# weight33=weightit(k*32, 10, 1,1)
-# =============================================================================
-
-   
-
-
-
-
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
@@ -111,7 +95,7 @@ class NetconvDep(nn.Module):
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
-        x=x.to(device)
+        #x=x.to(device)
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
