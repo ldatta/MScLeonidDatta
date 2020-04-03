@@ -22,7 +22,7 @@ k=14
 k2=14
 k3=14
 def sortit(a):
-    a=a.detach().numpy() 
+    a=a.cpu().numpy() 
     z=np.zeros((a.shape))
     for i in range (a.shape[0]):
         matrix_mean_list = []
