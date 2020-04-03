@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math 
 
-GL=0
+GL=1
 
 k=14
 k2=14
@@ -58,12 +58,7 @@ def weightit(in_channel,outc,k,g):
         weightf=np.reshape(weightf,(outc,1,k,k))
     return weightf
 
-weight1=weightit(1, k*3, 3,3)
-weight11=weightit(k*3, k2*16, 1,1)
-weight2=weightit(k2*16, k*16, 3,k3*16)
-weight22=weightit(k*16, k2*32, 1,1)
-weight3=weightit(k2*32, k*32, 3,k3*32)
-weight33=weightit(k*32, 10, 1,1)
+
 
 # =============================================================================
 # weight1=weightit(1, k*3, 3,3)
@@ -91,41 +86,28 @@ class NetconvDep(nn.Module):
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
-#         self.bn1=nn.BatchNorm2d(k*3)
-#         self.bn11=nn.BatchNorm2d(k2*16)
-#         self.bn2=nn.BatchNorm2d(k*16)
-#         self.bn22=nn.BatchNorm2d(k2*32)
-#         self.bn3=nn.BatchNorm2d(k*32)
-#         self.bn33=nn.BatchNorm2d(10)
+        
     
     def forward(self, x):
         x=x.float()
         x=self.conv1(x) 
-        #x = self.bn1(x)
         x = F.relu(x)
         x=self.conv11(x) 
-        #x = self.bn11(x)
         x = F.relu(x)
         x=self.conv2(x) 
-        #x = self.bn2(x)
         x = F.relu(x)
         x=self.conv22(x) 
-        #x = self.bn22(x)
         x = F.relu(x)
         x=self.conv3(x) 
-        #x = self.bn3(x)
         x = F.relu(x)
         x=self.conv33(x) 
-        #x = self.bn33(x)
         x = F.relu(x)
-        #print(x.shape,"conv3 ")
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
     
     
-# print("L train data - Layer 5 updating")                      
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
     g=0
@@ -134,13 +116,26 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    
-    model.conv1.weight.data = torch.from_numpy(weight1)
-    model.conv11.weight.data = torch.from_numpy(weight11)
-    model.conv2.weight.data = torch.from_numpy(weight2)
-    model.conv22.weight.data = torch.from_numpy(weight22)
-    model.conv3.weight.data = torch.from_numpy(weight3)
-    model.conv33.weight.data = torch.from_numpy(weight33)
+    weight1=weightit(1, k*3, 3,3)
+    weight11=weightit(k*3, k2*16, 1,1)
+    weight2=weightit(k2*16, k*16, 3,k3*16)
+    weight22=weightit(k*16, k2*32, 1,1)
+    weight3=weightit(k2*32, k*32, 3,k3*32)
+    weight33=weightit(k*32, 10, 1,1)
+#     print("CONVOLUTION NET")
+#     model = Netconv().to(device)
+    weight1=torch.from_numpy(weight1).to(device)
+    weight11=torch.from_numpy(weight11).to(device)
+    weight2=torch.from_numpy(weight2).to(device)
+    weight22=torch.from_numpy(weight22).to(device)
+    weight3=torch.from_numpy(weight3).to(device)
+    weight33=torch.from_numpy(weight33).to(device)
+    model.conv1.weight.data=weight1
+    model.conv11.weight.data=weight11
+    model.conv2.weight.data=weight2
+    model.conv22.weight.data=weight22
+    model.conv3.weight.data=weight3
+    model.conv33.weight.data=weight33
     
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -153,12 +148,14 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         loss.backward()
         optimizer.step()
         
-        weight1 = model.conv1.weight.data.numpy()
-        weight11 = model.conv11.weight.data.numpy()
-        weight2 = model.conv2.weight.data.numpy()
-        weight22 = model.conv22.weight.data.numpy()
-        weight3 = model.conv3.weight.data.numpy()
-        weight33 = model.conv33.weight.data.numpy()
+# =============================================================================
+#         weight1 = model.conv1.weight.data.numpy()
+#         weight11 = model.conv11.weight.data.numpy()
+#         weight2 = model.conv2.weight.data.numpy()
+#         weight22 = model.conv22.weight.data.numpy()
+#         weight3 = model.conv3.weight.data.numpy()
+#         weight33 = model.conv33.weight.data.numpy()
+# =============================================================================
 # =============================================================================
 #         print(weight1.shape,"weight 1 ")
 #         print(weight11.shape,"weight 11")
@@ -479,15 +476,7 @@ def main():
 
     print(" DEPTHWISE CONVOLUTION NET")
     model = NetconvDep().to(device)
-
-#     print("CONVOLUTION NET")
-#     model = Netconv().to(device)
-    weight1=weight1.to(device)
-    weight11=weight11.to(device)
-    weight2=weight2.to(device)
-    weight22=weight22.to(device)
-    weight3=weight3.to(device)
-    weight33=weight33.to(device)
+    
     print("Net")
     
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
