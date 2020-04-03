@@ -14,23 +14,59 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
+import math 
 
-GL=0
+GL=1
 
 k=14
 k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('2notunGLRGBK10K210K31red.npy',resultred)
-#     np.save('2notunGLRGBK10K210K31grn.npy',resultgrn)
-#     np.save('2notunGLRGBK10K210K31trn.npy',resulttrn)
+#     np.save('notunGLRGBK10K210K31red.npy',resultred)
+#     np.save('notunGLRGBK10K210K31grn.npy',resultgrn)
+#     np.save('notunGLRGBK10K210K31trn.npy',resulttrn)
     
-    np.save('2notunR7RGBK10K210K31red.npy',resultred)
-    np.save('2notunR7RGBK10K210K31grn.npy',resultgrn)
-    np.save('2notunR7RGBK10K210K31trn.npy',resulttrn)
+#     np.save('notunR7RGBK10K210K31red.npy',resultred)
+#     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
+#     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
     print("hello")
+ 
     
+    
+def weightit(in_channel,outc,k,g):
+    range_value=in_channel*k*k
+    range_value=1. / math.sqrt(range_value)
+    
+    weight=np.random.uniform(-range_value,range_value,k*k)
+    weight=np.reshape(weight,(k,k))
+    
+        
+    if (g==1):
+        weightf=np.zeros(( outc,in_channel,k,k))
+        for i in range(outc):
+            for j in range(in_channel):
+                weightf[i,j,:,:]=weight
+        
+    else:
+        
+        weightf=np.zeros((outc,k,k))
+        
+        for j in range(outc):
+            weightf[j,:,:]=weight
+        weightf=np.reshape(weightf,(outc,1,k,k))
+    return weightf
+
+# =============================================================================
+# weight1=weightit(1, k*3, 3,3)
+# weight11=weightit(k*3, k2*16, 1,1)
+# weight2=weightit(k2*16, k*16, 3,k3*16)
+# weight22=weightit(k*16, k2*32, 1,1)
+# weight3=weightit(k2*32, k*32, 3,k3*32)
+# weight33=weightit(k*32, 10, 1,1)
+# =============================================================================
+
+   
 
 
 
@@ -40,8 +76,8 @@ class NetconvDep(nn.Module):
         super(NetconvDep, self).__init__()
         st=2
         st1=2
-        self.conv1 = nn.Conv2d(3, 3, 3, 1, groups=3)
-        self.conv11 = nn.Conv2d(3, k2*16, 1, 1)
+        self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
+        self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
         self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=k3*16)
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
         self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
@@ -90,11 +126,19 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-#     model.conv1.weight.data = torch.from_numpy(INL1)
-#     model.conv2.weight.data = torch.from_numpy(INL2)
-#     model.conv3.weight.data = torch.from_numpy(INL3)
-#     model.conv4.weight.data = torch.from_numpy(INL4)
-    #model.conv5.weight.data = torch.from_numpy(INL5)
+    weight1=weightit(1, k*3, 3,3)
+    weight11=weightit(k*3, k2*16, 1,1)
+    weight2=weightit(k2*16, k*16, 3,k3*16)
+    weight22=weightit(k*16, k2*32, 1,1)
+    weight3=weightit(k2*32, k*32, 3,k3*32)
+    weight33=weightit(k*32, 10, 1,1)
+    model.conv1.weight.data = torch.from_numpy(weight1)
+    model.conv11.weight.data = torch.from_numpy(weight11)
+    model.conv2.weight.data = torch.from_numpy(weight2)
+    model.conv22.weight.data = torch.from_numpy(weight22)
+    model.conv3.weight.data = torch.from_numpy(weight3)
+    model.conv33.weight.data = torch.from_numpy(weight33)
+    
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -105,16 +149,28 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
+        
+        weight1 = model.conv1.weight.data.numpy()
+        weight11 = model.conv11.weight.data.numpy()
+        weight2 = model.conv2.weight.data.numpy()
+        weight22 = model.conv22.weight.data.numpy()
+        weight3 = model.conv3.weight.data.numpy()
+        weight33 = model.conv33.weight.data.numpy()
+        print(weight1.shape,"weight 1 ")
+        print(weight11.shape,"weight 11")
+        print(weight2.shape,"weight 2")
+        print(weight22.shape,"weight 22 ")
+        print(weight3.shape,"weight 3")
+        print(weight33.shape,"weight 33")
+        
 # =============================================================================
-#         if (epoch==20):
-#             weight1 = model.conv1.weight.data.numpy()
-#             np.save('LtrainedWeight1.npy',weight1)
-#             weight2 = model.conv2.weight.data.numpy()
-#             np.save('LtrainedWeight2.npy',weight2)
-#             weight3 = model.conv3.weight.data.numpy()
-#             np.save('LtrainedWeight3.npy',weight3)
-#             weight4 = model.conv4.weight.data.numpy()
-#             np.save('LtrainedWeight4.npy',weight4)
+#         #np.save('L1.npy',weight1)
+#         weight2 = model.conv2.weight.data.numpy()
+#         np.save('LtrainedWeight2.npy',weight2)
+#         weight3 = model.conv3.weight.data.numpy()
+#         np.save('LtrainedWeight3.npy',weight3)
+#         weight4 = model.conv4.weight.data.numpy()
+#         np.save('LtrainedWeight4.npy',weight4)
 # =============================================================================
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
@@ -167,7 +223,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=300, metavar='N',
+    parser.add_argument('--epochs', type=int, default=1, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
