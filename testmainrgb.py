@@ -95,19 +95,21 @@ class NetconvDep(nn.Module):
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
-        #x=x.to(device)
+        x=x.cuda()
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
+        x=x.cuda()
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
+        x=x.cuda()
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x)
@@ -489,8 +491,8 @@ def main():
     print("test set loaded")
 
     print(" DEPTHWISE CONVOLUTION NET")
-    model = NetconvDep()
-    model=model.cuda()
+    model = NetconvDep().to(device)
+    
     
     print("Net")
     
