@@ -16,11 +16,12 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math 
 
-GL=0
+GL=1
 
 k=14
 k2=14
 k3=14
+
 
 def npsave(resultred,resultgrn,resulttrn):
 #     np.save('notunGLRGBK10K210K31red.npy',resultred)
@@ -56,6 +57,13 @@ def weightit(in_channel,outc,k,g):
             weightf[j,:,:]=weight
         weightf=np.reshape(weightf,(outc,1,k,k))
     return weightf
+
+weight1=weightit(1, k*3, 3,3)
+weight11=weightit(k*3, k2*16, 1,1)
+weight2=weightit(k2*16, k*16, 3,k3*16)
+weight22=weightit(k*16, k2*32, 1,1)
+weight3=weightit(k2*32, k*32, 3,k3*32)
+weight33=weightit(k*32, 10, 1,1)
 
 # =============================================================================
 # weight1=weightit(1, k*3, 3,3)
@@ -126,12 +134,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    weight1=weightit(1, k*3, 3,3)
-    weight11=weightit(k*3, k2*16, 1,1)
-    weight2=weightit(k2*16, k*16, 3,k3*16)
-    weight22=weightit(k*16, k2*32, 1,1)
-    weight3=weightit(k2*32, k*32, 3,k3*32)
-    weight33=weightit(k*32, 10, 1,1)
+    
     model.conv1.weight.data = torch.from_numpy(weight1)
     model.conv11.weight.data = torch.from_numpy(weight11)
     model.conv2.weight.data = torch.from_numpy(weight2)
@@ -156,12 +159,14 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         weight22 = model.conv22.weight.data.numpy()
         weight3 = model.conv3.weight.data.numpy()
         weight33 = model.conv33.weight.data.numpy()
-        print(weight1.shape,"weight 1 ")
-        print(weight11.shape,"weight 11")
-        print(weight2.shape,"weight 2")
-        print(weight22.shape,"weight 22 ")
-        print(weight3.shape,"weight 3")
-        print(weight33.shape,"weight 33")
+# =============================================================================
+#         print(weight1.shape,"weight 1 ")
+#         print(weight11.shape,"weight 11")
+#         print(weight2.shape,"weight 2")
+#         print(weight22.shape,"weight 22 ")
+#         print(weight3.shape,"weight 3")
+#         print(weight33.shape,"weight 33")
+# =============================================================================
         
 # =============================================================================
 #         #np.save('L1.npy',weight1)
@@ -477,8 +482,14 @@ def main():
 
 #     print("CONVOLUTION NET")
 #     model = Netconv().to(device)
-    
+    weight1=weight1.to(device)
+    weight11=weight11.to(device)
+    weight2=weight2.to(device)
+    weight22=weight22.to(device)
+    weight3=weight3.to(device)
+    weight33=weight33.to(device)
     print("Net")
+    
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     epoch_no=(np.arange(1,(args.epochs+1),1 ))
     redacc=(np.arange(1,(args.epochs+1),1 ))
