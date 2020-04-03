@@ -21,7 +21,24 @@ GL=1
 k=14
 k2=14
 k3=14
+def sortit(a):
+    a=a.detach().numpy() 
+    z=np.zeros((a.shape))
+    for i in range (a.shape[0]):
+        matrix_mean_list = []
+        for k in a:
+            x = np.mean(k)
+            matrix_mean_list.append((k, x))
 
+        matrix_mean_list = sorted(matrix_mean_list, key=lambda m: m[1])
+        n=np.asarray(matrix_mean_list)
+        #print(n.shape)
+        #print(n[0][0].shape)
+        #z=np.zeros((a.shape))
+        for j in range(a.shape[0]):
+            z[j]=n[j][0]
+    z=torch.from_numpy(z)
+    return z
 
 def npsave(resultred,resultgrn,resulttrn):
 #     np.save('notunGLRGBK10K210K31red.npy',resultred)
@@ -92,14 +109,20 @@ class NetconvDep(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
+        x=sortit(x)
+        x=x.float()
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
+        x=sortit(x)
+        x=x.float()
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
+        x=sortit(x)
+        x=x.float()
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x)
