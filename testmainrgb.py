@@ -96,6 +96,7 @@ class NetconvDep(nn.Module):
         x=sortit(x)
         x=x.float()
         x=x.cuda()
+        print("hello")
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
