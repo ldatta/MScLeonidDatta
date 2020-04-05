@@ -10,7 +10,7 @@
 #SBATCH --qos=long
 
 # The default run (wall-clock) time is 1 minute
-#SBATCH --time=250:00:00
+#SBATCH --time=300:00:00
 
 # The default number of parallel tasks per job is 1
 #SBATCH --ntasks=1
@@ -37,5 +37,5 @@
 #module load matlab/R2018b
 
 # Complex or heavy commands should be started with 'srun' (see 'man srun' for more information)
-python3 testmainrgb.py $*
+python3 testmainrgbsort.py $*
 # Use this simple command to check that your sbatch settings are working (verify the resources allocated in the usage statistics)
