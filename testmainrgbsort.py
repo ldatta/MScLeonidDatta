@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math 
 
-GL=1
+GL=0
 
 k=14
 k2=14
@@ -41,14 +41,14 @@ def sortit(a):
     return z
 
 def npsave(resultred,resultgrn,resulttrn):
-    np.save('GLRGBsortNoWeightred.npy',resultred)
-    np.save('GLRGBsortNoWeightgrn.npy',resultgrn)
-    np.save('GLRGBsortNoWeighttrn.npy',resulttrn)
-    print("hello GL=1")
-#     np.save('R7RGBsortNoWeightred.npy',resultred)
-#     np.save('R7RGBsortNoWeightgrn.npy',resultgrn)
-#     np.save('R7RGBsortNoWeighttrn.npy',resulttrn)
-#     print("hello GL=0")
+#     np.save('GLRGBsortNoWeightred.npy',resultred)
+#     np.save('GLRGBsortNoWeightgrn.npy',resultgrn)
+#     np.save('GLRGBsortNoWeighttrn.npy',resulttrn)
+#     print("hello GL=1")
+    np.save('R7RGBsortNoWeightred.npy',resultred)
+    np.save('R7RGBsortNoWeightgrn.npy',resultgrn)
+    np.save('R7RGBsortNoWeighttrn.npy',resulttrn)
+    print("hello GL=0")
     
     
     
