@@ -41,14 +41,14 @@ def sortit(a):
     return z
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('notunGLRGBK10K210K31red.npy',resultred)
-#     np.save('notunGLRGBK10K210K31grn.npy',resultgrn)
-#     np.save('notunGLRGBK10K210K31trn.npy',resulttrn)
-    
-#     np.save('notunR7RGBK10K210K31red.npy',resultred)
-#     np.save('notunR7RGBK10K210K31grn.npy',resultgrn)
-#     np.save('notunR7RGBK10K210K31trn.npy',resulttrn)
-    print("hello GL=0")
+    np.save('GLRGBsortred.npy',resultred)
+    np.save('GLRGBsortgrn.npy',resultgrn)
+    np.save('GLRGBsorttrn.npy',resulttrn)
+    print("hello GL=1")
+#     np.save('R7RGBsortred.npy',resultred)
+#     np.save('R7RGBsortgrn.npy',resultgrn)
+#     np.save('R7RGBsorttrn.npy',resulttrn)
+#     print("hello GL=0")
     
     
     
@@ -241,7 +241,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=300, metavar='N',
+    parser.add_argument('--epochs', type=int, default=200, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -515,8 +515,8 @@ def main():
         redaccm[epoch-1]=r
         grnaccm[epoch-1]=g
         trnaccm[epoch-1]=t
-        redacc[epoch-1]=0#test(args, model, device, hortest_loader)
-        grnacc[epoch-1]=0#test(args, model, device, test_loader)
+        redacc[epoch-1]=test(args, model, device, hortest_loader)
+        grnacc[epoch-1]=test(args, model, device, test_loader)
         trnacc[epoch-1]=ta
     resultred = np.empty((redacc.size + redaccm.size+1,),dtype=redacc.dtype)
     resultred[0]=br
