@@ -36,9 +36,9 @@ def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBnewsortgrn.npy',resultgrn)
 #     np.save('GLRGBnewsorttrn.npy',resulttrn)
 #     print("hello GL=1")
-    np.save('R7RGBnewsortred.npy',resultred)
-    np.save('R7RGBnewsortgrn.npy',resultgrn)
-    np.save('R7RGBnewsorttrn.npy',resulttrn)
+    np.save('R7RGBnewsortNoWred.npy',resultred)
+    np.save('R7RGBnewsortNoWgrn.npy',resultgrn)
+    np.save('R7RGBnewsortNoWtrn.npy',resulttrn)
     print("hello GL=0")
     
     
@@ -117,31 +117,31 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    weight1=weightit(1, k*3, 3,3)
-    weight11=weightit(k*3, k2*16, 1,1)
-    weight2=weightit(k2*16, k*16, 3,k3*16)
-    weight22=weightit(k*16, k2*32, 1,1)
-    weight3=weightit(k2*32, k*32, 3,k3*32)
-    weight33=weightit(k*32, 10, 1,1)
-    weight1=np.float32(weight1)
-    weight11=np.float32(weight11)
-    weight2=np.float32(weight2)
-    weight22=np.float32(weight22)
-    weight3=np.float32(weight3)
-    weight33=np.float32(weight33)
+#     weight1=weightit(1, k*3, 3,3)
+#     weight11=weightit(k*3, k2*16, 1,1)
+#     weight2=weightit(k2*16, k*16, 3,k3*16)
+#     weight22=weightit(k*16, k2*32, 1,1)
+#     weight3=weightit(k2*32, k*32, 3,k3*32)
+#     weight33=weightit(k*32, 10, 1,1)
+#     weight1=np.float32(weight1)
+#     weight11=np.float32(weight11)
+#     weight2=np.float32(weight2)
+#     weight22=np.float32(weight22)
+#     weight3=np.float32(weight3)
+#     weight33=np.float32(weight33)
 
-    weight1=torch.from_numpy(weight1).to(device)
-    weight11=torch.from_numpy(weight11).to(device)
-    weight2=torch.from_numpy(weight2).to(device)
-    weight22=torch.from_numpy(weight22).to(device)
-    weight3=torch.from_numpy(weight3).to(device)
-    weight33=torch.from_numpy(weight33).to(device)
-    model.conv1.weight.data=weight1
-    model.conv11.weight.data=weight11
-    model.conv2.weight.data=weight2
-    model.conv22.weight.data=weight22
-    model.conv3.weight.data=weight3
-    model.conv33.weight.data=weight33
+#     weight1=torch.from_numpy(weight1).to(device)
+#     weight11=torch.from_numpy(weight11).to(device)
+#     weight2=torch.from_numpy(weight2).to(device)
+#     weight22=torch.from_numpy(weight22).to(device)
+#     weight3=torch.from_numpy(weight3).to(device)
+#     weight33=torch.from_numpy(weight33).to(device)
+#     model.conv1.weight.data=weight1
+#     model.conv11.weight.data=weight11
+#     model.conv2.weight.data=weight2
+#     model.conv22.weight.data=weight22
+#     model.conv3.weight.data=weight3
+#     model.conv33.weight.data=weight33
     
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -231,7 +231,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=130, metavar='N',
+    parser.add_argument('--epochs', type=int, default=200, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
