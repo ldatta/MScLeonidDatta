@@ -32,13 +32,13 @@ def sortit(a):
     return z
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('GLRGBsortNoWeightred.npy',resultred)
-#     np.save('GLRGBsortNoWeightgrn.npy',resultgrn)
-#     np.save('GLRGBsortNoWeighttrn.npy',resulttrn)
+#     np.save('GLRGBnewsortred.npy',resultred)
+#     np.save('GLRGBnewsortgrn.npy',resultgrn)
+#     np.save('GLRGBnewsorttrn.npy',resulttrn)
 #     print("hello GL=1")
-    np.save('R7RGBsortNoWeightred.npy',resultred)
-    np.save('R7RGBsortNoWeightgrn.npy',resultgrn)
-    np.save('R7RGBsortNoWeighttrn.npy',resulttrn)
+    np.save('R7RGBnewsortred.npy',resultred)
+    np.save('R7RGBnewsortgrn.npy',resultgrn)
+    np.save('R7RGBnewsorttrn.npy',resulttrn)
     print("hello GL=0")
     
     
@@ -117,32 +117,31 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-#     weight1=weightit(1, k*3, 3,3)
-#     weight11=weightit(k*3, k2*16, 1,1)
-#     weight2=weightit(k2*16, k*16, 3,k3*16)
-#     weight22=weightit(k*16, k2*32, 1,1)
-#     weight3=weightit(k2*32, k*32, 3,k3*32)
-#     weight33=weightit(k*32, 10, 1,1)
-#     weight1=np.float32(weight1)
-#     weight11=np.float32(weight11)
-#     weight2=np.float32(weight2)
-#     weight22=np.float32(weight22)
-#     weight3=np.float32(weight3)
-#     weight33=np.float32(weight33)
-# #     print("CONVOLUTION NET")
-# #     model = Netconv().to(device)
-#     weight1=torch.from_numpy(weight1).to(device)
-#     weight11=torch.from_numpy(weight11).to(device)
-#     weight2=torch.from_numpy(weight2).to(device)
-#     weight22=torch.from_numpy(weight22).to(device)
-#     weight3=torch.from_numpy(weight3).to(device)
-#     weight33=torch.from_numpy(weight33).to(device)
-#     model.conv1.weight.data=weight1
-#     model.conv11.weight.data=weight11
-#     model.conv2.weight.data=weight2
-#     model.conv22.weight.data=weight22
-#     model.conv3.weight.data=weight3
-#     model.conv33.weight.data=weight33
+    weight1=weightit(1, k*3, 3,3)
+    weight11=weightit(k*3, k2*16, 1,1)
+    weight2=weightit(k2*16, k*16, 3,k3*16)
+    weight22=weightit(k*16, k2*32, 1,1)
+    weight3=weightit(k2*32, k*32, 3,k3*32)
+    weight33=weightit(k*32, 10, 1,1)
+    weight1=np.float32(weight1)
+    weight11=np.float32(weight11)
+    weight2=np.float32(weight2)
+    weight22=np.float32(weight22)
+    weight3=np.float32(weight3)
+    weight33=np.float32(weight33)
+
+    weight1=torch.from_numpy(weight1).to(device)
+    weight11=torch.from_numpy(weight11).to(device)
+    weight2=torch.from_numpy(weight2).to(device)
+    weight22=torch.from_numpy(weight22).to(device)
+    weight3=torch.from_numpy(weight3).to(device)
+    weight33=torch.from_numpy(weight33).to(device)
+    model.conv1.weight.data=weight1
+    model.conv11.weight.data=weight11
+    model.conv2.weight.data=weight2
+    model.conv22.weight.data=weight22
+    model.conv3.weight.data=weight3
+    model.conv33.weight.data=weight33
     
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
