@@ -25,18 +25,9 @@ def sortit(a):
     a=a.detach().cpu().numpy() 
     z=np.zeros((a.shape))
     for i in range (a.shape[0]):
-        matrix_mean_list = []
-        for k in a:
-            x = np.mean(k)
-            matrix_mean_list.append((k, x))
-
-        matrix_mean_list = sorted(matrix_mean_list, key=lambda m: m[1])
-        n=np.asarray(matrix_mean_list)
-        #print(n.shape)
-        #print(n[0][0].shape)
-        #z=np.zeros((a.shape))
-        for j in range(a.shape[0]):
-            z[j]=n[j][0]
+        amean= a[i].mean(axis=(1,2))
+        sortedindex= np.argsort(amean)
+        z[i]=z[i][sortedindex]
     z=torch.from_numpy(z)
     return z
 
