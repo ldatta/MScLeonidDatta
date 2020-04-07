@@ -82,18 +82,19 @@ class NetconvDep(nn.Module):
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
         
-    def sortit(a):
-    amean=torch.zeros(a.shape[1])
-    for i in range (a.shape[0]):
-        for j in range(a.shape[1]):
-            amean[j]=torch.mean(a[i,j])
-        print(amean)
-        sorted, sortedindices = torch.sort(amean)
-        print(sortedindices)
-        a[i]=a[i][sortedindices]
-    return a
+    
 
     def forward(self, x):
+        def sortit(a):
+            amean=torch.zeros(a.shape[1])
+            for i in range (a.shape[0]):
+                for j in range(a.shape[1]):
+                    amean[j]=torch.mean(a[i,j])
+                #print(amean)
+                sorted2, sortedindices = torch.sort(amean)
+                #print(sortedindices)
+                a[i]=a[i][sortedindices]
+            return a
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
