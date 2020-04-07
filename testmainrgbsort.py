@@ -22,18 +22,6 @@ k=14
 k2=14
 k3=14
 
-# def sortit(a):
-#     a=a.detach().cpu().numpy() 
-#     z=np.zeros((a.shape))
-#     for i in range (a.shape[0]):
-#         amean= a[i].mean(axis=(1,2))
-#         sortedindex= np.argsort(amean)
-#         z[i]=a[i][sortedindex]
-#     z=torch.from_numpy(z)
-#     return z
-
-
-
 def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBtorchsortred.npy',resultred)
 #     np.save('GLRGBtorchsortgrn.npy',resultgrn)
@@ -46,28 +34,7 @@ def npsave(resultred,resultgrn,resulttrn):
     
     
     
-def weightit(in_channel,outc,k,g):
-    range_value=in_channel*k*k
-    range_value=1. / math.sqrt(range_value)
-    
-    weight=np.random.uniform(-range_value,range_value,k*k)
-    weight=np.reshape(weight,(k,k))
-    
-        
-    if (g==1):
-        weightf=np.zeros(( outc,in_channel,k,k))
-        for i in range(outc):
-            for j in range(in_channel):
-                weightf[i,j,:,:]=weight
-        
-    else:
-        
-        weightf=np.zeros((outc,k,k))
-        
-        for j in range(outc):
-            weightf[j,:,:]=weight
-        weightf=np.reshape(weightf,(outc,1,k,k))
-    return weightf
+
 
 class NetconvDep(nn.Module):
     def __init__(self):
@@ -99,22 +66,16 @@ class NetconvDep(nn.Module):
         x=self.conv1(x) 
         x = F.relu(x)
         x=sortit(x)
-#         x=x.float()
-#         x=x.cuda()
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
         x=sortit(x)
-#         x=x.float()
-#         x=x.cuda()
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
         x=sortit(x)
-#         x=x.float()
-#         x=x.cuda()
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x)
@@ -131,32 +92,23 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-#     weight1=weightit(1, k*3, 3,3)
-#     weight11=weightit(k*3, k2*16, 1,1)
-#     weight2=weightit(k2*16, k*16, 3,k3*16)
-#     weight22=weightit(k*16, k2*32, 1,1)
-#     weight3=weightit(k2*32, k*32, 3,k3*32)
-#     weight33=weightit(k*32, 10, 1,1)
-#     weight1=np.float32(weight1)
-#     weight11=np.float32(weight11)
-#     weight2=np.float32(weight2)
-#     weight22=np.float32(weight22)
-#     weight3=np.float32(weight3)
-#     weight33=np.float32(weight33)
-
-#     weight1=torch.from_numpy(weight1).to(device)
-#     weight11=torch.from_numpy(weight11).to(device)
-#     weight2=torch.from_numpy(weight2).to(device)
-#     weight22=torch.from_numpy(weight22).to(device)
-#     weight3=torch.from_numpy(weight3).to(device)
-#     weight33=torch.from_numpy(weight33).to(device)
-#     model.conv1.weight.data=weight1
-#     model.conv11.weight.data=weight11
-#     model.conv2.weight.data=weight2
-#     model.conv22.weight.data=weight22
-#     model.conv3.weight.data=weight3
-#     model.conv33.weight.data=weight33
+    def weightit(inc,outc,k,g):
+        weightrange=1. / math.sqrt(inc*k*k)
     
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(inc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
+    
+        for i in range(weights.shape[0]):
+            weights[i]=kernel
+        return weights
+    x1=weightit(3,42,3,3)
+    x11=weightit(42,224,1,1)
+    x2=weightit(224,224,3,224)
+    x22=weightit(224,448,1,1)
+    x3=weightit(448,448,3,448)
+    x33=weightit(448,10,1,1)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
