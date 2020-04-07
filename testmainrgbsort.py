@@ -22,15 +22,15 @@ k=14
 k2=14
 k3=14
 
-def sortit(a):
-    a=a.detach().cpu().numpy() 
-    z=np.zeros((a.shape))
-    for i in range (a.shape[0]):
-        amean= a[i].mean(axis=(1,2))
-        sortedindex= np.argsort(amean)
-        z[i]=a[i][sortedindex]
-    z=torch.from_numpy(z)
-    return z
+# def sortit(a):
+#     a=a.detach().cpu().numpy() 
+#     z=np.zeros((a.shape))
+#     for i in range (a.shape[0]):
+#         amean= a[i].mean(axis=(1,2))
+#         sortedindex= np.argsort(amean)
+#         z[i]=a[i][sortedindex]
+#     z=torch.from_numpy(z)
+#     return z
 
 def sortit(a):
     z=torch.zeros(a.shape)
@@ -208,8 +208,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
