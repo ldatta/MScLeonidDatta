@@ -164,7 +164,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         
         #print(target.shape)
         loss = F.nll_loss(output, target)
-        loss.requires_grad = True
+#         loss.requires_grad = True
         loss.backward()
         optimizer.step()
         
