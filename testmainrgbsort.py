@@ -32,17 +32,7 @@ k3=14
 #     z=torch.from_numpy(z)
 #     return z
 
-def sortit(a):
-    z=torch.zeros(a.shape)
-    amean=torch.zeros(a.shape[1])
-    for i in range (a.shape[0]):
-        for j in range(a.shape[1]):
-            amean[j]=torch.mean(a[i,j])
-        print(amean)
-        sorted, sortedindices = torch.sort(amean)
-        print(sortedindices)
-        z[i]=a[i][sortedindices]
-    return z
+
 
 def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBnewsortred.npy',resultred)
@@ -92,7 +82,17 @@ class NetconvDep(nn.Module):
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
         self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
         
-    
+    def sortit(a):
+    amean=torch.zeros(a.shape[1])
+    for i in range (a.shape[0]):
+        for j in range(a.shape[1]):
+            amean[j]=torch.mean(a[i,j])
+        print(amean)
+        sorted, sortedindices = torch.sort(amean)
+        print(sortedindices)
+        a[i]=a[i][sortedindices]
+    return a
+
     def forward(self, x):
         x=x.float()
         x=self.conv1(x) 
