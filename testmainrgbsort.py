@@ -27,7 +27,7 @@ def sortit(a):
     for i in range (a.shape[0]):
         amean= a[i].mean(axis=(1,2))
         sortedindex= np.argsort(amean)
-        z[i]=z[i][sortedindex]
+        z[i]=a[i][sortedindex]
     z=torch.from_numpy(z)
     return z
 
