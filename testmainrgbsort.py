@@ -32,17 +32,17 @@ def sortit(a):
     z=torch.from_numpy(z)
     return z
 
-# def sortit(a):
-#     z=torch.zeros(a.shape)
-#     amean=torch.zeros(a.shape[1])
-#     for i in range (a.shape[0]):
-#         for j in range(a.shape[1]):
-#             amean[j]=torch.mean(a[i,j])
-#         print(amean)
-#         sorted, sortedindices = torch.sort(amean)
-#         print(sortedindices)
-#         z[i]=a[i][sortedindices]
-#     return z
+def sortit(a):
+    z=torch.zeros(a.shape)
+    amean=torch.zeros(a.shape[1])
+    for i in range (a.shape[0]):
+        for j in range(a.shape[1]):
+            amean[j]=torch.mean(a[i,j])
+        print(amean)
+        sorted, sortedindices = torch.sort(amean)
+        print(sortedindices)
+        z[i]=a[i][sortedindices]
+    return z
 
 def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBnewsortred.npy',resultred)
@@ -99,21 +99,21 @@ class NetconvDep(nn.Module):
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
-        x=x.cuda()
+#         x=x.cuda()
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
-        x=x.cuda()
+#         x=x.cuda()
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
         x=sortit(x)
         x=x.float()
-        x=x.cuda()
+#         x=x.cuda()
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x)
