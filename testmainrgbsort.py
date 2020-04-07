@@ -35,14 +35,14 @@ k3=14
 
 
 def npsave(resultred,resultgrn,resulttrn):
-#     np.save('GLRGBnewsortred.npy',resultred)
-#     np.save('GLRGBnewsortgrn.npy',resultgrn)
-#     np.save('GLRGBnewsorttrn.npy',resulttrn)
-#     print("hello GL=1")
-#     np.save('R7RGBnewsortNoWred.npy',resultred)
-#     np.save('R7RGBnewsortNoWgrn.npy',resultgrn)
-#     np.save('R7RGBnewsortNoWtrn.npy',resulttrn)
-    print("hello GL=0")
+    np.save('GLRGBtorchsortred.npy',resultred)
+    np.save('GLRGBtorchsortgrn.npy',resultgrn)
+    np.save('GLRGBtorchsorttrn.npy',resulttrn)
+    print("hello GL=1")
+#     np.save('R7RGBtorchsortNoWred.npy',resultred)
+#     np.save('R7RGBtorchsortNoWgrn.npy',resultgrn)
+#     np.save('R7RGBtorchsortNoWtrn.npy',resulttrn)
+#     print("hello GL=0")
     
     
     
