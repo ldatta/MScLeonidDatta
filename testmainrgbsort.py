@@ -1,11 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  7 20:06:58 2020
+
+@author: leoniddatta
+"""
+
 from __future__ import print_function
 import argparse
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import torchvision
-import torchvision.transforms as transform 
 from torchvision import datasets, transforms
 import tensorflow as tf
 import torch.utils.data as utils
@@ -13,16 +19,16 @@ import scipy.ndimage.filters as C
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
+
 import math 
 
-GL=0
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
-k=14
+k=14 #k, k2 and k3 controls the number of channels 
 k2=14
 k3=14
 
-def npsave(resultred,resultgrn,resulttrn):
+def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLRGBtorchsortred.npy',resultred)
 #     np.save('GLRGBtorchsortgrn.npy',resultgrn)
 #     np.save('GLRGBtorchsorttrn.npy',resulttrn)
@@ -39,27 +45,24 @@ def npsave(resultred,resultgrn,resulttrn):
 class NetconvDep(nn.Module):
     def __init__(self):
         super(NetconvDep, self).__init__()
-        st=2
-        st1=2
+        st=2 #stride=2
         self.conv1 = nn.Conv2d(3, k*3, 3, 1, groups=3)
         self.conv11 = nn.Conv2d(k*3, k2*16, 1, 1)
-        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st1,groups=k3*16)
+        self.conv2 = nn.Conv2d(k2*16, k*16, 3, st,groups=k3*16)
         self.conv22 = nn.Conv2d(k*16, k2*32, 1, st)
-        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st1,groups=k3*32)
+        self.conv3 = nn.Conv2d(k2*32, k*32, 3, st,groups=k3*32)
         self.conv33 = nn.Conv2d(k*32, 10, 1, st)
-        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0)
+        self.GAP=nn.AvgPool2d((3,3), stride=1, padding=0) 
         
     
 
     def forward(self, x):
-        def sortit(a):
+        def sortit(a): #Function for sorting using torch
             amean=torch.zeros(a.shape[1])
             for i in range (a.shape[0]):
                 for j in range(a.shape[1]):
                     amean[j]=torch.mean(a[i,j])
-                #print(amean)
                 sorted2, sortedindices = torch.sort(amean)
-                #print(sortedindices)
                 a[i]=a[i][sortedindices]
             return a
         x=x.float()
@@ -78,7 +81,7 @@ class NetconvDep(nn.Module):
         x=sortit(x)
         x=self.conv33(x) 
         x = F.relu(x)
-        x = self.GAP(x)
+        x = self.GAP(x) #Global average pool
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
         return x
@@ -92,8 +95,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    def weightit(inc,outc,k,g):
-        weightrange=1. / math.sqrt(inc*k*k)
+    def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        weightrange=1. / math.sqrt(inc*k*k) 
     
         if(inc==g):
             inc=1
@@ -103,50 +106,19 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         for i in range(weights.shape[0]):
             weights[i]=kernel
         return weights
-    x1=weightit(3,42,3,3)
-    x11=weightit(42,224,1,1)
-    x2=weightit(224,224,3,224)
-    x22=weightit(224,448,1,1)
-    x3=weightit(448,448,3,448)
-    x33=weightit(448,10,1,1)
+    model.conv1.weight.data=weightit(3,42,3,3).to(device)
+    model.conv11.weight.data=weightit(42,224,1,1).to(device)
+    model.conv2.weight.data=weightit(224,224,3,224).to(device)
+    model.conv22.weight.data=weightit(224,448,1,1).to(device)
+    model.conv3.weight.data=weightit(448,448,3,448).to(device)
+    model.conv33.weight.data=weightit(448,10,1,1).to(device)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         output = model(data)
-        #print(output.shape)
-        
-        #print(target.shape)
         loss = F.nll_loss(output, target)
-#         loss.requires_grad = True
         loss.backward()
         optimizer.step()
-        
-# =============================================================================
-#         weight1 = model.conv1.weight.data.numpy()
-#         weight11 = model.conv11.weight.data.numpy()
-#         weight2 = model.conv2.weight.data.numpy()
-#         weight22 = model.conv22.weight.data.numpy()
-#         weight3 = model.conv3.weight.data.numpy()
-#         weight33 = model.conv33.weight.data.numpy()
-# =============================================================================
-# =============================================================================
-#         print(weight1.shape,"weight 1 ")
-#         print(weight11.shape,"weight 11")
-#         print(weight2.shape,"weight 2")
-#         print(weight22.shape,"weight 22 ")
-#         print(weight3.shape,"weight 3")
-#         print(weight33.shape,"weight 33")
-# =============================================================================
-        
-# =============================================================================
-#         #np.save('L1.npy',weight1)
-#         weight2 = model.conv2.weight.data.numpy()
-#         np.save('LtrainedWeight2.npy',weight2)
-#         weight3 = model.conv3.weight.data.numpy()
-#         np.save('LtrainedWeight3.npy',weight3)
-#         weight4 = model.conv4.weight.data.numpy()
-#         np.save('LtrainedWeight4.npy',weight4)
-# =============================================================================
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
         total_train += target.size(0)
@@ -168,7 +140,6 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     return [r,g,t,train_accuracy]
 
 def test(args, model, device, test_loader):
-    #model.eval()
     model.train(mode=False)
     test_loss = 0
     correct = 0
@@ -179,8 +150,7 @@ def test(args, model, device, test_loader):
             
             test_loss += F.nll_loss(output, target, reduction='sum').item() # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True) # get the index of the max log-probability
-            #np.save('predlabelLtrainedINLtest.npy',pred)
-            #print(pred.shape,"predicted test")
+        
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
@@ -286,9 +256,6 @@ def main():
     b=b/255
     c=c/255
     datasize=56
-    print(a.shape)
-    print(a[0].max())
-    print(a[0].min())
     
     a=1*(a>0.3)
     b=1*(b>0.3)
@@ -417,9 +384,7 @@ def main():
     a=np.transpose(a, (0,3, 1, 2))
     b=np.transpose(b, (0,3, 1, 2))
     c=np.transpose(c, (0,3, 1, 2))
-#     a=np.reshape(a,(60000,1,datasize,datasize))
-#     b=np.reshape(b,(10000,1,datasize,datasize))
-#     c=np.reshape(c,(10000,1,datasize,datasize))
+
 
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
@@ -490,21 +455,7 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    #plotgraph(e,resultred,resultgrn, resulttrn)# ,bresultred,bresultgrn, bresulttrn)
     npsave(resultred,resultgrn,resulttrn)
-#     np.save('notun22GLRGBKK2K313maskgap5red.npy',resultred)
-#     np.save('notun22GLRGBKK2K313maskgap5grn.npy',resultgrn)
-#     np.save('notun22GLRGBKK2K313maskgap5trn.npy',resulttrn)
-    
-# #     np.save('notun22R7RGBKK2K313maskgap5red.npy',resultred)
-# #     np.save('notun22R7RGBKK2K313maskgap5grn.npy',resultgrn)
-# #     np.save('notun22R7RGBKK2K313maskgap5trn.npy',resulttrn)
-    
-#     #bresultred=np.load('Baseresults/INLtrainedresultred.npy')
-#     #bresultgrn=np.load('Baseresults/INLtrainedresultgrn.npy')  
-#     #bresulttrn=np.load('Baseresults/INLtrainedresulttrn.npy')
-                       
-#     plotgraph(e,resultred,resultgrn, resulttrn)#,bresultred,bresultgrn, bresulttrn)
 
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
