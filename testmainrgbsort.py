@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math 
 
-GL=1
+GL=0
 
 k=14
 k2=14
@@ -35,14 +35,14 @@ k3=14
 
 
 def npsave(resultred,resultgrn,resulttrn):
-    np.save('GLRGBtorchsortred.npy',resultred)
-    np.save('GLRGBtorchsortgrn.npy',resultgrn)
-    np.save('GLRGBtorchsorttrn.npy',resulttrn)
-    print("hello GL=1")
-#     np.save('R7RGBtorchsortNoWred.npy',resultred)
-#     np.save('R7RGBtorchsortNoWgrn.npy',resultgrn)
-#     np.save('R7RGBtorchsortNoWtrn.npy',resulttrn)
-#     print("hello GL=0")
+#     np.save('GLRGBtorchsortred.npy',resultred)
+#     np.save('GLRGBtorchsortgrn.npy',resultgrn)
+#     np.save('GLRGBtorchsorttrn.npy',resulttrn)
+#     print("hello GL=1")
+    np.save('R7RGBtorchsortNoWred.npy',resultred)
+    np.save('R7RGBtorchsortNoWgrn.npy',resultgrn)
+    np.save('R7RGBtorchsortNoWtrn.npy',resulttrn)
+    print("hello GL=0")
     
     
     
