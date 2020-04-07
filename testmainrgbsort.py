@@ -39,9 +39,9 @@ def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBtorchsortgrn.npy',resultgrn)
 #     np.save('GLRGBtorchsorttrn.npy',resulttrn)
 #     print("hello GL=1")
-    np.save('R7RGBtorchsortNoWred.npy',resultred)
-    np.save('R7RGBtorchsortNoWgrn.npy',resultgrn)
-    np.save('R7RGBtorchsortNoWtrn.npy',resulttrn)
+    np.save('R7RGBtorchsortred.npy',resultred)
+    np.save('R7RGBtorchsortgrn.npy',resultgrn)
+    np.save('R7RGBtorchsorttrn.npy',resulttrn)
     print("hello GL=0")
     
     
