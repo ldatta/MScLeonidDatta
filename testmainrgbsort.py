@@ -35,11 +35,11 @@ def npsave(resultred,resultgrn,resulttrn):
 #     np.save('GLRGBnewsortred.npy',resultred)
 #     np.save('GLRGBnewsortgrn.npy',resultgrn)
 #     np.save('GLRGBnewsorttrn.npy',resulttrn)
-    print("hello GL=1")
+#     print("hello GL=1")
 #     np.save('R7RGBnewsortNoWred.npy',resultred)
 #     np.save('R7RGBnewsortNoWgrn.npy',resultgrn)
 #     np.save('R7RGBnewsortNoWtrn.npy',resulttrn)
-#     print("hello GL=0")
+    print("hello GL=0")
     
     
     
