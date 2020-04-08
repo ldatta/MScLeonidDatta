@@ -22,21 +22,21 @@ import matplotlib.pyplot as plt
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 k=14 #k, k2 and k3 controls the number of channels 
 k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-    np.save('GLRGBnewWred.npy',resultred)
-    np.save('GLRGBnewWgrn.npy',resultgrn)
-    np.save('GLRGBnewWtrn.npy',resulttrn)
-    print("hello GL=1")
-#     np.save('R7RGBnewWred.npy',resultred)
-#     np.save('R7RGBnewWgrn.npy',resultgrn)
-#     np.save('R7RGBnewWtrn.npy',resulttrn)
-#     print("hello GL=0")
+#     np.save('GLRGBnewWred.npy',resultred)
+#     np.save('GLRGBnewWgrn.npy',resultgrn)
+#     np.save('GLRGBnewWtrn.npy',resulttrn)
+#     print("hello GL=1")
+    np.save('R7RGBnewWred.npy',resultred)
+    np.save('R7RGBnewWgrn.npy',resultgrn)
+    np.save('R7RGBnewWtrn.npy',resulttrn)
+    print("hello GL=0")
 
 #     np.save('GLRGBsortred.npy',resultred)
 #     np.save('GLRGBsortgrn.npy',resultgrn)
