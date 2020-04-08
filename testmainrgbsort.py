@@ -29,22 +29,15 @@ k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLRGBsortConv1red.npy',resultred)
-#     np.save('GLRGBsortConv1grn.npy',resultgrn)
-#     np.save('GLRGBsortConv1trn.npy',resulttrn)
-#     print("hello GL=1")
-    np.save('R7RGBsortConv1red.npy',resultred)
-    np.save('R7RGBsortConv1grn.npy',resultgrn)
-    np.save('R7RGBsortConv1trn.npy',resulttrn)
-    print("hello GL=0")
+
 #     np.save('GLRGBsortred.npy',resultred)
 #     np.save('GLRGBsortgrn.npy',resultgrn)
 #     np.save('GLRGBsorttrn.npy',resulttrn)
 #     print("hello GL=1")
-#     np.save('R7RGBsortred.npy',resultred)
-#     np.save('R7RGBsortgrn.npy',resultgrn)
-#     np.save('R7RGBsorttrn.npy',resulttrn)
-#     print("hello GL=0")
+    np.save('R7RGBsortred.npy',resultred)
+    np.save('R7RGBsortgrn.npy',resultgrn)
+    np.save('R7RGBsorttrn.npy',resulttrn)
+    print("hello GL=0")
     
     
     
@@ -81,12 +74,12 @@ class NetconvDep(nn.Module):
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x) #Global average pool
