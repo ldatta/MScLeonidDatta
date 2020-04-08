@@ -29,11 +29,19 @@ k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-
-    np.save('GLRGBsortred.npy',resultred)
-    np.save('GLRGBsortgrn.npy',resultgrn)
-    np.save('GLRGBsorttrn.npy',resulttrn)
+    np.save('GLRGBnewWred.npy',resultred)
+    np.save('GLRGBnewWgrn.npy',resultgrn)
+    np.save('GLRGBnewWtrn.npy',resulttrn)
     print("hello GL=1")
+#     np.save('R7RGBnewWred.npy',resultred)
+#     np.save('R7RGBnewWgrn.npy',resultgrn)
+#     np.save('R7RGBnewWtrn.npy',resulttrn)
+#     print("hello GL=0")
+
+#     np.save('GLRGBsortred.npy',resultred)
+#     np.save('GLRGBsortgrn.npy',resultgrn)
+#     np.save('GLRGBsorttrn.npy',resulttrn)
+#     print("hello GL=1")
 #     np.save('R7RGBsortred.npy',resultred)
 #     np.save('R7RGBsortgrn.npy',resultgrn)
 #     np.save('R7RGBsorttrn.npy',resulttrn)
@@ -69,17 +77,17 @@ class NetconvDep(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x) #Global average pool
@@ -96,23 +104,31 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-#     def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-#         weightrange=1. / math.sqrt(inc*k*k) 
+    def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        
+        weightrange=1. / math.sqrt(inc*k*k)
     
-#         if(inc==g):
-#             inc=1
-#         kernel=torch.FloatTensor(inc,k, k).uniform_(-weightrange, weightrange)
-#         weights=torch.zeros((outc,inc,k,k))
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
     
-#         for i in range(weights.shape[0]):
-#             weights[i]=kernel
-#         return weights
-#     model.conv1.weight.data=weightit(3,42,3,3).to(device)
-#     model.conv11.weight.data=weightit(42,224,1,1).to(device)
-#     model.conv2.weight.data=weightit(224,224,3,224).to(device)
-#     model.conv22.weight.data=weightit(224,448,1,1).to(device)
-#     model.conv3.weight.data=weightit(448,448,3,448).to(device)
-#     model.conv33.weight.data=weightit(448,10,1,1).to(device)
+        for i in range(weights.shape[1]):
+            weights[:,i]=kernel
+        return weights
+    x1=weightit(3,42,3,3)
+    x11=weightit(42,224,1,1)
+    x2=weightit(224,224,3,224)
+    x22=weightit(224,448,1,1)
+    x3=weightit(448,448,3,448)
+    x33=weightit(448,10,1,1)   
+    model.conv1.weight.data=x1.to(device)
+    model.conv11.weight.data=x11.to(device)
+    model.conv2.weight.data=x2.to(device)
+    model.conv22.weight.data=x22.to(device)
+    model.conv3.weight.data=x3.to(device)
+    model.conv33.weight.data=x33.to(device)
+
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -134,8 +150,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
@@ -169,7 +185,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=150, metavar='N',
+    parser.add_argument('--epochs', type=int, default=200, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -439,7 +455,7 @@ def main():
         grnaccm[epoch-1]=g
         trnaccm[epoch-1]=t
         redacc[epoch-1]=test(args, model, device, hortest_loader)
-        grnacc[epoch-1]=0#test(args, model, device, test_loader)
+        grnacc[epoch-1]=test(args, model, device, test_loader)
         trnacc[epoch-1]=ta
     resultred = np.empty((redacc.size + redaccm.size+1,),dtype=redacc.dtype)
     resultred[0]=br
