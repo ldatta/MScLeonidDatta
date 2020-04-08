@@ -95,23 +95,23 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-        weightrange=1. / math.sqrt(inc*k*k) 
+#     def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+#         weightrange=1. / math.sqrt(inc*k*k) 
     
-        if(inc==g):
-            inc=1
-        kernel=torch.FloatTensor(inc,k, k).uniform_(-weightrange, weightrange)
-        weights=torch.zeros((outc,inc,k,k))
+#         if(inc==g):
+#             inc=1
+#         kernel=torch.FloatTensor(inc,k, k).uniform_(-weightrange, weightrange)
+#         weights=torch.zeros((outc,inc,k,k))
     
-        for i in range(weights.shape[0]):
-            weights[i]=kernel
-        return weights
-    model.conv1.weight.data=weightit(3,42,3,3).to(device)
-    model.conv11.weight.data=weightit(42,224,1,1).to(device)
-    model.conv2.weight.data=weightit(224,224,3,224).to(device)
-    model.conv22.weight.data=weightit(224,448,1,1).to(device)
-    model.conv3.weight.data=weightit(448,448,3,448).to(device)
-    model.conv33.weight.data=weightit(448,10,1,1).to(device)
+#         for i in range(weights.shape[0]):
+#             weights[i]=kernel
+#         return weights
+#     model.conv1.weight.data=weightit(3,42,3,3).to(device)
+#     model.conv11.weight.data=weightit(42,224,1,1).to(device)
+#     model.conv2.weight.data=weightit(224,224,3,224).to(device)
+#     model.conv22.weight.data=weightit(224,448,1,1).to(device)
+#     model.conv3.weight.data=weightit(448,448,3,448).to(device)
+#     model.conv33.weight.data=weightit(448,10,1,1).to(device)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -133,8 +133,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=test(args, model, device, hortest_loader)
-                    g=test(args, model, device, test_loader)
+                    r=0#test(args, model, device, hortest_loader)
+                    g=0#test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
@@ -168,7 +168,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=300, metavar='N',
+    parser.add_argument('--epochs', type=int, default=150, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -438,7 +438,7 @@ def main():
         grnaccm[epoch-1]=g
         trnaccm[epoch-1]=t
         redacc[epoch-1]=test(args, model, device, hortest_loader)
-        grnacc[epoch-1]=test(args, model, device, test_loader)
+        grnacc[epoch-1]=0#test(args, model, device, test_loader)
         trnacc[epoch-1]=ta
     resultred = np.empty((redacc.size + redaccm.size+1,),dtype=redacc.dtype)
     resultred[0]=br
