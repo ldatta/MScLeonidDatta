@@ -29,13 +29,13 @@ k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLRGBnewWred.npy',resultred)
-#     np.save('GLRGBnewWgrn.npy',resultgrn)
-#     np.save('GLRGBnewWtrn.npy',resulttrn)
+#     np.save('GLRGBnewWsortred.npy',resultred)
+#     np.save('GLRGBnewWsortgrn.npy',resultgrn)
+#     np.save('GLRGBnewWsorttrn.npy',resulttrn)
 #     print("hello GL=1")
-    np.save('R7RGBnewWred.npy',resultred)
-    np.save('R7RGBnewWgrn.npy',resultgrn)
-    np.save('R7RGBnewWtrn.npy',resulttrn)
+    np.save('R7RGBnewWsortred.npy',resultred)
+    np.save('R7RGBnewWsortgrn.npy',resultgrn)
+    np.save('R7RGBnewWsorttrn.npy',resulttrn)
     print("hello GL=0")
 
 #     np.save('GLRGBsortred.npy',resultred)
@@ -77,17 +77,17 @@ class NetconvDep(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x) #Global average pool
@@ -204,7 +204,7 @@ def main():
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
-
+    
     device = torch.device("cuda" if use_cuda else "cpu")
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
