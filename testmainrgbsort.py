@@ -22,21 +22,21 @@ import matplotlib.pyplot as plt
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 k=14 #k, k2 and k3 controls the number of channels 
 k2=14
 k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-    np.save('GLRGBsortConv1red.npy',resultred)
-    np.save('GLRGBsortConv1grn.npy',resultgrn)
-    np.save('GLRGBsortConv1trn.npy',resulttrn)
-    print("hello GL=1")
-#     np.save('R7RGBsortConv1red.npy',resultred)
-#     np.save('R7RGBsortConv1grn.npy',resultgrn)
-#     np.save('R7RGBsortConv1trn.npy',resulttrn)
-#     print("hello GL=0")
+#     np.save('GLRGBsortConv1red.npy',resultred)
+#     np.save('GLRGBsortConv1grn.npy',resultgrn)
+#     np.save('GLRGBsortConv1trn.npy',resulttrn)
+#     print("hello GL=1")
+    np.save('R7RGBsortConv1red.npy',resultred)
+    np.save('R7RGBsortConv1grn.npy',resultgrn)
+    np.save('R7RGBsortConv1trn.npy',resulttrn)
+    print("hello GL=0")
 #     np.save('GLRGBsortred.npy',resultred)
 #     np.save('GLRGBsortgrn.npy',resultgrn)
 #     np.save('GLRGBsorttrn.npy',resulttrn)
@@ -445,8 +445,8 @@ def main():
         redaccm[epoch-1]=r
         grnaccm[epoch-1]=g
         trnaccm[epoch-1]=t
-        redacc[epoch-1]=test(args, model, device, hortest_loader)
-        grnacc[epoch-1]=0#test(args, model, device, test_loader)
+        redacc[epoch-1]=0#test(args, model, device, hortest_loader)
+        grnacc[epoch-1]=test(args, model, device, test_loader)
         trnacc[epoch-1]=ta
     resultred = np.empty((redacc.size + redaccm.size+1,),dtype=redacc.dtype)
     resultred[0]=br
