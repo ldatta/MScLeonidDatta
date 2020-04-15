@@ -17,12 +17,71 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 k=14 #k, k2 and k3 controls the number of channels 
 k2=14
 k3=14
-
+def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        
+        weightrange=1. / math.sqrt(inc*k*k)
+    
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
+    
+        for i in range(weights.shape[1]):
+            weights[:,i]=kernel
+        return weights
+x1=weightit(3,16,3,1)
+x2=weightit(16,32,3,1)
+x3=weightit(32,64,3,1) 
+x4=weightit(64,128,3,1)
+x5=weightit(128,10,3,1)
+def plotgraph (xs,y1s,y2s,yts):
+    plt.clf()
+    
+    fig = plt.figure(figsize=(10, 7))
+    plt.plot(xs,y1s,'s:r')
+    plt.ylim(0, 100)
+    #plt.xlim(0,20)
+    fig.suptitle('ACCURACY GRAPH')
+    plt.xlabel('Epoch no')
+    plt.ylabel('Accuracy %')
+    for x,y in zip(xs,y1s):
+        label = "{:.0f}".format(y)
+        plt.annotate(label, # this is the text
+                 (x,y), # this is the point to label
+                 textcoords="offset points", # how to position the text
+                 xytext=(0,10), # distance from text to points (x,y)
+                 ha='center') # horizontal alignment can be left, right or center
+    
+    plt.plot(xs,y2s,'^:g')
+    for x,y in zip(xs,y2s):
+        label = "{:.0f}".format(y)
+        plt.annotate(label, # this is the text
+                 (x,y), # this is the point to label
+                 textcoords="offset points", # how to position the text
+                 xytext=(0,10), # distance from text to points (x,y)
+                 ha='center') # horizontal alignment can be left, right or center
+    plt.plot(xs,yts,'*:b')
+    for x,y in zip(xs,yts):
+        label = "{:.0f}".format(y)
+        plt.annotate(label, # this is the text
+                 (x,y), # this is the point to label
+                 textcoords="offset points", # how to position the text
+                 xytext=(0,10), # distance from text to points (x,y)
+                 ha='center') 
+    blue_line = mlines.Line2D([], [], color='blue', marker='*',
+                          markersize=10, label='training data')
+    red_line = mlines.Line2D([], [], color='red', marker='s',
+                          markersize=10, label='R7 test data')
+    green_line = mlines.Line2D([], [], color='green', marker='^',
+                          markersize=10, label='GL test data')
+    plt.legend(handles=[blue_line,red_line,green_line],loc=2)
+    plt.show()  
+    
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLRGBnewWsortred.npy',resultred)
 #     np.save('GLRGBnewWsortgrn.npy',resultgrn)
@@ -79,23 +138,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-        
-        weightrange=1. / math.sqrt(inc*k*k)
     
-        if(inc==g):
-            inc=1
-        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-        weights=torch.zeros((outc,inc,k,k))
-    
-        for i in range(weights.shape[1]):
-            weights[:,i]=kernel
-        return weights
-    x1=weightit(3,16,3,1)
-    x2=weightit(16,32,3,1)
-    x3=weightit(32,64,3,1) 
-    x4=weightit(64,128,3,1)
-    x5=weightit(128,10,3,1)
     model.conv1.weight.data=x1.to(device)
     model.conv2.weight.data=x2.to(device)
     model.conv3.weight.data=x3.to(device)
@@ -158,7 +201,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=200, metavar='N',
+    parser.add_argument('--epochs', type=int, default=20, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -446,7 +489,7 @@ def main():
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
     npsave(resultred,resultgrn,resulttrn)
-
+    plotgraph(e,resultred,resultgrn, resulttrn)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
     
