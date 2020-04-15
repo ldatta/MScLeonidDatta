@@ -124,7 +124,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     model.train() 
       
     model.conv1.weight.data=x1.to(device)
-    model.conv11.weight.data=x11.to(device)
+#     model.conv11.weight.data=x11.to(device)
 #     model.conv2.weight.data=x2.to(device)
 #     model.conv22.weight.data=x22.to(device)
 #     model.conv3.weight.data=x3.to(device)
