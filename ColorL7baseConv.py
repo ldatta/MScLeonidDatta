@@ -17,7 +17,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 k=14 #k, k2 and k3 controls the number of channels 
 k2=14
@@ -125,8 +125,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
