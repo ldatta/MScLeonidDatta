@@ -114,17 +114,30 @@ class Netconv(nn.Module):
                
         
     def forward(self, x):
+        def sortit(a): #Function for sorting using torch
+            amean=torch.zeros(a.shape[1])
+            for i in range (a.shape[0]):
+                for j in range(a.shape[1]):
+                    amean[j]=torch.mean(a[i,j])
+                sorted2, sortedindices = torch.sort(amean)
+                a[i]=a[i][sortedindices]
+            return a
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
+        x=sortit(x)
         x=self.conv2(x) 
         x = F.relu(x)
+        x=sortit(x)
         x=self.conv3(x) 
         x = F.relu(x)
+        x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
+        x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
+        x=sortit(x)
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
@@ -201,7 +214,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=20, metavar='N',
+    parser.add_argument('--epochs', type=int, default=40, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
