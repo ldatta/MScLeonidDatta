@@ -91,16 +91,16 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         for i in range(weights.shape[1]):
             weights[:,i]=kernel
         return weights
-#     x1=weightit(3,16,3,1)
-#     x2=weightit(16,32,3,1)
-#     x3=weightit(32,64,3,1) 
-#     x4=weightit(64,128,3,1)
-#     x5=weightit(128,10,3,1)
-#     model.conv1.weight.data=x1.to(device)
-#     model.conv2.weight.data=x2.to(device)
-#     model.conv3.weight.data=x3.to(device)
-#     model.conv4.weight.data=x2.to(device)
-#     model.conv5.weight.data=x3.to(device)
+    x1=weightit(3,16,3,1)
+    x2=weightit(16,32,3,1)
+    x3=weightit(32,64,3,1) 
+    x4=weightit(64,128,3,1)
+    x5=weightit(128,10,3,1)
+    model.conv1.weight.data=x1.to(device)
+    model.conv2.weight.data=x2.to(device)
+    model.conv3.weight.data=x3.to(device)
+    model.conv4.weight.data=x4.to(device)
+    model.conv5.weight.data=x5.to(device)
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
