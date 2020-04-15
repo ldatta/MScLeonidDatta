@@ -39,12 +39,12 @@ def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_chann
         for i in range(weights.shape[1]):
             weights[:,i]=kernel
         return weights
-    x1=weightit(3,42,3,3)
-    x11=weightit(42,224,1,1)
-    x2=weightit(224,224,3,224)
-    x22=weightit(224,448,1,1)
-    x3=weightit(448,448,3,448)
-    x33=weightit(448,10,1,1) 
+x1=weightit(3,42,3,3)
+x11=weightit(42,224,1,1)
+x2=weightit(224,224,3,224)
+x22=weightit(224,448,1,1)
+x3=weightit(448,448,3,448)
+x33=weightit(448,10,1,1) 
     
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLRGBnewWsortred.npy',resultred)
@@ -84,14 +84,14 @@ class NetconvDep(nn.Module):
     
 
     def forward(self, x):
-        def sortit(a): #Function for sorting using torch
-            amean=torch.zeros(a.shape[1])
-            for i in range (a.shape[0]):
-                for j in range(a.shape[1]):
-                    amean[j]=torch.mean(a[i,j])
-                sorted2, sortedindices = torch.sort(amean)
-                a[i]=a[i][sortedindices]
-            return a
+#         def sortit(a): #Function for sorting using torch
+#             amean=torch.zeros(a.shape[1])
+#             for i in range (a.shape[0]):
+#                 for j in range(a.shape[1]):
+#                     amean[j]=torch.mean(a[i,j])
+#                 sorted2, sortedindices = torch.sort(amean)
+#                 a[i]=a[i][sortedindices]
+#             return a
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
