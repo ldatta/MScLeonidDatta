@@ -27,11 +27,29 @@ GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped trai
 k=14 #k, k2 and k3 controls the number of channels 
 k2=14
 k3=14
-
+def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        
+        weightrange=1. / math.sqrt(inc*k*k)
+    
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
+    
+        for i in range(weights.shape[1]):
+            weights[:,i]=kernel
+        return weights
+    x1=weightit(3,42,3,3)
+    x11=weightit(42,224,1,1)
+    x2=weightit(224,224,3,224)
+    x22=weightit(224,448,1,1)
+    x3=weightit(448,448,3,448)
+    x33=weightit(448,10,1,1) 
+    
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-    np.save('GLRGBnewWsortred.npy',resultred)
-    np.save('GLRGBnewWsortgrn.npy',resultgrn)
-    np.save('GLRGBnewWsorttrn.npy',resulttrn)
+#     np.save('GLRGBnewWsortred.npy',resultred)
+#     np.save('GLRGBnewWsortgrn.npy',resultgrn)
+#     np.save('GLRGBnewWsorttrn.npy',resulttrn)
     print("hello GL=1")
 #     np.save('R7RGBnewWsortred.npy',resultred)
 #     np.save('R7RGBnewWsortgrn.npy',resultgrn)
@@ -77,17 +95,17 @@ class NetconvDep(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv11(x) 
         x = F.relu(x)
         x=self.conv2(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv22(x) 
         x = F.relu(x)
         x=self.conv3(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv33(x) 
         x = F.relu(x)
         x = self.GAP(x) #Global average pool
@@ -104,24 +122,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-    def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-        
-        weightrange=1. / math.sqrt(inc*k*k)
-    
-        if(inc==g):
-            inc=1
-        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-        weights=torch.zeros((outc,inc,k,k))
-    
-        for i in range(weights.shape[1]):
-            weights[:,i]=kernel
-        return weights
-    x1=weightit(3,42,3,3)
-    x11=weightit(42,224,1,1)
-    x2=weightit(224,224,3,224)
-    x22=weightit(224,448,1,1)
-    x3=weightit(448,448,3,448)
-    x33=weightit(448,10,1,1)   
+      
     model.conv1.weight.data=x1.to(device)
     model.conv11.weight.data=x11.to(device)
     model.conv2.weight.data=x2.to(device)
