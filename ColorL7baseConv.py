@@ -17,17 +17,17 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
-# k=14 #k, k2 and k3 controls the number of channels 
-# k2=14
-# k3=14
+k=14 #k, k2 and k3 controls the number of channels 
+k2=14
+k3=14
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLRGBnewWsortred.npy',resultred)
-#     np.save('GLRGBnewWsortgrn.npy',resultgrn)
-#     np.save('GLRGBnewWsorttrn.npy',resulttrn)
-    print("hello GL=1")
+    np.save('GLRGBnewWsortred.npy',resultred)
+    np.save('GLRGBnewWsortgrn.npy',resultgrn)
+    np.save('GLRGBnewWsorttrn.npy',resulttrn)
+    print("hello")
 #     np.save('R7RGBnewWsortred.npy',resultred)
 #     np.save('R7RGBnewWsortgrn.npy',resultgrn)
 #     np.save('R7RGBnewWsorttrn.npy',resulttrn)
@@ -91,18 +91,20 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         for i in range(weights.shape[1]):
             weights[:,i]=kernel
         return weights
-    x1=weightit(3,42,3,3)
-    x11=weightit(42,224,1,1)
-    x2=weightit(224,224,3,224)
-    x22=weightit(224,448,1,1)
-    x3=weightit(448,448,3,448)
-    x33=weightit(448,10,1,1)   
-    model.conv1.weight.data=x1.to(device)
-    model.conv11.weight.data=x11.to(device)
-    model.conv2.weight.data=x2.to(device)
-    model.conv22.weight.data=x22.to(device)
-    model.conv3.weight.data=x3.to(device)
-    model.conv33.weight.data=x33.to(device)
+# =============================================================================
+#     x1=weightit(3,16,3,1)
+#     x2=weightit(16,32,3,1)
+#     x3=weightit(32,64,3,1) 
+#     x4=weightit(64,128,3,1)
+#     x5=weightit(128,10,3,1)
+# =============================================================================
+# =============================================================================
+#     model.conv1.weight.data=x1.to(device)
+#     model.conv2.weight.data=x2.to(device)
+#     model.conv3.weight.data=x3.to(device)
+#     model.conv4.weight.data=x2.to(device)
+#     model.conv5.weight.data=x3.to(device)
+# =============================================================================
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -404,8 +406,8 @@ def main():
     hortest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
     print("test set loaded")
 
-    print(" DEPTHWISE CONVOLUTION NET")
-    model = NetconvDep().to(device)
+    print(" CONVOLUTION NET")
+    model = Netconv().to(device)
     
     
     print("Net")
