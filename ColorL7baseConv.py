@@ -19,9 +19,7 @@ import math
 
 GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
-k=14 #k, k2 and k3 controls the number of channels 
-k2=14
-k3=14
+
 def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
         
         weightrange=1. / math.sqrt(inc*k*k)
@@ -39,67 +37,27 @@ x2=weightit(16,32,3,1)
 x3=weightit(32,64,3,1) 
 x4=weightit(64,128,3,1)
 x5=weightit(128,10,3,1)
-def plotgraph (xs,y1s,y2s,yts):
-    plt.clf()
-    
-    fig = plt.figure(figsize=(10, 7))
-    plt.plot(xs,y1s,'s:r')
-    plt.ylim(0, 100)
-    #plt.xlim(0,20)
-    fig.suptitle('ACCURACY GRAPH')
-    plt.xlabel('Epoch no')
-    plt.ylabel('Accuracy %')
-    for x,y in zip(xs,y1s):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
-    
-    plt.plot(xs,y2s,'^:g')
-    for x,y in zip(xs,y2s):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
-    plt.plot(xs,yts,'*:b')
-    for x,y in zip(xs,yts):
-        label = "{:.0f}".format(y)
-        plt.annotate(label, # this is the text
-                 (x,y), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') 
-    blue_line = mlines.Line2D([], [], color='blue', marker='*',
-                          markersize=10, label='training data')
-    red_line = mlines.Line2D([], [], color='red', marker='s',
-                          markersize=10, label='R7 test data')
-    green_line = mlines.Line2D([], [], color='green', marker='^',
-                          markersize=10, label='GL test data')
-    plt.legend(handles=[blue_line,red_line,green_line],loc=2)
-    plt.show()  
-    
+     
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLRGBnewWsortred.npy',resultred)
-#     np.save('GLRGBnewWsortgrn.npy',resultgrn)
-#     np.save('GLRGBnewWsorttrn.npy',resulttrn)
-    print("hello")
+#     np.save('GLnewWred.npy',resultred)
+#     np.save('GLnewWgrn.npy',resultgrn)
+#     np.save('GLnewWtrn.npy',resulttrn)
+#     print("hello GL=1")
+    np.save('R7newWred.npy',resultred)
+    np.save('R7newWgrn.npy',resultgrn)
+    np.save('R7newWtrn.npy',resulttrn)
+    print("hello GL=0")
+    
+#     np.save('GLnewWsortred.npy',resultred)
+#     np.save('GLnewWsortgrn.npy',resultgrn)
+#     np.save('GLnewWsorttrn.npy',resulttrn)
+#     print("hello GL=1")
 #     np.save('R7RGBnewWsortred.npy',resultred)
 #     np.save('R7RGBnewWsortgrn.npy',resultgrn)
 #     np.save('R7RGBnewWsorttrn.npy',resulttrn)
 #     print("hello GL=0")
 
-#     np.save('GLRGBsortred.npy',resultred)
-#     np.save('GLRGBsortgrn.npy',resultgrn)
-#     np.save('GLRGBsorttrn.npy',resulttrn)
-#     print("hello GL=1")
-#     np.save('R7RGBsortred.npy',resultred)
-#     np.save('R7RGBsortgrn.npy',resultgrn)
-#     np.save('R7RGBsorttrn.npy',resulttrn)
-#     print("hello GL=0")
+
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
@@ -114,32 +72,30 @@ class Netconv(nn.Module):
                
         
     def forward(self, x):
-        def sortit(a):
-            a=a.detach().cpu().numpy() 
-            z=np.zeros((a.shape))
-            for i in range (a.shape[0]):
-                amean= a[i].mean(axis=(1,2))
-                sortedindex= np.argsort(amean)
-                z[i]=a[i][sortedindex]
-            z=torch.from_numpy(z)
-            return z
-        
+#         def sortit(a): #Function for sorting using torch
+#             amean=torch.zeros(a.shape[1])
+#             for i in range (a.shape[0]):
+#                 for j in range(a.shape[1]):
+#                     amean[j]=torch.mean(a[i,j])
+#                 sorted2, sortedindices = torch.sort(amean)
+#                 a[i]=a[i][sortedindices]
+#             return a
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv2(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv3(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
@@ -154,11 +110,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     
-#     model.conv1.weight.data=x1.to(device)
-#     model.conv2.weight.data=x2.to(device)
-#     model.conv3.weight.data=x3.to(device)
-#     model.conv4.weight.data=x4.to(device)
-#     model.conv5.weight.data=x5.to(device)
+    model.conv1.weight.data=x1.to(device)
+    model.conv2.weight.data=x2.to(device)
+    model.conv3.weight.data=x3.to(device)
+    model.conv4.weight.data=x4.to(device)
+    model.conv5.weight.data=x5.to(device)
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -181,8 +137,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=test(args, model, device, hortest_loader)
-                    g=test(args, model, device, test_loader)
+                    r=0#test(args, model, device, hortest_loader)
+                    g=0#test(args, model, device, test_loader)
                     t=int(train_accuracy)   
     
     return [r,g,t,train_accuracy]
@@ -216,7 +172,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=200, metavar='N',
+    parser.add_argument('--epochs', type=int, default=100, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
