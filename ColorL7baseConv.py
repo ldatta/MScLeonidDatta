@@ -137,7 +137,7 @@ class Netconv(nn.Module):
         x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
