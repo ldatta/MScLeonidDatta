@@ -114,14 +114,16 @@ class Netconv(nn.Module):
                
         
     def forward(self, x):
-        def sortit(a): #Function for sorting using torch
-            amean=torch.zeros(a.shape[1])
+        def sortit(a):
+            a=a.detach().cpu().numpy() 
+            z=np.zeros((a.shape))
             for i in range (a.shape[0]):
-                for j in range(a.shape[1]):
-                    amean[j]=torch.mean(a[i,j])
-                sorted2, sortedindices = torch.sort(amean)
-                a[i]=a[i][sortedindices]
-            return a
+                amean= a[i].mean(axis=(1,2))
+                sortedindex= np.argsort(amean)
+                z[i]=a[i][sortedindex]
+            z=torch.from_numpy(z)
+            return z
+        
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
