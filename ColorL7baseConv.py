@@ -24,34 +24,34 @@ def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLsortAfterC12345grn.npy',resultgrn)
 #     np.save('GLsortAfterC12345trn.npy',resulttrn)
 #     print("hello GL=1")
-    np.save('R7RGBsortAfterC12345red.npy',resultred)
-    np.save('R7RGBsortAfterC12345grn.npy',resultgrn)
-    np.save('R7RGBsortAfterC12345trn.npy',resulttrn)
-    print("hello GL=0")
+#     np.save('R7RGBsortAfterC12345red.npy',resultred)
+#     np.save('R7RGBsortAfterC12345grn.npy',resultgrn)
+#     np.save('R7RGBsortAfterC12345trn.npy',resulttrn)
+#     print("hello GL=0")
 #     np.save('GLnewWsortAfterC12345red.npy',resultred)
 #     np.save('GLnewWsortAfterC12345grn.npy',resultgrn)
 #     np.save('GLnewWsortAfterC12345trn.npy',resulttrn)
 #     print("hello GL=1")
-#     np.save('R7RGBnewWsortAfterC12345red.npy',resultred)
-#     np.save('R7RGBnewWsortAfterC12345grn.npy',resultgrn)
-#     np.save('R7RGBnewWsortAfterC12345trn.npy',resulttrn)
-#     print("hello GL=0")
+    np.save('R7newWsortAfterC12345red.npy',resultred)
+    np.save('R7newWsortAfterC12345grn.npy',resultgrn)
+    np.save('R7newWsortAfterC12345trn.npy',resulttrn)
+    print("hello GL=0")
 
-# def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-#         weightrange=1. / math.sqrt(inc*k*k)
-#         if(inc==g):
-#             inc=1
-#         kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-#         weights=torch.zeros((outc,inc,k,k))
-#         for i in range(weights.shape[1]):
-#             weights[:,i]=kernel
-#         return weights
+def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        weightrange=1. / math.sqrt(inc*k*k)
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
+        for i in range(weights.shape[1]):
+            weights[:,i]=kernel
+        return weights
 
-# x1=weightit(3,16,3,1)
-# x2=weightit(16,32,3,1)
-# x3=weightit(32,64,3,1) 
-# x4=weightit(64,128,3,1)
-# x5=weightit(128,10,3,1)
+x1=weightit(3,16,3,1)
+x2=weightit(16,32,3,1)
+x3=weightit(32,64,3,1) 
+x4=weightit(64,128,3,1)
+x5=weightit(128,10,3,1)
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -103,11 +103,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     
-#     model.conv1.weight.data=x1.to(device)
-#     model.conv2.weight.data=x2.to(device)
-#     model.conv3.weight.data=x3.to(device)
-#     model.conv4.weight.data=x4.to(device)
-#     model.conv5.weight.data=x5.to(device)
+    model.conv1.weight.data=x1.to(device)
+    model.conv2.weight.data=x2.to(device)
+    model.conv3.weight.data=x3.to(device)
+    model.conv4.weight.data=x4.to(device)
+    model.conv5.weight.data=x5.to(device)
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
