@@ -17,36 +17,17 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
-
-def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-        
-        weightrange=1. / math.sqrt(inc*k*k)
-    
-        if(inc==g):
-            inc=1
-        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-        weights=torch.zeros((outc,inc,k,k))
-    
-        for i in range(weights.shape[1]):
-            weights[:,i]=kernel
-        return weights
-x1=weightit(3,16,3,1)
-x2=weightit(16,32,3,1)
-x3=weightit(32,64,3,1) 
-x4=weightit(64,128,3,1)
-x5=weightit(128,10,3,1)
-     
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLnewWred.npy',resultred)
-#     np.save('GLnewWgrn.npy',resultgrn)
-#     np.save('GLnewWtrn.npy',resulttrn)
-#     print("hello GL=1")
-    np.save('R7newWred.npy',resultred)
-    np.save('R7newWgrn.npy',resultgrn)
-    np.save('R7newWtrn.npy',resulttrn)
-    print("hello GL=0")
+    np.save('GLnewWred.npy',resultred)
+    np.save('GLnewWgrn.npy',resultgrn)
+    np.save('GLnewWtrn.npy',resulttrn)
+    print("hello GL=1")
+#     np.save('R7newWred.npy',resultred)
+#     np.save('R7newWgrn.npy',resultgrn)
+#     np.save('R7newWtrn.npy',resulttrn)
+#     print("hello GL=0")
     
 #     np.save('GLnewWsortred.npy',resultred)
 #     np.save('GLnewWsortgrn.npy',resultgrn)
@@ -57,12 +38,26 @@ def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('R7RGBnewWsorttrn.npy',resulttrn)
 #     print("hello GL=0")
 
+def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+        weightrange=1. / math.sqrt(inc*k*k)
+        if(inc==g):
+            inc=1
+        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+        weights=torch.zeros((outc,inc,k,k))
+        for i in range(weights.shape[1]):
+            weights[:,i]=kernel
+        return weights
+
+x1=weightit(3,16,3,1)
+x2=weightit(16,32,3,1)
+x3=weightit(32,64,3,1) 
+x4=weightit(64,128,3,1)
+x5=weightit(128,10,3,1)
 
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        
         self.conv1 = nn.Conv2d(3, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, st)
         self.conv3 = nn.Conv2d(32, 64, 3, st)
@@ -70,32 +65,31 @@ class Netconv(nn.Module):
         self.conv5 = nn.Conv2d(128, 10, 3, st)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
                
-        
     def forward(self, x):
-#         def sortit(a): #Function for sorting using torch
-#             amean=torch.zeros(a.shape[1])
-#             for i in range (a.shape[0]):
-#                 for j in range(a.shape[1]):
-#                     amean[j]=torch.mean(a[i,j])
-#                 sorted2, sortedindices = torch.sort(amean)
-#                 a[i]=a[i][sortedindices]
-#             return a
+        def sortit(a): #Function for sorting using torch
+            amean=torch.zeros(a.shape[1])
+            for i in range (a.shape[0]):
+                for j in range(a.shape[1]):
+                    amean[j]=torch.mean(a[i,j])
+                sorted2, sortedindices = torch.sort(amean)
+                a[i]=a[i][sortedindices]
+            return a
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv2(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv3(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
@@ -110,11 +104,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     
-    model.conv1.weight.data=x1.to(device)
-    model.conv2.weight.data=x2.to(device)
-    model.conv3.weight.data=x3.to(device)
-    model.conv4.weight.data=x4.to(device)
-    model.conv5.weight.data=x5.to(device)
+#     model.conv1.weight.data=x1.to(device)
+#     model.conv2.weight.data=x2.to(device)
+#     model.conv3.weight.data=x3.to(device)
+#     model.conv4.weight.data=x4.to(device)
+#     model.conv5.weight.data=x5.to(device)
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
