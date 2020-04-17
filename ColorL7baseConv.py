@@ -28,9 +28,9 @@ def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('R7RGBsortAfterC12345grn.npy',resultgrn)
 #     np.save('R7RGBsortAfterC12345trn.npy',resulttrn)
 #     print("hello GL=0")
-    np.save('GLnewWsortAfterC12345red.npy',resultred)
-    np.save('GLnewWsortAfterC12345grn.npy',resultgrn)
-    np.save('GLnewWsortAfterC12345trn.npy',resulttrn)
+#     np.save('GLnewWsortAfterC12345red.npy',resultred)
+#     np.save('GLnewWsortAfterC12345grn.npy',resultgrn)
+#     np.save('GLnewWsortAfterC12345trn.npy',resulttrn)
     print("hello GL=1")
 #     np.save('R7newWsortAfterC12345red.npy',resultred)
 #     np.save('R7newWsortAfterC12345grn.npy',resultgrn)
@@ -38,14 +38,14 @@ def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     print("hello GL=0")
 
 def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-        weightrange=1. / math.sqrt(inc*k*k)
-        if(inc==g):
-            inc=1
-        kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-        weights=torch.zeros((outc,inc,k,k))
-        for i in range(weights.shape[1]):
-            weights[:,i]=kernel
-        return weights
+    weightrange=1. / math.sqrt(inc*k*k)
+    if(inc==g):
+        inc=1
+    kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+    weights=torch.zeros((outc,inc,k,k))
+    for i in range(weights.shape[1]):
+        weights[:,i]=kernel
+    return weights
 
 x1=weightit(3,16,3,1)
 x2=weightit(16,32,3,1)
@@ -76,19 +76,19 @@ class Netconv(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv2(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv3(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x = self.GAP(x)
         x = x.view(-1, 10) 
         x=F.log_softmax(x, dim=1)
