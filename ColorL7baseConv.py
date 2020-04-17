@@ -20,10 +20,10 @@ import math
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-#     np.save('GLsortAfterC12345red.npy',resultred)
-#     np.save('GLsortAfterC12345grn.npy',resultgrn)
-#     np.save('GLsortAfterC12345trn.npy',resulttrn)
-#     print("hello GL=1")
+    np.save('GLsortAfterC1234red.npy',resultred)
+    np.save('GLsortAfterC1234grn.npy',resultgrn)
+    np.save('GLsortAfterC1234trn.npy',resulttrn)
+    print("hello GL=1")
 #     np.save('R7RGBsortAfterC12345red.npy',resultred)
 #     np.save('R7RGBsortAfterC12345grn.npy',resultgrn)
 #     np.save('R7RGBsortAfterC12345trn.npy',resulttrn)
@@ -76,16 +76,16 @@ class Netconv(nn.Module):
         x=x.float()
         x=self.conv1(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv2(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv3(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
-#         x=sortit(x)
+        x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
 #         x=sortit(x)
@@ -165,7 +165,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=100, metavar='N',
+    parser.add_argument('--epochs', type=int, default=50, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
