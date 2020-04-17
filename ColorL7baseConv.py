@@ -17,13 +17,13 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
-    np.save('GLsortAfterC1234red.npy',resultred)
-    np.save('GLsortAfterC1234grn.npy',resultgrn)
-    np.save('GLsortAfterC1234trn.npy',resulttrn)
-    print("hello GL=1")
+#     np.save('GLsortAfterC1234red.npy',resultred)
+#     np.save('GLsortAfterC1234grn.npy',resultgrn)
+#     np.save('GLsortAfterC1234trn.npy',resulttrn)
+#     print("hello GL=1")
 #     np.save('R7RGBsortAfterC12345red.npy',resultred)
 #     np.save('R7RGBsortAfterC12345grn.npy',resultgrn)
 #     np.save('R7RGBsortAfterC12345trn.npy',resulttrn)
@@ -31,7 +31,7 @@ def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLnewWsortAfterC12345red.npy',resultred)
 #     np.save('GLnewWsortAfterC12345grn.npy',resultgrn)
 #     np.save('GLnewWsortAfterC12345trn.npy',resulttrn)
-    print("hello GL=1")
+    print("hello GL=0")
 #     np.save('R7newWsortAfterC12345red.npy',resultred)
 #     np.save('R7newWsortAfterC12345grn.npy',resultgrn)
 #     np.save('R7newWsortAfterC12345trn.npy',resulttrn)
