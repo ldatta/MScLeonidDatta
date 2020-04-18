@@ -85,7 +85,7 @@ class Netconv(nn.Module):
         x=sortit(x)
         x=self.conv4(x) 
         x = F.relu(x)
-        x=sortit(x)
+#         x=sortit(x)
         x=self.conv5(x) 
         x = F.relu(x)
 #         x=sortit(x)
