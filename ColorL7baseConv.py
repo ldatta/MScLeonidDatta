@@ -17,7 +17,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 def npsave(resultred,resultgrn,resulttrn): #this function saves the result
 #     np.save('GLsortAfterC1234red.npy',resultred)
