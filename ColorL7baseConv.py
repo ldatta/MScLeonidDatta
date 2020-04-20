@@ -63,6 +63,12 @@ class Netconv(nn.Module):
         self.conv4 = nn.Conv2d(64, 128, 3, st)
         self.conv5 = nn.Conv2d(128, 10, 3, st)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+        with torch.no_grad():
+            self.conv1.weight.data=x1.to(device)
+            self.conv2.weight.data=x2.to(device)
+            self.conv3.weight.data=x3.to(device)
+            self.conv4.weight.data=x4.to(device)
+            self.conv5.weight.data=x5.to(device)
                
     def forward(self, x):
 #         def sortit(a): #Function for sorting using torch
@@ -103,11 +109,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     
-    model.conv1.weight.data=x1.to(device)
-    model.conv2.weight.data=x2.to(device)
-    model.conv3.weight.data=x3.to(device)
-    model.conv4.weight.data=x4.to(device)
-    model.conv5.weight.data=x5.to(device)
+    
 
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
