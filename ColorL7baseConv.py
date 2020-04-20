@@ -64,11 +64,11 @@ class Netconv(nn.Module):
         self.conv5 = nn.Conv2d(128, 10, 3, st)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         with torch.no_grad():
-            self.conv1.weight.data=x1.to(cuda)
-            self.conv2.weight.data=x2.to(cuda)
-            self.conv3.weight.data=x3.to(cuda)
-            self.conv4.weight.data=x4.to(cuda)
-            self.conv5.weight.data=x5.to(cuda)
+            self.conv1.weight.data=x1#.to(cuda)
+            self.conv2.weight.data=x2#.to(cuda)
+            self.conv3.weight.data=x3#.to(cuda)
+            self.conv4.weight.data=x4#.to(cuda)
+            self.conv5.weight.data=x5#.to(cuda)
                
     def forward(self, x):
 #         def sortit(a): #Function for sorting using torch
