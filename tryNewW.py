@@ -112,12 +112,12 @@ class Netconv(nn.Module):
         self.conv5 = nn.Conv2d(128, 10, 3, st)
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
-        with torch.no_grad():
-            self.conv1.weight.data=copyweight(x1,3) #Copying the first random tensor across input channels of Layer 1
-            self.conv2.weight.data=copyweight(x2,16)#Copying the first random tensor across input channels of Layer 2
-            self.conv3.weight.data=copyweight(x3,32)#Copying the first random tensor across input channels of Layer 3
-            self.conv4.weight.data=copyweight(x4,64)#Copying the first random tensor across input channels of Layer 4
-            self.conv5.weight.data=copyweight(x5,128)#Copying the first random tensor across input channels of Layer 5
+#         with torch.no_grad():
+#             self.conv1.weight.data=copyweight(x1,3) #Copying the first random tensor across input channels of Layer 1
+#             self.conv2.weight.data=copyweight(x2,16)#Copying the first random tensor across input channels of Layer 2
+#             self.conv3.weight.data=copyweight(x3,32)#Copying the first random tensor across input channels of Layer 3
+#             self.conv4.weight.data=copyweight(x4,64)#Copying the first random tensor across input channels of Layer 4
+#             self.conv5.weight.data=copyweight(x5,128)#Copying the first random tensor across input channels of Layer 5
                
     def forward(self, x):
 #         def sortit(a): #Function for sorting using torch
@@ -158,13 +158,11 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     correct_train = 0
     model.train() 
     
-# =============================================================================
-#     model.conv1.weight.data=copyweight(x1,3).to(device)
-#     model.conv2.weight.data=copyweight(x2,16).to(device)
-#     model.conv3.weight.data=copyweight(x3,32).to(device)
-#     model.conv4.weight.data=copyweight(x4,64).to(device)
-#     model.conv5.weight.data=copyweight(x5,128).to(device)
-# =============================================================================
+    model.conv1.weight.data=copyweight(x1,3).to(device)
+    model.conv2.weight.data=copyweight(x2,16).to(device)
+    model.conv3.weight.data=copyweight(x3,32).to(device)
+    model.conv4.weight.data=copyweight(x4,64).to(device)
+    model.conv5.weight.data=copyweight(x5,128).to(device)
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
