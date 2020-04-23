@@ -173,7 +173,11 @@ class Netconv(nn.Module):
             x4_weights[:,i] = self.x4
         for i in range(x5_weights.shape[1]): # amount of output channels
             x5_weights[:,i] = self.x5
-        
+        x1_weights=x1_weights.cuda()
+        x2_weights=x2_weights.cuda()
+        x3_weights=x3_weights.cuda()
+        x4_weights=x4_weights.cuda()
+        x5_weights=x5_weights.cuda()
         # Add a zeroth dimension for input channels, then expand that dimension
         # to the new shape.
 # =============================================================================
