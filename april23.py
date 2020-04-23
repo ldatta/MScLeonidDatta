@@ -26,7 +26,7 @@ import copy
 import math
 
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
-
+k=3
 #This is the old Weight Initialization function
 # =============================================================================
 # def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
@@ -98,7 +98,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=2
+
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
