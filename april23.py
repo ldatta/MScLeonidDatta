@@ -26,7 +26,7 @@ import copy
 import math
 
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
-k=3
+
 #This is the old Weight Initialization function
 # =============================================================================
 # def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
@@ -98,7 +98,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-
+k=1
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
@@ -166,18 +166,14 @@ class Netconv(nn.Module):
         for i in range(x1_weights.shape[1]): # amount of output channels
             x1_weights[:,i,:,:] = self.x1
         for i in range(x2_weights.shape[1]): # amount of output channels
-            x2_weights[:,i] = self.x2
+            x2_weights[:,i] = torch.nn.Parameter(weightittensor(16*k,32*k,3,1))
         for i in range(x3_weights.shape[1]): # amount of output channels
-            x3_weights[:,i] = self.x3
+            x3_weights[:,i] = torch.nn.Parameter(weightittensor(32*k,64*k,3,1))#self.x3
         for i in range(x4_weights.shape[1]): # amount of output channels
-            x4_weights[:,i] = self.x4
+            x4_weights[:,i] = torch.nn.Parameter(weightittensor(64*k,128*k,3,1))#self.x4
         for i in range(x5_weights.shape[1]): # amount of output channels
-            x5_weights[:,i] = self.x5
-        x1_weights=x1_weights.cuda()
-        x2_weights=x2_weights.cuda()
-        x3_weights=x3_weights.cuda()
-        x4_weights=x4_weights.cuda()
-        x5_weights=x5_weights.cuda()
+            x5_weights[:,i] = torch.nn.Parameter(weightittensor(128*k,10*k,3,1))#self.x5
+        
         # Add a zeroth dimension for input channels, then expand that dimension
         # to the new shape.
 # =============================================================================
@@ -299,7 +295,7 @@ def main():
                         help='input batch size for testing (default: 1000)')
     parser.add_argument('--epochs', type=int, default=50, metavar='N',
                         help='number of epochs to train (default: 10)')
-    parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+    parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
@@ -390,73 +386,74 @@ def main():
     b=1*(b>0.3)
     c=1*(c>0.3)
 
-
-    mask=np.zeros((datasize,datasize))
-
-    maskgap=5
-
-    for i in range(0,datasize,maskgap):
-        for j in range(0,datasize,maskgap):
-            mask[i,j]=1
-            #if(i!=datasize or j!=datasize):
-
-    mask[:,0]=0
-    mask[0,:]=0
-    mask[:,55]=0
-    mask[55,:]=0
-    plt.imshow(mask, cmap='gray',  interpolation='nearest')
-    plt.show()
-
-    a=a*mask
-    b=b*mask
-    c=c*mask
-
-
-   #L SHAPE
-
-    if(GL==1):
-        for k in range(a.shape[0]):
-            for i in range(0,datasize,maskgap):
-                for j in range(0,datasize,maskgap):
-                    if(a[k,i,j]==1):
-                        a[k,i,j]=0
-                        a[k,i,j-1]=1
-                        a[k,i-1,j-1]=1
-                        a[k,i+1,j-1]=1
-                        a[k,i+1,j]=1
-
-    else:
-        for k in range(a.shape[0]):
-            for i in range(0,datasize,maskgap):
-                for j in range(0,datasize,maskgap):
-                    if(a[k,i,j]==1):
-                        a[k,i,j]=0
-                        a[k,i-1,j]=1
-                        a[k,i-1,j+1]=1
-                        a[k,i,j+1]=1
-                        a[k,i+1,j+1]=1
-
-
-
-    for k in range(b.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(b[k,i,j]==1):
-                    b[k,i,j]=0
-                    b[k,i,j-1]=1
-                    b[k,i-1,j-1]=1
-                    b[k,i+1,j-1]=1
-                    b[k,i+1,j]=1
-
-    for k in range(c.shape[0]):
-        for i in range(0,datasize,maskgap):
-            for j in range(0,datasize,maskgap):
-                if(c[k,i,j]==1):
-                    c[k,i,j]=0
-                    c[k,i-1,j]=1
-                    c[k,i-1,j+1]=1
-                    c[k,i,j+1]=1
-                    c[k,i+1,j+1]=1
+# =============================================================================
+#     mask=np.zeros((datasize,datasize))
+# 
+#     maskgap=5
+# 
+#     for i in range(0,datasize,maskgap):
+#         for j in range(0,datasize,maskgap):
+#             mask[i,j]=1
+#             #if(i!=datasize or j!=datasize):
+# 
+#     mask[:,0]=0
+#     mask[0,:]=0
+#     mask[:,55]=0
+#     mask[55,:]=0
+#     plt.imshow(mask, cmap='gray',  interpolation='nearest')
+#     plt.show()
+# 
+#     a=a*mask
+#     b=b*mask
+#     c=c*mask
+# 
+# 
+#    #L SHAPE
+# 
+#     if(GL==1):
+#         for k in range(a.shape[0]):
+#             for i in range(0,datasize,maskgap):
+#                 for j in range(0,datasize,maskgap):
+#                     if(a[k,i,j]==1):
+#                         a[k,i,j]=0
+#                         a[k,i,j-1]=1
+#                         a[k,i-1,j-1]=1
+#                         a[k,i+1,j-1]=1
+#                         a[k,i+1,j]=1
+# 
+#     else:
+#         for k in range(a.shape[0]):
+#             for i in range(0,datasize,maskgap):
+#                 for j in range(0,datasize,maskgap):
+#                     if(a[k,i,j]==1):
+#                         a[k,i,j]=0
+#                         a[k,i-1,j]=1
+#                         a[k,i-1,j+1]=1
+#                         a[k,i,j+1]=1
+#                         a[k,i+1,j+1]=1
+# 
+# 
+# 
+#     for k in range(b.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(b[k,i,j]==1):
+#                     b[k,i,j]=0
+#                     b[k,i,j-1]=1
+#                     b[k,i-1,j-1]=1
+#                     b[k,i+1,j-1]=1
+#                     b[k,i+1,j]=1
+# 
+#     for k in range(c.shape[0]):
+#         for i in range(0,datasize,maskgap):
+#             for j in range(0,datasize,maskgap):
+#                 if(c[k,i,j]==1):
+#                     c[k,i,j]=0
+#                     c[k,i-1,j]=1
+#                     c[k,i-1,j+1]=1
+#                     c[k,i,j+1]=1
+#                     c[k,i+1,j+1]=1
+# =============================================================================
 
     aaa=a
     bbb=b
@@ -587,10 +584,6 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
-    print(e)
-    print("resultred",resultred)
-    print("resultgrn",resultgrn)
-    print("resulttrn",resulttrn)
     plotgraph(e,resultred,resultgrn, resulttrn)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
