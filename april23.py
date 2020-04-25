@@ -25,7 +25,7 @@ import matplotlib.lines as mlines
 import copy
 import math
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 k=3
 #This is the old Weight Initialization function
 # =============================================================================
