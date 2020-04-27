@@ -10,7 +10,7 @@
 #SBATCH --qos=long
 
 # The default run (wall-clock) time is 1 minute
-#SBATCH --time=06:00:00
+#SBATCH --time=02:00:00
 
 # The default number of parallel tasks per job is 1
 #SBATCH --ntasks=1
@@ -20,7 +20,7 @@
 #SBATCH --cpus-per-task=2
 
 # The default memory per node is 1024 megabytes (1GB) (for multiple tasks, specify --mem-per-cpu instead)
-#SBATCH --mem=32768
+#SBATCH --mem=10240
 
 # Set mail type to 'END' to receive a mail when the job finishes
 # Do not enable mails when submitting large numbers (>20) of jobs at once
