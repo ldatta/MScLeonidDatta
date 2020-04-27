@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import copy
 import math
-
+import pickle
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 #This is the old Weight Initialization function
@@ -110,7 +110,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='Green test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=3
+k=1
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
@@ -126,7 +126,25 @@ class Netconv(nn.Module):
         self.x3=torch.nn.Parameter(weightittensor(32*k,64*k,3,1)) #first random tensor generated for layer 3
         self.x4=torch.nn.Parameter(weightittensor(64*k,128*k,3,1)) #first random tensor generated for layer 4
         self.x5=torch.nn.Parameter(weightittensor(128*k,10,3,1)) #first random tensor generated for layer 5
-        
+#         torch.save(self.x1,'x1.pt')
+#         torch.save(self.x2,'x2.pt')
+#         torch.save(self.x3,'x3.pt')
+#         torch.save(self.x4,'x4.pt')
+#         torch.save(self.x5,'x5.pt')
+# =============================================================================
+#         torch.save('x1.pt',self.x1)
+#         torch.save('x2.pt',self.x2)
+#         torch.save('x3.pt',self.x3)
+#         torch.save('x4.pt',self.x4)
+#         torch.save('x5.pt',self.x5)
+# =============================================================================
+# =============================================================================
+#         np.save('x1.npy',self.x1)
+#         np.save('x2.npy',self.x2)
+#         np.save('x3.npy',self.x3)
+#         np.save('x4.npy',self.x4)
+#         np.save('x5.npy',self.x5)
+# =============================================================================
 # =============================================================================
 #         self.x1=torch.nn.Parameter(weightittensor(1,16*k,3,1)) #first random tensor generated for layer 1
 #         self.x2=torch.nn.Parameter(weightittensor(1,32*k,3,1)) #first random tensor generated for layer 2
@@ -221,11 +239,29 @@ class Netconv(nn.Module):
 #         x4_weights=self.x4
 #         x5_weights=self.x5
 # =============================================================================
+# =============================================================================
+#         if not self.initialized: #This is done so that it does not get initialized in every forward pass
+#             self.initialized = True 
+# =============================================================================
         x1_weights = self.x1#.cuda
         x2_weights = self.x2#.cuda
         x3_weights = self.x3#.cuda
         x4_weights = self.x4#.cuda
         x5_weights = self.x5#.cuda
+# =============================================================================
+#             torch.save(x1_weights,'x1.pt')
+#             torch.save(x2_weights,'x2.pt')
+#             torch.save(x3_weights,'x3.pt')
+#             torch.save(x4_weights,'x4.pt')
+#             torch.save(x5_weights,'x5.pt')
+# =============================================================================
+# =============================================================================
+#             torch.save('x1.pt',x1_weights)
+#             torch.save('x2.pt',x2_weights)
+#             torch.save('x3.pt',x3_weights)
+#             torch.save('x4.pt',x4_weights)
+#             torch.save('x5.pt',x5_weights)
+# =============================================================================
         
         x=x.float()
         x=torch.nn.functional.conv2d(x, x1_weights,stride=1)
@@ -247,7 +283,22 @@ class Netconv(nn.Module):
         x=x.float() 
         x=torch.nn.functional.conv2d(x, x5_weights,stride=2)
         x = F.relu(x) 
-
+#         torch.save(self.x1,'Wx1.pt')
+#         torch.save(self.x2,'Wx2.pt')
+#         torch.save(self.x3,'Wx3.pt')
+#         torch.save(self.x4,'Wx4.pt')
+#         torch.save(self.x5,'Wx5.pt')
+#         torch.save(x1_weights,'weight1.pt')
+#         torch.save(x2_weights,'weight2.pt')
+#         torch.save(x3_weights,'weight3.pt')
+#         torch.save(x4_weights,'weight4.pt')
+#         torch.save(x5_weights,'weight5.pt')
+# =============================================================================
+#         np.save('weight2.npy',x2_weights)
+#         np.save('weight3.npy',x3_weights)
+#         np.save('weight4.npy',x4_weights)
+#         np.save('weight5.npy',x5_weights)
+# =============================================================================
         x = self.GAP(x)
         x = x.view(-1, 10)
         x=F.log_softmax(x, dim=1)
@@ -296,8 +347,8 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)
 
     return [r,g,t,train_accuracy]
