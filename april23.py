@@ -24,38 +24,28 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import copy
 import math
-
+import pickle
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
-#This is the old Weight Initialization function
-# =============================================================================
-# def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-#     weightrange=1. / math.sqrt(inc*k*k)
-#     if(inc==g):
-#         inc=1
-#     kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-#     weights=torch.zeros((outc,inc,k,k))
-#     for i in range(weights.shape[1]):
-#         weights[:,i]=kernel
-#     return weights
-# =============================================================================
-# weightittensor is the function for first random tensor
-def weightittensor(inc,outc,k,g): # inc=input_channel, outc=output_channel, k=kernel size, g=group
+ 
+def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+    weightrange=1. / math.sqrt(inc*k*k)
+    if(inc==g):
+        inc=1
+    kernel=torch.FloatTensor(outc,inc,k, k).uniform_(-weightrange, weightrange)
+    return kernel
+
+def weightittensorhalf(inc,outc,k,g): # inc=input_channel, outc=output_channel, k=kernel size, g=group
     weightrange=1. / math.sqrt(inc*k*k)
     if(inc==g):
         inc=1
     kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
     return kernel
-# copyweight function does the copy
-# def copyweight(kernel,inc):
-#     weights=torch.zeros((kernel.shape[0],inc,kernel.shape[1],kernel.shape[2]))
-#     for i in range(weights.shape[1]):
-#         weights[:,i]=kernel
-#     print("hello")
-#     return weights
-
-# =============================================================================
-
+iniL1=np.load('iniL1.npy')
+iniL2=np.load('iniL2.npy')
+iniL3=np.load('iniL3.npy')
+iniL4=np.load('iniL4.npy')
+iniL5=np.load('iniL5.npy')
 #Function for plotting the graph
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
@@ -98,132 +88,66 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=1
+k=3
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        # NOTE(rjbruin): we are going to use functional convolutions instead of
-        # modules. That means we don't initialize Conv2d objects, but instead we
-        # initialize their parameters.
-        # Please read this to get the difference:
-        # https://discuss.pytorch.org/t/what-is-the-difference-between-torch-nn-and-torch-nn-functional/33597
-        # NOTE(rjbruin): I've added a Parameter wrapper to make sure the tensors are differentiable.
-        #self.in1=3
         self.x1=torch.nn.Parameter(weightittensor(3,16*k,3,1)) #first random tensor generated for layer 1
-        self.x2=torch.nn.Parameter(weightittensor(16*k,32*k,3,1)) #first random tensor generated for layer 2
-        self.x3=torch.nn.Parameter(weightittensor(32*k,64*k,3,1)) #first random tensor generated for layer 3
-        self.x4=torch.nn.Parameter(weightittensor(64*k,128*k,3,1)) #first random tensor generated for layer 4
-        self.x5=torch.nn.Parameter(weightittensor(128*k,10,3,1)) #first random tensor generated for layer 5
+        self.x2=torch.nn.Parameter(weightittensorhalf(16*k,32*k,3,1)) #first random tensor generated for layer 2
+        self.x3=torch.nn.Parameter(weightittensorhalf(32*k,64*k,3,1)) #first random tensor generated for layer 3
+        self.x4=torch.nn.Parameter(weightittensorhalf(64*k,128*k,3,1)) #first random tensor generated for layer 4
+        self.x5=torch.nn.Parameter(weightittensorhalf(128*k,10,3,1)) #first random tensor generated for layer 5
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         self.initialized = False
 
     def forward(self, x):
-        # if not self.initialized: #This is done so that it does not get initialized in every forward pass
-        #     self.initialized = True
-        #     with torch.no_grad():
-        #         for i in range(self.conv1.weight.data.shape[1]):
-        #             self.conv1.weight.data[:,i,:,:]=x1 #Copying the first random tensor across input channels of Layer 1
-        #         for i in range(self.conv2.weight.data.shape[1]):
-        #             self.conv2.weight.data[:,i,:,:]=x2 #Copying the first random tensor across input channels of Layer 2
-        #         for i in range(self.conv3.weight.data.shape[1]):
-        #             self.conv3.weight.data[:,i,:,:]=x3 #Copying the first random tensor across input channels of Layer 3
-        #         for i in range(self.conv4.weight.data.shape[1]):
-        #             self.conv4.weight.data[:,i,:,:]=x4 #Copying the first random tensor across input channels of Layer 4
-        #         for i in range(self.conv5.weight.data.shape[1]):
-        #             self.conv5.weight.data[:,i,:,:]=x5 #Copying the first random tensor across input channels of Layer 5
-        # NOTE(rjbruin): this is not a bad try, but I don't get why you have
-        # the flag to initialize them only in the first forward pass. If we
-        # ignore that, then you can see the annoying thing of overwriting a
-        # Tensor inside a convolution module. That is why we will not use
-        # the torch.nn modules anymore but functionals instead. See the
-        # explanation in the __init__ method.
-        # Also, please understand that the point of the
-        # copying/indexing/whatever we call it happening in the forward pass
-        # is that we **do** want the gradients to pass through. The
-        # gradients should go all the way back through the copy/index to the self.x[1-5] tensors. So don't do `torch.no_grad`.
-
-        # NOTE(rjbruin): EXAMPLE: MAKING WEIGHTS FOR ONE CONVOLUTIONAL LAYER
-# =============================================================================
-#         new_shape = [3,16,3,3] # (input channels, output channels, k, k), note I put input channels first since Conv2D requires that (AFAIK)
-#         x1_weights = torch.zeros(new_shape, dtype=torch.float32)
-#         for i in range(new_shape.shape[1]): # amount of output channels
-#             x1_weights[:,i] = self.x1
-# =============================================================================
-        # TODO: repeat for other convolutional layers
-
-        # NOTE(rjbruin): MORE EFFICIENT EXAMPLE FOR MAKING WEIGHTS. (Choose one of these two and finish it.)
-        new_shape1 = [16*k,3,3,3]
+        #new_shape1 = [16*k,3,3,3]
         new_shape2 = [32*k,16*k,3,3]
         new_shape3 = [64*k,32*k,3,3]
         new_shape4 = [128*k,64*k,3,3]
         new_shape5 = [10,128*k,3,3]
         
-        x1_weights = torch.zeros(new_shape1, dtype=torch.float32)
+        x1_weights = self.x1
         x2_weights = torch.zeros(new_shape2, dtype=torch.float32)
         x3_weights = torch.zeros(new_shape3, dtype=torch.float32)
         x4_weights = torch.zeros(new_shape4, dtype=torch.float32)
         x5_weights = torch.zeros(new_shape5, dtype=torch.float32)
-        for i in range(x1_weights.shape[1]): # amount of output channels
-            x1_weights[:,i,:,:] = self.x1
         for i in range(x2_weights.shape[1]): # amount of output channels
-            x2_weights[:,i] = torch.nn.Parameter(weightittensor(16*k,32*k,3,1))
+            x2_weights[:,i] = self.x2
         for i in range(x3_weights.shape[1]): # amount of output channels
-            x3_weights[:,i] = torch.nn.Parameter(weightittensor(32*k,64*k,3,1))#self.x3
+            x3_weights[:,i] = self.x3#self.x3
         for i in range(x4_weights.shape[1]): # amount of output channels
-            x4_weights[:,i] = torch.nn.Parameter(weightittensor(64*k,128*k,3,1))#self.x4
+            x4_weights[:,i] = self.x4#self.x4
         for i in range(x5_weights.shape[1]): # amount of output channels
-            x5_weights[:,i] = torch.nn.Parameter(weightittensor(128*k,10*k,3,1))#self.x5
+            x5_weights[:,i] = self.x5#self.x5
+        
+
         x1_weights=x1_weights.cuda()
         x2_weights=x2_weights.cuda()
         x3_weights=x3_weights.cuda()
         x4_weights=x4_weights.cuda()
         x5_weights=x5_weights.cuda()
-        # Add a zeroth dimension for input channels, then expand that dimension
-        # to the new shape.
-# =============================================================================
-#         x1_weights = self.x1.unsqueeze(0).expand(new_shape1)
-#         # TODO: repeat for other convolutional layers
-#         x2_weights = self.x1.unsqueeze(0).expand(new_shape2)
-#         x3_weights = self.x1.unsqueeze(0).expand(new_shape3)
-#         x4_weights = self.x1.unsqueeze(0).expand(new_shape4)
-#         x5_weights = self.x1.unsqueeze(0).expand(new_shape5)
-# =============================================================================
-        # NOTE(rjbruin): use torch.nn.functional functions instead of torch.nn modules
-        # The difference is that the modules are stateful, and these convolutions are just functions
-        # which makes it easier for us to use different weights for every forward pass.
-        # Again, please make sure to read this:
-        # https://discuss.pytorch.org/t/what-is-the-difference-between-torch-nn-and-torch-nn-functional/33597
-        
-# =============================================================================
-#         x1_weights=self.x1
-#         x2_weights=self.x2
-#         x3_weights=self.x3
-#         x4_weights=self.x4
-#         x5_weights=self.x5
-# =============================================================================
         x=x.float()
         x=torch.nn.functional.conv2d(x, x1_weights,stride=1)
         x = F.relu(x)
-        #print("hello")
+        x=x.float()
         x=torch.nn.functional.conv2d(x, x2_weights,stride=2)
         x = F.relu(x)
+        x=x.float()
         x=torch.nn.functional.conv2d(x, x3_weights,stride=2)
         x = F.relu(x)
+        x=x.float()
         x=torch.nn.functional.conv2d(x, x4_weights,stride=2)
         x = F.relu(x)
+        x=x.float() 
         x=torch.nn.functional.conv2d(x, x5_weights,stride=2)
         x = F.relu(x) 
-
         x = self.GAP(x)
         x = x.view(-1, 10)
         x=F.log_softmax(x, dim=1)
         return x
 
     def parameters(self):
-        # NOTE(rjbruin): this is very important! Because we are not using a
-        # module but a functional for the convolution, the model doesn't
-        # automatically know what its parameters are. We need to explicitly
-        # return them uising this function.
         return [self.x1, self.x2,self.x3,self.x4,self.x5] # TODO: finish this
 
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
@@ -241,13 +165,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
-# =============================================================================
-#         np.save('weightlayer1.npy',model.conv1.weight.data)
-#         np.save('weightlayer2.npy',model.conv2.weight.data)
-#         np.save('weightlayer3.npy',model.conv3.weight.data)
-#         np.save('weightlayer4.npy',model.conv4.weight.data)
-#         np.save('weightlayer5.npy',model.conv5.weight.data)
-# =============================================================================
+
         running_loss += loss.item()
         _, predicted = torch.max(output.data, 1)
         total_train += target.size(0)
@@ -262,10 +180,9 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item(),train_accuracy))
                 if (q==50):
-                    r=0#test(args, model, device, hortest_loader)
-                    g=0#test(args, model, device, test_loader)
+                    r=test(args, model, device, hortest_loader)
+                    g=test(args, model, device, test_loader)
                     t=int(train_accuracy)
-
     return [r,g,t,train_accuracy]
 
 def test(args, model, device, test_loader):
@@ -297,7 +214,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=50, metavar='N',
+    parser.add_argument('--epochs', type=int, default=10, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -513,7 +430,12 @@ def main():
     ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
     ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
     plt.show()
-
+# =============================================================================
+#     a=np.reshape(a,(60000,1,56,56))
+#     b=np.reshape(b,(10000,1,56,56))
+#     c=np.reshape(c,(10000,1,56,56))
+# =============================================================================
+    
     a=np.transpose(a, (0,3, 1, 2))
     b=np.transpose(b, (0,3, 1, 2))
     c=np.transpose(c, (0,3, 1, 2))
@@ -588,6 +510,10 @@ def main():
     resulttrn[1::2] = trnaccm
     resulttrn[2::2] = trnacc
     e=(np.arange(0,(args.epochs+0.5),0.5 ))
+    print(e)
+    print("resultred",resultred)
+    print("resultgrn",resultgrn)
+    print("resulttrn",resulttrn)
     plotgraph(e,resultred,resultgrn, resulttrn)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
