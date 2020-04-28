@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Tue Apr 28 13:49:42 2020
+
+@author: leoniddatta
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Tue Apr 21 11:44:53 2020
 
 @author: leoniddatta
 """
 
-from __future__ import print_function
+#from __future__ import print_function
 import argparse
 import torch
 import torch.nn as nn
@@ -24,10 +32,10 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import copy
 import math
-import pickle
+
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
- 
+#Code for validating the base model
 def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
     weightrange=1. / math.sqrt(inc*k*k)
     if(inc==g):
@@ -35,17 +43,6 @@ def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input
     kernel=torch.FloatTensor(outc,inc,k, k).uniform_(-weightrange, weightrange)
     return kernel
 
-def weightittensorhalf(inc,outc,k,g): # inc=input_channel, outc=output_channel, k=kernel size, g=group
-    weightrange=1. / math.sqrt(inc*k*k)
-    if(inc==g):
-        inc=1
-    kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-    return kernel
-iniL1=np.load('iniL1.npy')
-iniL2=np.load('iniL2.npy')
-iniL3=np.load('iniL3.npy')
-iniL4=np.load('iniL4.npy')
-iniL5=np.load('iniL5.npy')
 #Function for plotting the graph
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
@@ -88,67 +85,78 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=4
+k=1
+
+#Line 91-123 for the model using nn.conv2d
+# =============================================================================
+# class Netconv(nn.Module):
+#     def __init__(self):
+#         super(Netconv, self).__init__()
+#         st=2
+#         self.conv1 = nn.Conv2d(3, 16*k, 3, 1). #K value is set one for base model. 
+#         self.conv2 = nn.Conv2d(16*k, 32*k, 3, st)
+#         self.conv3 = nn.Conv2d(32*k, 64*k, 3, st)
+#         self.conv4 = nn.Conv2d(64*k, 128*k, 3, st)
+#         self.conv5 = nn.Conv2d(128*k, 10, 3, st)
+#         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
+#     def forward(self, x):
+#         x=x.float()
+#         x=self.conv1(x) 
+#         x = F.relu(x)
+#         x=self.conv2(x) 
+#         x = F.relu(x)
+#         x=self.conv3(x) 
+#         x = F.relu(x)
+#         x=self.conv4(x) 
+#         x = F.relu(x)
+#         x=self.conv5(x) 
+#         x = F.relu(x)
+#         x = self.GAP(x)
+#         x = x.view(-1, 10) 
+#         x=F.log_softmax(x, dim=1)
+#         return x 
+# =============================================================================
+#Line 120 to 160 for model using torch.nn.functional.conv2d
+
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        self.x1=torch.nn.Parameter(weightittensor(3,16*k,3,1)) #first random tensor generated for layer 1
-        self.x2=torch.nn.Parameter(weightittensorhalf(16*k,32*k,3,1)) #first random tensor generated for layer 2
-        self.x3=torch.nn.Parameter(weightittensorhalf(32*k,64*k,3,1)) #first random tensor generated for layer 3
-        self.x4=torch.nn.Parameter(weightittensorhalf(64*k,128*k,3,1)) #first random tensor generated for layer 4
-        self.x5=torch.nn.Parameter(weightittensorhalf(128*k,10,3,1)) #first random tensor generated for layer 5
+        self.x1=torch.nn.Parameter(weightittensor(3,16*k,3,1)) # random tensor weights generated for layer 1
+        self.x2=torch.nn.Parameter(weightittensor(16*k,32*k,3,1)) #random tensor weights generated for layer 2
+        self.x3=torch.nn.Parameter(weightittensor(32*k,64*k,3,1)) #random tensor weights generated for layer 3
+        self.x4=torch.nn.Parameter(weightittensor(64*k,96*k,3,1)) # random tensor weights generated for laye 4
+        self.x5=torch.nn.Parameter(weightittensor(96*k,10,3,1)) # random tensor weights generated for layer 5
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
-        self.initialized = False
 
     def forward(self, x):
-        #new_shape1 = [16*k,3,3,3]
-        new_shape2 = [32*k,16*k,3,3]
-        new_shape3 = [64*k,32*k,3,3]
-        new_shape4 = [128*k,64*k,3,3]
-        new_shape5 = [10,128*k,3,3]
         
-        x1_weights = self.x1
-        x2_weights = torch.zeros(new_shape2, dtype=torch.float32)
-        x3_weights = torch.zeros(new_shape3, dtype=torch.float32)
-        x4_weights = torch.zeros(new_shape4, dtype=torch.float32)
-        x5_weights = torch.zeros(new_shape5, dtype=torch.float32)
-        for i in range(x2_weights.shape[1]): # amount of output channels
-            x2_weights[:,i] = self.x2
-        for i in range(x3_weights.shape[1]): # amount of output channels
-            x3_weights[:,i] = self.x3#self.x3
-        for i in range(x4_weights.shape[1]): # amount of output channels
-            x4_weights[:,i] = self.x4#self.x4
-        for i in range(x5_weights.shape[1]): # amount of output channels
-            x5_weights[:,i] = self.x5#self.x5
-        
-
-        x1_weights=x1_weights.cuda()
-        x2_weights=x2_weights.cuda()
-        x3_weights=x3_weights.cuda()
-        x4_weights=x4_weights.cuda()
-        x5_weights=x5_weights.cuda()
         x=x.float()
-        x=torch.nn.functional.conv2d(x, x1_weights,stride=1)
+        x=torch.nn.functional.conv2d(x, self.x1,stride=1)
         x = F.relu(x)
-        x=x.float()
-        x=torch.nn.functional.conv2d(x, x2_weights,stride=2)
+        #print(x.shape)
+        #x=x.float()
+        x=torch.nn.functional.conv2d(x, self.x2,stride=2)
         x = F.relu(x)
-        x=x.float()
-        x=torch.nn.functional.conv2d(x, x3_weights,stride=2)
+        #print(x.shape)
+        #x=x.float()
+        x=torch.nn.functional.conv2d(x, self.x3,stride=2)
         x = F.relu(x)
-        x=x.float()
-        x=torch.nn.functional.conv2d(x, x4_weights,stride=2)
+        #print(x.shape)
+        #x=x.float()
+        x=torch.nn.functional.conv2d(x, self.x4,stride=2)
         x = F.relu(x)
-        x=x.float() 
-        x=torch.nn.functional.conv2d(x, x5_weights,stride=2)
+        #print(x.shape)
+        #x=x.float() 
+        x=torch.nn.functional.conv2d(x, self.x5,stride=2)
         x = F.relu(x) 
+        #print(x.shape)
         x = self.GAP(x)
         x = x.view(-1, 10)
         x=F.log_softmax(x, dim=1)
         return x
 
     def parameters(self):
-        return [self.x1, self.x2,self.x3,self.x4,self.x5] # TODO: finish this
+        return [self.x1, self.x2,self.x3,self.x4,self.x5] 
 
 def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,test_loader):
     r=0
@@ -214,7 +222,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=50, metavar='N',
+    parser.add_argument('--epochs', type=int, default=10, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
