@@ -88,7 +88,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=3
+k=4
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
