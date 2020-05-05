@@ -197,8 +197,10 @@ class Netconv(nn.Module):
     def forward(self, x):
         
         x=x.float()
-        x=x[:,0,:,:]+x[:,1,:,:]+x[:,2,:,:]
+        
+        #x=x[:,0,:,:]+x[:,1,:,:]+x[:,2,:,:]
 #         print(x.shape)
+        
         x=torch.nn.functional.conv2d(x, self.x1,self.bias1,stride=1)
         x = F.relu(x)
         x=add_channel(x,8*k)
@@ -461,18 +463,20 @@ def main():
     bbb=b
     ccc=c
 
-    a=np.zeros((60000,56,56,3))
-    b=np.zeros((10000,56,56,3))
-    c=np.zeros((10000,56,56,3))
-
-
-    if(GL==1):
-        a[:,:,:,1]=aaa
-    else:
-        a[:,:,:,0]=aaa
-
-    b[:,:,:,1]=bbb
-    c[:,:,:,0]=ccc
+# =============================================================================
+#     a=np.zeros((60000,56,56,3))
+#     b=np.zeros((10000,56,56,3))
+#     c=np.zeros((10000,56,56,3))
+# 
+# 
+#     if(GL==1):
+#         a[:,:,:,1]=aaa
+#     else:
+#         a[:,:,:,0]=aaa
+# 
+#     b[:,:,:,1]=bbb
+#     c[:,:,:,0]=ccc
+# =============================================================================
 
     print("train data is")
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
@@ -511,15 +515,15 @@ def main():
     ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
     ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
     plt.show()
-# =============================================================================
-#     a=np.reshape(a,(60000,1,56,56))
-#     b=np.reshape(b,(10000,1,56,56))
-#     c=np.reshape(c,(10000,1,56,56))
-# =============================================================================
+    a=np.reshape(a,(60000,1,56,56))
+    b=np.reshape(b,(10000,1,56,56))
+    c=np.reshape(c,(10000,1,56,56))
     
-    a=np.transpose(a, (0,3, 1, 2))
-    b=np.transpose(b, (0,3, 1, 2))
-    c=np.transpose(c, (0,3, 1, 2))
+# =============================================================================
+#     a=np.transpose(a, (0,3, 1, 2))
+#     b=np.transpose(b, (0,3, 1, 2))
+#     c=np.transpose(c, (0,3, 1, 2))
+# =============================================================================
 
 
     data=torch.from_numpy(a)
