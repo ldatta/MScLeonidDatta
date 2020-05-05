@@ -49,13 +49,22 @@ def biasittensor(inc,outc,k,g): #Function for weight initialization. inc=input_c
 
 def add_channel(x,n):
     #x=x.detach().numpy() 
-    n1=int(x.shape[1]/n) #n is no of output channels
-    y=torch.zeros((x.shape[0],n,x.shape[2],x.shape[3]))
-    for i in range(n):
-        for j in range(n1):
-            y[:,i,:,:]=y[:,i,:,:]+x[:,(i*n1)+j,:,:]
-    #y=torch.from_numpy(y)
-    return y
+# =============================================================================
+#     n1=int(x.shape[1]/n) #n is no of output channels
+#     y=torch.zeros((x.shape[0],n,x.shape[2],x.shape[3]))
+#     for i in range(n):
+#         for j in range(n1):
+#             y[:,i,:,:]=y[:,i,:,:]+x[:,(i*n1)+j,:,:]
+#     #y=torch.from_numpy(y)
+# =============================================================================
+    ran=int(x.shape[1]/2)
+    for i in range(x.shape[0]):
+        for j in range(x.shape[1]):
+            if(j<(ran)):
+                #print(j)
+                x[i,j,:,:]=x[i,j*2,:,:]+x[i,((j*2)+1),:,:]
+    
+    return x[:,0:ran,:,:]
 def rearrange(x,n):
     z=x
     cos = nn.CosineSimilarity(dim=0, eps=1e-6)
