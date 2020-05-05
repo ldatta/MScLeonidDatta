@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr 28 13:49:42 2020
-
 @author: leoniddatta
 """
 
@@ -10,7 +9,6 @@ Created on Tue Apr 28 13:49:42 2020
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr 21 11:44:53 2020
-
 @author: leoniddatta
 """
 
@@ -184,12 +182,12 @@ add=2
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        self.x1=torch.nn.Parameter(weightittensor(2,16*k,3,1)) # random tensor weights generated for layer 1
+        self.x1=torch.nn.Parameter(weightittensor(1,16*k,3,1)) # random tensor weights generated for layer 1
         self.x2=torch.nn.Parameter(weightittensor(int(16*k/add),32*k,3,1)) #random tensor weights generated for layer 2
         self.x3=torch.nn.Parameter(weightittensor(int(32*k/add),64*k,3,1)) #random tensor weights generated for layer 3
         self.x4=torch.nn.Parameter(weightittensor(int(64*k/add),128*k,3,1)) # random tensor weights generated for laye 4
         self.x5=torch.nn.Parameter(weightittensor(int(128*k/add),10,3,1)) # random tensor weights generated for layer 5
-        self.bias1=torch.nn.Parameter(biasittensor(2,16*k,3,1))
+        self.bias1=torch.nn.Parameter(biasittensor(1,16*k,3,1))
         self.bias2=torch.nn.Parameter(biasittensor(int(16*k/add),32*k,3,1))
         self.bias3=torch.nn.Parameter(biasittensor(int(32*k/add),64*k,3,1))
         self.bias4=torch.nn.Parameter(biasittensor(int(64*k/add),128*k,3,1))
@@ -199,7 +197,7 @@ class Netconv(nn.Module):
     def forward(self, x):
         
         x=x.float()
-        x=x[:,0:2,:,:]
+        x=x[:,0,:,:]+x[:,1,:,:]+x[:,2,:,:]
 #         print(x.shape)
         x=torch.nn.functional.conv2d(x, self.x1,self.bias1,stride=1)
         x = F.relu(x)
