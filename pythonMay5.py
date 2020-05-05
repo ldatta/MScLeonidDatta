@@ -199,7 +199,7 @@ class Netconv(nn.Module):
     def forward(self, x):
         
         x=x.float()
-        x=x[:,0:1,:,:]
+        x=x[:,0:2,:,:]
 #         print(x.shape)
         x=torch.nn.functional.conv2d(x, self.x1,self.bias1,stride=1)
         x = F.relu(x)
