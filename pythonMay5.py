@@ -389,25 +389,25 @@ def main():
     c=1*(c>0.3)
 
 # =============================================================================
-#     mask=np.zeros((datasize,datasize))
-# 
-#     maskgap=5
-# 
-#     for i in range(0,datasize,maskgap):
-#         for j in range(0,datasize,maskgap):
-#             mask[i,j]=1
-#             #if(i!=datasize or j!=datasize):
-# 
-#     mask[:,0]=0
-#     mask[0,:]=0
-#     mask[:,55]=0
-#     mask[55,:]=0
-#     plt.imshow(mask, cmap='gray',  interpolation='nearest')
-#     plt.show()
-# 
-#     a=a*mask
-#     b=b*mask
-#     c=c*mask
+    mask=np.zeros((datasize,datasize))
+
+    maskgap=5
+
+    for i in range(0,datasize,maskgap):
+        for j in range(0,datasize,maskgap):
+            mask[i,j]=1
+            #if(i!=datasize or j!=datasize):
+
+    mask[:,0]=0
+    mask[0,:]=0
+    mask[:,55]=0
+    mask[55,:]=0
+    plt.imshow(mask, cmap='gray',  interpolation='nearest')
+    plt.show()
+
+    a=a*mask
+    b=b*mask
+    c=c*mask
 # =============================================================================
 
 
