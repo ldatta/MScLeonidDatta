@@ -1,25 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 10 11:23:39 2020
-
-@author: leoniddatta
-"""
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 10 10:42:12 2020
-
-@author: leoniddatta
-"""
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr 28 13:49:42 2020
-@author: leoniddatta
-"""
 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -180,7 +158,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=4
+k=3
 
 #Line 91-123 for the model using nn.conv2d
 # =============================================================================
@@ -271,8 +249,14 @@ class Netconv(nn.Module):
 #             x5_weights[:,i*2] = self.x5[:,i]
 #             x5_weights[:,(i*2)+1] = self.x5[:,i]
 # =============================================================================
+        
             
-            
+        x1_weights = x1_weights.cuda()
+        x2_weights = x2_weights.cuda()
+        x3_weights = x3_weights.cuda()
+        x4_weights = x4_weights.cuda()
+        x5_weights = x5_weights.cuda()
+        
         x=x.float()
         x=torch.nn.functional.conv2d(x, x1_weights,self.bias1,stride=1)
         x = F.relu(x)
