@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Sun May 10 10:42:12 2020
+
+@author: leoniddatta
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Tue Apr 28 13:49:42 2020
 @author: leoniddatta
 """
@@ -46,6 +54,13 @@ def biasittensor(inc,outc,k,g): #Function for weight initialization. inc=input_c
     
     kernel=torch.FloatTensor(outc).uniform_(-weightrange, weightrange)
     return kernel
+def weightittensornotfull(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
+    weightrange=1. / math.sqrt(inc*k*k)
+    if(inc==g):
+        inc=1
+    kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
+    return kernel
+
 
 def add_channel(x,n):
     #x=x.detach().numpy() 
@@ -65,6 +80,7 @@ def add_channel(x,n):
                 x[i,j,:,:]=x[i,j*2,:,:]+x[i,((j*2)+1),:,:]
     
     return x[:,0:ran,:,:]
+
 def rearrange(x,n):
     z=x
     cos = nn.CosineSimilarity(dim=0, eps=1e-6)
@@ -82,7 +98,8 @@ def rearrange(x,n):
         max=torch.ones(z.shape[1])*sim[0,0]
         maxindj=torch.zeros(z.shape[1])
         maxindk=torch.zeros(z.shape[1])
-        for l in range(z.shape[1]):
+        ind=int(z.shape[1]/2)
+        for l in range(ind):
             for j in range(z.shape[1]):
                 for k in range(z.shape[1]):
                     if (sim[j,k]>max[l]):
@@ -103,7 +120,7 @@ def rearrange(x,n):
         #print(maxindk)
         
         sortedindex=torch.zeros((z.shape[1])).long()
-        ind=int(z.shape[1]/2)
+        
         for l in range(ind):
             sortedindex[l*2]=maxindj[l]
             sortedindex[(l*2)+1]=maxindk[l]
@@ -191,7 +208,7 @@ add=2
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        self.x1=torch.nn.Parameter(weightittensor(1,16*k,3,1)) # random tensor weights generated for layer 1
+        self.x1=torch.nn.Parameter(weightittensornotfull(1,16*k,3,1)) # random tensor weights generated for layer 1
         self.x2=torch.nn.Parameter(weightittensor(int(16*k/add),32*k,3,1)) #random tensor weights generated for layer 2
         self.x3=torch.nn.Parameter(weightittensor(int(32*k/add),64*k,3,1)) #random tensor weights generated for layer 3
         self.x4=torch.nn.Parameter(weightittensor(int(64*k/add),128*k,3,1)) # random tensor weights generated for laye 4
@@ -204,45 +221,65 @@ class Netconv(nn.Module):
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
     def forward(self, x):
+        new_shape1 = [16*k,3,3,3]
+        new_shape2 = [32*k,16*k,3,3]
+        new_shape3 = [64*k,32*k,3,3]
+        new_shape4 = [128*k,64*k,3,3]
+        new_shape5 = [10,128*k,3,3]
+        #self.x1=torch.reshape(self.x1,(16,3,3))
+        x1_weights = torch.zeros(new_shape1, dtype=torch.float32)
+        x2_weights = torch.zeros(new_shape2, dtype=torch.float32)
+        x3_weights = torch.zeros(new_shape3, dtype=torch.float32)
+        x4_weights = torch.zeros(new_shape4, dtype=torch.float32)
+        x5_weights = torch.zeros(new_shape5, dtype=torch.float32)
+        for i in range(x1_weights.shape[1]): # amount of output channels
+            x1_weights[:,i] = self.x1
+        for i in range(int(x2_weights.shape[1]/2)): # amount of output channels
+            x2_weights[:,i*2] = self.x2[:,i]
+            x2_weights[:,(i*2)+1] = self.x2[:,i]
+        for i in range(int(x3_weights.shape[1]/2)): # amount of output channels
+            x3_weights[:,i*2] = self.x3[:,i]
+            x3_weights[:,(i*2)+1] = self.x3[:,i]
+        for i in range(int(x4_weights.shape[1]/2)): # amount of output channels
+            #x4_weights[:,i] = self.x4#self.x4
+            x4_weights[:,i*2] = self.x4[:,i]
+            x4_weights[:,(i*2)+1] = self.x4[:,i]
+        for i in range(int(x5_weights.shape[1]/2)): # amount of output channels
+            #x5_weights[:,i] = self.x5#self.x5
+            x5_weights[:,i*2] = self.x5[:,i]
+            x5_weights[:,(i*2)+1] = self.x5[:,i]
         
+        x1_weights=x1_weights.cuda()
+        x2_weights=x2_weights.cuda()
+        x3_weights=x3_weights.cuda()
+        x4_weights=x4_weights.cuda()
+        x5_weights=x5_weights.cuda()
+            
         x=x.float()
-        
-        #x=x[:,0,:,:]+x[:,1,:,:]+x[:,2,:,:]
-#         print(x.shape)
-        
-        x=torch.nn.functional.conv2d(x, self.x1,self.bias1,stride=1)
+        x=torch.nn.functional.conv2d(x, x1_weights,self.bias1,stride=1)
         x = F.relu(x)
-        x=add_channel(x,8*k)
-        x=x.cuda()
         rearrange(x,2)
-        #print("done")
-#         print(x.shape)
-        x=torch.nn.functional.conv2d(x, self.x2,self.bias2, stride=2)
+        x=x.float()
+        x=torch.nn.functional.conv2d(x, x2_weights,self.bias2,stride=2)
         x = F.relu(x)
-        x=add_channel(x,16*k)
-        x=x.cuda()
         rearrange(x,2)
-#         print(x.shape)
-        x=torch.nn.functional.conv2d(x, self.x3,self.bias3,stride=2)
+        x=x.float()
+        x=torch.nn.functional.conv2d(x, x3_weights,self.bias3,stride=2)
         x = F.relu(x)
-        x=add_channel(x,32*k)
-        x=x.cuda()
         rearrange(x,2)
-#         print(x.shape)
-        x=torch.nn.functional.conv2d(x, self.x4,self.bias4,stride=2)
+        x=x.float()
+        x=torch.nn.functional.conv2d(x, x4_weights,self.bias4,stride=2)
         x = F.relu(x)
-        x=add_channel(x,64*k)
-        x=x.cuda()
         rearrange(x,2)
-        
-#         print(x.shape)
-        x=torch.nn.functional.conv2d(x, self.x5,self.bias5,stride=2)
+        x=x.float() 
+        x=torch.nn.functional.conv2d(x, x5_weights,self.bias5,stride=2)
         x = F.relu(x) 
-#         print(x.shape)
         x = self.GAP(x)
         x = x.view(-1, 10)
         x=F.log_softmax(x, dim=1)
         return x
+    
+
 
     def parameters(self):
         return [self.x1, self.x2,self.x3,self.x4,self.x5,self.bias1,self.bias2,self.bias3,self.bias4,self.bias5] 
@@ -477,20 +514,18 @@ def main():
     bbb=b
     ccc=c
 
-# =============================================================================
-#     a=np.zeros((60000,56,56,3))
-#     b=np.zeros((10000,56,56,3))
-#     c=np.zeros((10000,56,56,3))
-# 
-# 
-#     if(GL==1):
-#         a[:,:,:,1]=aaa
-#     else:
-#         a[:,:,:,0]=aaa
-# 
-#     b[:,:,:,1]=bbb
-#     c[:,:,:,0]=ccc
-# =============================================================================
+    a=np.zeros((60000,56,56,3))
+    b=np.zeros((10000,56,56,3))
+    c=np.zeros((10000,56,56,3))
+
+
+    if(GL==1):
+        a[:,:,:,1]=aaa
+    else:
+        a[:,:,:,0]=aaa
+
+    b[:,:,:,1]=bbb
+    c[:,:,:,0]=ccc
 
     print("train data is")
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
@@ -529,15 +564,15 @@ def main():
     ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
     ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
     plt.show()
-    a=np.reshape(a,(60000,1,56,56))
-    b=np.reshape(b,(10000,1,56,56))
-    c=np.reshape(c,(10000,1,56,56))
+# =============================================================================
+#     a=np.reshape(a,(60000,1,56,56))
+#     b=np.reshape(b,(10000,1,56,56))
+#     c=np.reshape(c,(10000,1,56,56))
+# =============================================================================
     
-# =============================================================================
-#     a=np.transpose(a, (0,3, 1, 2))
-#     b=np.transpose(b, (0,3, 1, 2))
-#     c=np.transpose(c, (0,3, 1, 2))
-# =============================================================================
+    a=np.transpose(a, (0,3, 1, 2))
+    b=np.transpose(b, (0,3, 1, 2))
+    c=np.transpose(c, (0,3, 1, 2))
 
 
     data=torch.from_numpy(a)
