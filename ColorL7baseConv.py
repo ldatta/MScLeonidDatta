@@ -26,7 +26,7 @@ import copy
 import math
 
 GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
-
+k=5
 #Code for validating the base model
 def weightittensor(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
     weightrange=1. / math.sqrt(inc*k*k)
@@ -158,7 +158,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=4
+
 
 #Line 91-123 for the model using nn.conv2d
 # =============================================================================
