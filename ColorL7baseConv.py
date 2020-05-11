@@ -158,7 +158,7 @@ def plotgraph (xs,y1s,y2s,yts):
                           markersize=10, label='GL test data')
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
-k=3
+k=4
 
 #Line 91-123 for the model using nn.conv2d
 # =============================================================================
@@ -194,7 +194,7 @@ add=1
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
-        self.x1=torch.nn.Parameter(weightittensornotfull(1,16*k,3,1)) # random tensor weights generated for layer 1
+        self.x1=torch.nn.Parameter(weightittensornotfull(3,16*k,3,1)) # random tensor weights generated for layer 1
         self.x2=torch.nn.Parameter(weightittensornotfull(int(16*k/add),32*k,3,1)) #random tensor weights generated for layer 2
         self.x3=torch.nn.Parameter(weightittensornotfull(int(32*k/add),64*k,3,1)) #random tensor weights generated for layer 3
         self.x4=torch.nn.Parameter(weightittensornotfull(int(64*k/add),128*k,3,1)) # random tensor weights generated for laye 4
