@@ -105,7 +105,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(1, 16, 3, 1)
+        self.conv1 = nn.Conv2d(3, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, st)
         self.conv3 = nn.Conv2d(32, 64, 3, st)
         self.conv4 = nn.Conv2d(64, 128, 3, st)
@@ -389,23 +389,23 @@ def main():
                         c[k,i+1,j+1]=1
         
     # =============================================================================
-    #     aaa=a
-    #     bbb=b
-    #     ccc=c
-    #     
-    #     a=np.zeros((60000,56,56,3))
-    #     b=np.zeros((10000,56,56,3))
-    #     c=np.zeros((10000,56,56,3))
-    #     
-    #     
-    #     if(GL==1):
-    #         a[:,:,:,1]=aaa
-    #         b[:,:,:,1]=bbb
-    #         c[:,:,:,1]=ccc
-    #     else:
-    #         a[:,:,:,0]=aaa
-    #         b[:,:,:,0]=bbb
-    #         c[:,:,:,0]=ccc
+        aaa=a
+        bbb=b
+        ccc=c
+        
+        a=np.zeros((60000,56,56,3))
+        b=np.zeros((10000,56,56,3))
+        c=np.zeros((10000,56,56,3))
+        
+        
+        if(GL==1):
+            a[:,:,:,1]=aaa
+            b[:,:,:,1]=bbb
+            c[:,:,:,1]=ccc
+        else:
+            a[:,:,:,0]=aaa
+            b[:,:,:,0]=bbb
+            c[:,:,:,0]=ccc
     # =============================================================================
         
         
@@ -464,14 +464,14 @@ def main():
         plt.show()
             
     # =============================================================================
-    #     a=np.transpose(a, (0,3, 1, 2))
-    #     b=np.transpose(b, (0,3, 1, 2))
-    #     c=np.transpose(c, (0,3, 1, 2))
+        a=np.transpose(a, (0,3, 1, 2))
+        b=np.transpose(b, (0,3, 1, 2))
+        c=np.transpose(c, (0,3, 1, 2))
     # =============================================================================
         
-        a=np.reshape(a,(60000,1,56,56))
-        b=np.reshape(b,(10000,1,56,56))
-        c=np.reshape(c,(10000,1,56,56))
+#         a=np.reshape(a,(60000,1,56,56))
+#         b=np.reshape(b,(10000,1,56,56))
+#         c=np.reshape(c,(10000,1,56,56))
     
         data=torch.from_numpy(a)
         target=torch.from_numpy(a2)
