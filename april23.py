@@ -599,13 +599,13 @@ def main():
         print("lossarraytrn",repr(lossarraytrn))
         print("lossarrayred",repr(lossarrayred))
         print("lossarraygrn",repr(lossarraygrn))
-        restrn[seeditr]=resulttrn
-        resred[seeditr]=resultred
-        resgrn[seeditr]=resultgrn
+#         restrn[seeditr]=resulttrn
+#         resred[seeditr]=resultred
+#         resgrn[seeditr]=resultgrn
     
-    print("training",repr(restrn))
-    print("red",repr(resred))
-    print("grn",repr(resgrn))
+#     print("training",repr(restrn))
+#     print("red",repr(resred))
+#     print("grn",repr(resgrn))
     
     #plotgraph(e,resultred,resultgrn, resulttrn)
     #plotloss(e,lossarrayred,lossarraygrn,lossarraytrn)
