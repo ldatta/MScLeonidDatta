@@ -213,7 +213,7 @@ def test(args, model, device, test_loader):
     return acc,test_loss
 
 def main():
-    no_epochs=30
+    no_epochs=50
     sitr=6
     restrn=np.zeros((sitr,(no_epochs*2)+1))
     resgrn=np.zeros((sitr,(no_epochs*2)+1))
@@ -597,7 +597,7 @@ def main():
     print("training",repr(np.mean(restrn, axis=0)))
     print("red",repr(np.mean(resred, axis=0)))
     print("grn",repr(np.mean(resgrn, axis=0)))
-    pint("avg on 7 data No bias")
+    print("avg on 7 data No bias epochs 50")
     #plotgraph(e,resultred,resultgrn, resulttrn)
     #plotloss(e,lossarrayred,lossarraygrn,lossarraytrn)
 # =============================================================================
