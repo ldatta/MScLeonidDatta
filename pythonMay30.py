@@ -23,7 +23,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
    
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
@@ -333,23 +333,23 @@ def main():
                         c[k,i+1,j+1]=1
         
     # =============================================================================
-    #     aaa=a
-    #     bbb=b
-    #     ccc=c
-    #     
-    #     a=np.zeros((60000,56,56,3))
-    #     b=np.zeros((10000,56,56,3))
-    #     c=np.zeros((10000,56,56,3))
-    #     
-    #     
-    #     if(GL==1):
-    #         a[:,:,:,1]=aaa
-    #         b[:,:,:,1]=bbb
-    #         c[:,:,:,1]=ccc
-    #     else:
-    #         a[:,:,:,0]=aaa
-    #         b[:,:,:,0]=bbb
-    #         c[:,:,:,0]=ccc
+        aaa=a
+        bbb=b
+        ccc=c
+        
+        a=np.zeros((60000,56,56,3))
+        b=np.zeros((10000,56,56,3))
+        c=np.zeros((10000,56,56,3))
+        a[:,:,:,1]=aaa
+        b[:,:,:,1]=bbb
+        c[:,:,:,1]=ccc
+        
+        #if(GL==1):
+        
+#         else:
+#             a[:,:,:,0]=aaa
+#             b[:,:,:,0]=bbb
+#             c[:,:,:,0]=ccc
     # =============================================================================
         
         
@@ -392,14 +392,14 @@ def main():
         plt.show()
             
     # =============================================================================
-    #     a=np.transpose(a, (0,3, 1, 2))
-    #     b=np.transpose(b, (0,3, 1, 2))
-    #     c=np.transpose(c, (0,3, 1, 2))
+        a=np.transpose(a, (0,3, 1, 2))
+        b=np.transpose(b, (0,3, 1, 2))
+        c=np.transpose(c, (0,3, 1, 2))
     # =============================================================================
         
-        a=np.reshape(a,(60000,1,56,56))
-        b=np.reshape(b,(10000,1,56,56))
-        c=np.reshape(c,(10000,1,56,56))
+#         a=np.reshape(a,(60000,1,56,56))
+#         b=np.reshape(b,(10000,1,56,56))
+#         c=np.reshape(c,(10000,1,56,56))
     
         data=torch.from_numpy(a)
         target=torch.from_numpy(a2)
@@ -515,7 +515,7 @@ def main():
         restrn[seeditr]=resulttrn
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
-    print("average Base 7 ")
+    print("average Base R7, tested on R7 RL ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
