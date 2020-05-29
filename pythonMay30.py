@@ -323,18 +323,18 @@ def main():
                     c[k,i+1,j+1]=1
     
 # =============================================================================
-#     aaa=a
-#     bbb=b
-#     ccc=c
+    aaa=a
+    bbb=b
+    ccc=c
     
-#     a=np.zeros((60000,56,56,3))
-#     b=np.zeros((10000,56,56,3))
-#     c=np.zeros((10000,56,56,3))
-#     a[:,:,:,0]=aaa
-#     b[:,:,:,0]=bbb
-#     c[:,:,:,0]=ccc
+    a=np.zeros((60000,56,56,3))
+    b=np.zeros((10000,56,56,3))
+    c=np.zeros((10000,56,56,3))
+    a[:,:,:,0]=aaa
+    b[:,:,:,0]=bbb
+    c[:,:,:,0]=ccc
     
-    #if(GL==1):
+#     if(GL==1):
     
 #         else:
 #             a[:,:,:,0]=aaa
@@ -382,14 +382,14 @@ def main():
     plt.show()
     
     
-    a=np.reshape(a,(60000,1,56,56))
-    b=np.reshape(b,(10000,1,56,56))
-    c=np.reshape(c,(10000,1,56,56))
+#     a=np.reshape(a,(60000,1,56,56))
+#     b=np.reshape(b,(10000,1,56,56))
+#     c=np.reshape(c,(10000,1,56,56))
         
 # =============================================================================
-#     a=np.transpose(a, (0,3, 1, 2))
-#     b=np.transpose(b, (0,3, 1, 2))
-#     c=np.transpose(c, (0,3, 1, 2))
+    a=np.transpose(a, (0,3, 1, 2))
+    b=np.transpose(b, (0,3, 1, 2))
+    c=np.transpose(c, (0,3, 1, 2))
 # =============================================================================
     
     
@@ -513,15 +513,15 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        torch.save(model.state_dict(), 'Base7seed{}.pt'.format(seeditr+1))
+        torch.save(model.state_dict(), 'BaseMay30R7seed{}.pt'.format(seeditr+1))
         print("model saved")
-    print("average Base 7, tested on 7 and L ")
+    print("average Base R7, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May30base7trn.npy',restrn)
-    np.save('May30base7red.npy',resred)
-    np.save('May30base7grn.npy',resgrn)
+    np.save('May30baseR7trn.npy',restrn)
+    np.save('May30baseR7red.npy',resred)
+    np.save('May30baseR7grn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
