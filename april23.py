@@ -105,7 +105,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(3, 16, 3, 1)
+        self.conv1 = nn.Conv2d(1, 16, 3, 1)
         self.conv2 = nn.Conv2d(16, 32, 3, st)
         self.conv3 = nn.Conv2d(32, 64, 3, st)
         self.conv4 = nn.Conv2d(64, 128, 3, st)
@@ -158,12 +158,6 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-# =============================================================================
-#     w=np.load('MyWeightF.npy')
-#     w=torch.from_numpy(w)
-#     w = w.type(torch.FloatTensor)#w=torch.float(w)
-#     model.conv1.weight.data=w #,dtype=torch.float)#.requires_grad_(True).reshape(16, 3,3)
-# =============================================================================
     
     for batch_idx, (data, target) in enumerate(train_loader):
         model.train()
@@ -179,7 +173,7 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
         correct_train += predicted.eq(target.data).sum().item()
         train_accuracy = 100 * correct_train / total_train
         q=int(100. * batch_idx / len(train_loader))
-            
+      
         if batch_idx % args.log_interval == 0:
             if batch_idx % args.log_interval == 0:
                 if (q%10) == 0:
@@ -192,7 +186,6 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
                     t=int(train_accuracy)  
                     modellossmid=float(loss)
         modellossf=float(loss)
-    #print(modellossmid,modellossf)
     
     return [r,g,t,train_accuracy,modellossmid,modellossf,lossr,lossg]
 
@@ -220,16 +213,18 @@ def test(args, model, device, test_loader):
     return acc,test_loss
 
 def main():
-    restrn=np.zeros((6,61))
-    resgrn=np.zeros((6,61))
-    resred=np.zeros((6,61))
-    for seeditr in range(6):
+    no_epochs=30
+    sitr=6
+    restrn=np.zeros((sitr,(no_epochs*2)+1))
+    resgrn=np.zeros((sitr,(no_epochs*2)+1))
+    resred=np.zeros((sitr,(no_epochs*2)+1))
+    for seeditr in range(sitr):
         parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
         parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                             help='input batch size for training (default: 64)')
         parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
                             help='input batch size for testing (default: 1000)')
-        parser.add_argument('--epochs', type=int, default=30, metavar='N',
+        parser.add_argument('--epochs', type=int, default=no_epochs, metavar='N',
                             help='number of epochs to train (default: 10)')
         parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                             help='learning rate (default: 0.01)')
@@ -389,23 +384,23 @@ def main():
                         c[k,i+1,j+1]=1
         
     # =============================================================================
-        aaa=a
-        bbb=b
-        ccc=c
-        
-        a=np.zeros((60000,56,56,3))
-        b=np.zeros((10000,56,56,3))
-        c=np.zeros((10000,56,56,3))
-        
-        
-        if(GL==1):
-            a[:,:,:,1]=aaa
-            b[:,:,:,1]=bbb
-            c[:,:,:,1]=ccc
-        else:
-            a[:,:,:,0]=aaa
-            b[:,:,:,0]=bbb
-            c[:,:,:,0]=ccc
+    #     aaa=a
+    #     bbb=b
+    #     ccc=c
+    #     
+    #     a=np.zeros((60000,56,56,3))
+    #     b=np.zeros((10000,56,56,3))
+    #     c=np.zeros((10000,56,56,3))
+    #     
+    #     
+    #     if(GL==1):
+    #         a[:,:,:,1]=aaa
+    #         b[:,:,:,1]=bbb
+    #         c[:,:,:,1]=ccc
+    #     else:
+    #         a[:,:,:,0]=aaa
+    #         b[:,:,:,0]=bbb
+    #         c[:,:,:,0]=ccc
     # =============================================================================
         
         
@@ -464,14 +459,14 @@ def main():
         plt.show()
             
     # =============================================================================
-        a=np.transpose(a, (0,3, 1, 2))
-        b=np.transpose(b, (0,3, 1, 2))
-        c=np.transpose(c, (0,3, 1, 2))
+    #     a=np.transpose(a, (0,3, 1, 2))
+    #     b=np.transpose(b, (0,3, 1, 2))
+    #     c=np.transpose(c, (0,3, 1, 2))
     # =============================================================================
         
-#         a=np.reshape(a,(60000,1,56,56))
-#         b=np.reshape(b,(10000,1,56,56))
-#         c=np.reshape(c,(10000,1,56,56))
+        a=np.reshape(a,(60000,1,56,56))
+        b=np.reshape(b,(10000,1,56,56))
+        c=np.reshape(c,(10000,1,56,56))
     
         data=torch.from_numpy(a)
         target=torch.from_numpy(a2)
@@ -599,13 +594,13 @@ def main():
         print("lossarraytrn",repr(lossarraytrn))
         print("lossarrayred",repr(lossarrayred))
         print("lossarraygrn",repr(lossarraygrn))
-#         restrn[seeditr]=resulttrn
-#         resred[seeditr]=resultred
-#         resgrn[seeditr]=resultgrn
-    
-#     print("training",repr(restrn))
-#     print("red",repr(resred))
-#     print("grn",repr(resgrn))
+        restrn[seeditr]=resulttrn
+        resred[seeditr]=resultred
+        resgrn[seeditr]=resultgrn
+    print("average")
+    print("training",repr(np.mean(restrn, axis=0)))
+    print("red",repr(np.mean(resred, axis=0)))
+    print("grn",repr(np.mean(resgrn, axis=0)))
     
     #plotgraph(e,resultred,resultgrn, resulttrn)
     #plotloss(e,lossarrayred,lossarraygrn,lossarraytrn)
