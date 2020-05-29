@@ -380,6 +380,11 @@ def main():
     ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
     ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
     plt.show()
+    
+    
+    a=np.reshape(a,(60000,1,56,56))
+    b=np.reshape(b,(10000,1,56,56))
+    c=np.reshape(c,(10000,1,56,56))
         
 # =============================================================================
 #     a=np.transpose(a, (0,3, 1, 2))
@@ -387,10 +392,7 @@ def main():
 #     c=np.transpose(c, (0,3, 1, 2))
 # =============================================================================
     
-        a=np.reshape(a,(60000,1,56,56))
-        b=np.reshape(b,(10000,1,56,56))
-        c=np.reshape(c,(10000,1,56,56))
-
+    
     data=torch.from_numpy(a)
     target=torch.from_numpy(a2)
     target = torch.tensor(target, dtype=torch.long)
