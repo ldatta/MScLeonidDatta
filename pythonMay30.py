@@ -73,7 +73,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(1, 4, 3, 1)
+        self.conv1 = nn.Conv2d(3, 4, 3, 1)
         self.conv2 = nn.Conv2d(4, 8, 3, st)
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
@@ -516,6 +516,10 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
     print("average Base RL, tested on R7 RL ")
+#     print("restrn=np.",repr(restrn))
+#     print("resred=np.",repr(resred))
+#     print("resgrn=np.",repr(resgrn))
+    
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
