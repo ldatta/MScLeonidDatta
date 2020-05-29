@@ -330,9 +330,9 @@ def main():
     a=np.zeros((60000,56,56,3))
     b=np.zeros((10000,56,56,3))
     c=np.zeros((10000,56,56,3))
-    a[:,:,:,1]=aaa
-    b[:,:,:,1]=bbb
-    c[:,:,:,1]=ccc
+    a[:,:,:,0]=aaa
+    b[:,:,:,0]=bbb
+    c[:,:,:,0]=ccc
     
     #if(GL==1):
     
@@ -408,8 +408,8 @@ def main():
     my_hortestdataset = utils.TensorDataset(data2,target2)
     for seeditr in range(sitr):
         
-        parser.add_argument('--seed', type=int, default=seeditr+1, metavar='S',
-                        help='random seed (default: 1)')
+#         parser.add_argument('--seed', type=int, default=seeditr+1, metavar='S',
+#                         help='random seed (default: 1)')
         torch.manual_seed(seeditr+1)
     
     
@@ -510,8 +510,9 @@ def main():
         restrn[seeditr]=resulttrn
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
-        if args.save_model:
-            torch.save(model.state_dict(), 'BaseRLseed{}.pt'.format(seeditr+1))
+        #if args.save_model:
+        torch.save(model.state_dict(), 'BaseRLseed{}.pt'.format(seeditr+1))
+        print("model saved")
     print("average Base RL, tested on R7 RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
