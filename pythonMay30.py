@@ -67,36 +67,6 @@ def plotgraph (xs,y1s,y2s,yts):
     plt.legend(handles=[blue_line,red_line,green_line],loc=2)
     plt.show()
     
-def plotloss (xs,y1s,y2s,yts):
-    plt.clf()
-    fig = plt.figure(figsize=(10, 7))
-    plt.plot(xs,y1s,'s:r')
-    #plt.ylim(0, 3)
-    fig.suptitle('GRAPH OF LOSS')
-    plt.xlabel('Epoch no')
-    plt.ylabel('loss value')
-    plt.plot(xs,y2s,'^:g')
-    
-    plt.plot(xs,yts,'*:b')
-
-    blue_line = mlines.Line2D([], [], color='blue', marker='*',
-                          markersize=10, label='loss on training data')
-    red_line = mlines.Line2D([], [], color='red', marker='s',
-                          markersize=10, label='loss on 7 test data')
-    green_line = mlines.Line2D([], [], color='green', marker='^',
-                          markersize=10, label='loss on L test data')
-    plt.legend(handles=[blue_line,red_line,green_line],loc=2)
-    plt.show()
-    
-def weightit(inc,outc,k,g): #Function for weight initialization. inc=input_channel, outc=output_channel, k=kernel size, g=group
-    weightrange=1. / math.sqrt(inc*k*k)
-    if(inc==g): 
-        inc=1
-    kernel=torch.FloatTensor(outc,k, k).uniform_(-weightrange, weightrange)
-    weights=torch.zeros((outc,inc,k,k))
-    for i in range(weights.shape[1]):
-        weights[:,i]=kernel
-    return weights
 
 
 class Netconv(nn.Module):
@@ -108,26 +78,6 @@ class Netconv(nn.Module):
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
         self.conv5 = nn.Conv2d(32, 10, 3, st)
-# =============================================================================
-# # =============================================================================
-# #         w=np.load('MyWeightF.npy')
-# #         w=torch.from_numpy(w)
-# #         w = w.type(torch.FloatTensor)#w=torch.float(w)
-# #         
-# #         
-# #         self.conv1.weight.data=w
-# #         self.conv2.weight.data=model2.conv2.weight.data
-# #         self.conv3.weight.data=model2.conv3.weight.data
-# #         self.conv4.weight.data=model2.conv4.weight.data
-# #         self.conv5.weight.data=model2.conv5.weight.data
-# # =============================================================================
-#         self.conv1.bias=None#model2.conv1.bias.data
-#         self.conv2.bias=None#model2.conv2.bias.data
-#         self.conv3.bias=None#model2.conv3.bias.data
-#         self.conv4.bias=None#model2.conv4.bias.data
-#         self.conv5.bias=None#model2.conv5.bias.data
-#         
-# =============================================================================
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
     def forward(self, x):
@@ -156,12 +106,6 @@ def train(args, model, device, train_loader, optimizer, epoch, hortest_loader,te
     total_train = 0
     correct_train = 0
     model.train() 
-# =============================================================================
-#     w=np.load('MyWeightF.npy')
-#     w=torch.from_numpy(w)
-#     w = w.type(torch.FloatTensor)#w=torch.float(w)
-#     model.conv1.weight.data=w #,dtype=torch.float)#.requires_grad_(True).reshape(16, 3,3)
-# =============================================================================
     
     for batch_idx, (data, target) in enumerate(train_loader):
         model.train()
@@ -409,22 +353,6 @@ def main():
     # =============================================================================
         
         
-        
-        
-    # =============================================================================
-    #     a[:,:,:,0]=aaa
-    #     a[:,:,:,1]=aaa
-    #     a[:,:,:,2]=aaa
-    #     
-    #     b[:,:,:,0]=bbb
-    #     b[:,:,:,1]=bbb
-    #     b[:,:,:,2]=bbb
-    #     
-    #     c[:,:,:,0]=ccc
-    #     c[:,:,:,1]=ccc
-    #     c[:,:,:,2]=ccc
-    # =============================================================================
-        
         print("train data is")
         fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
         fig.suptitle('Training Data (blue curve train accyracy in graph)')
@@ -504,21 +432,6 @@ def main():
         #torch.save(model.state_dict(), "May27R7sameWIni.pt")
         print("Net")
         
-    # =============================================================================
-    #     print(model.conv5.weight.data-model2.conv5.weight.data)
-    #     print(model.conv4.weight.data-model2.conv4.weight.data)
-    #     print(model.conv3.weight.data-model2.conv3.weight.data)
-    #     print(model.conv2.weight.data-model2.conv2.weight.data)
-    #     print(model2.conv1.weight.data)
-    #     print(model.conv1.weight.data)
-    #     print(model.conv5.bias.data-model2.conv5.bias.data)
-    #     print(model.conv4.bias.data-model2.conv4.bias.data)
-    #     print(model.conv3.bias.data-model2.conv3.bias.data)
-    #     print(model.conv2.bias.data-model2.conv2.bias.data)
-    #     print(model.conv1.bias.data-model2.conv1.bias.data)
-    # =============================================================================
-        
-        
         optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
         epoch_no=(np.arange(1,(args.epochs+1),1 ))
         redacc=(np.arange(1,(args.epochs+1),1 ))
@@ -596,9 +509,9 @@ def main():
         print("resultred",repr(resultred))
         print("resultgrn",repr(resultgrn))
         print("resulttrn",repr(resulttrn))
-        print("lossarraytrn",repr(lossarraytrn))
-        print("lossarrayred",repr(lossarrayred))
-        print("lossarraygrn",repr(lossarraygrn))
+        #print("lossarraytrn",repr(lossarraytrn))
+        #print("lossarrayred",repr(lossarrayred))
+        #print("lossarraygrn",repr(lossarraygrn))
         restrn[seeditr]=resulttrn
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
@@ -608,11 +521,8 @@ def main():
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
     
     #plotgraph(e,resultred,resultgrn, resulttrn)
-    #plotloss(e,lossarrayred,lossarraygrn,lossarraytrn)
-# =============================================================================
 #     if args.save_model:
 #         torch.save(model.state_dict(), "May277NoBias.pt")
-# =============================================================================
     
 if __name__ == '__main__':
     main()
