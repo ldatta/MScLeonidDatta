@@ -123,11 +123,11 @@ class Netconv(nn.Module):
 # #         self.conv4.weight.data=model2.conv4.weight.data
 # #         self.conv5.weight.data=model2.conv5.weight.data
 # # =============================================================================
-        self.conv1.bias=None#model2.conv1.bias.data
-        self.conv2.bias=None#model2.conv2.bias.data
-        self.conv3.bias=None#model2.conv3.bias.data
-        self.conv4.bias=None#model2.conv4.bias.data
-        self.conv5.bias=None#model2.conv5.bias.data
+#         self.conv1.bias=None#model2.conv1.bias.data
+#         self.conv2.bias=None#model2.conv2.bias.data
+#         self.conv3.bias=None#model2.conv3.bias.data
+#         self.conv4.bias=None#model2.conv4.bias.data
+#         self.conv5.bias=None#model2.conv5.bias.data
 #         
 # =============================================================================
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
