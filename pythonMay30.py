@@ -23,7 +23,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
    
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
@@ -515,7 +515,7 @@ def main():
         restrn[seeditr]=resulttrn
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
-    print("average Base R7, tested on R7 RL ")
+    print("average Base RL, tested on R7 RL ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
