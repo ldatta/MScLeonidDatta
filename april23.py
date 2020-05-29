@@ -123,11 +123,11 @@ class Netconv(nn.Module):
 # #         self.conv4.weight.data=model2.conv4.weight.data
 # #         self.conv5.weight.data=model2.conv5.weight.data
 # # =============================================================================
-#         self.conv1.bias=None#model2.conv1.bias.data
-#         self.conv2.bias=None#model2.conv2.bias.data
-#         self.conv3.bias=None#model2.conv3.bias.data
-#         self.conv4.bias=None#model2.conv4.bias.data
-#         self.conv5.bias=None#model2.conv5.bias.data
+        self.conv1.bias=None#model2.conv1.bias.data
+        self.conv2.bias=None#model2.conv2.bias.data
+        self.conv3.bias=None#model2.conv3.bias.data
+        self.conv4.bias=None#model2.conv4.bias.data
+        self.conv5.bias=None#model2.conv5.bias.data
 #         
 # =============================================================================
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
@@ -384,23 +384,23 @@ def main():
                         c[k,i+1,j+1]=1
         
     
-        aaa=a
-        bbb=b
-        ccc=c
+#         aaa=a
+#         bbb=b
+#         ccc=c
         
-        a=np.zeros((60000,56,56,3))
-        b=np.zeros((10000,56,56,3))
-        c=np.zeros((10000,56,56,3))
+#         a=np.zeros((60000,56,56,3))
+#         b=np.zeros((10000,56,56,3))
+#         c=np.zeros((10000,56,56,3))
         
         
-        if(GL==1):
-            a[:,:,:,1]=aaa
-            b[:,:,:,1]=bbb
-            c[:,:,:,1]=ccc
-        else:
-            a[:,:,:,0]=aaa
-            b[:,:,:,0]=bbb
-            c[:,:,:,0]=ccc
+#         if(GL==1):
+#             a[:,:,:,1]=aaa
+#             b[:,:,:,1]=bbb
+#             c[:,:,:,1]=ccc
+#         else:
+#             a[:,:,:,0]=aaa
+#             b[:,:,:,0]=bbb
+#             c[:,:,:,0]=ccc
       
     # =============================================================================
     #     a[:,:,:,0]=aaa
@@ -455,14 +455,14 @@ def main():
         plt.show()
             
     # =============================================================================
-        a=np.transpose(a, (0,3, 1, 2))
-        b=np.transpose(b, (0,3, 1, 2))
-        c=np.transpose(c, (0,3, 1, 2))
+#         a=np.transpose(a, (0,3, 1, 2))
+#         b=np.transpose(b, (0,3, 1, 2))
+#         c=np.transpose(c, (0,3, 1, 2))
     # =============================================================================
         
-#         a=np.reshape(a,(60000,1,56,56))
-#         b=np.reshape(b,(10000,1,56,56))
-#         c=np.reshape(c,(10000,1,56,56))
+        a=np.reshape(a,(60000,1,56,56))
+        b=np.reshape(b,(10000,1,56,56))
+        c=np.reshape(c,(10000,1,56,56))
     
         data=torch.from_numpy(a)
         target=torch.from_numpy(a2)
@@ -593,11 +593,11 @@ def main():
         restrn[seeditr]=resulttrn
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
-    print("average RGB")
+    print("average 7")
     print("training",repr(np.mean(restrn, axis=0)))
     print("red",repr(np.mean(resred, axis=0)))
     print("grn",repr(np.mean(resgrn, axis=0)))
-    
+    pint("avg on 7 data No bias")
     #plotgraph(e,resultred,resultgrn, resulttrn)
     #plotloss(e,lossarrayred,lossarraygrn,lossarraytrn)
 # =============================================================================
