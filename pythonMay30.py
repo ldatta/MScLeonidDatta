@@ -15,7 +15,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
@@ -511,15 +511,15 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        torch.save(model.state_dict(), 'Base7seed{}.pt'.format(seeditr+1))
+        torch.save(model.state_dict(), 'BaseLseed{}.pt'.format(seeditr+1))
         print("model saved")
-    print("average Base 7, tested on 7 and L ")
+    print("average Base L, tested on 7 and L ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May30base7trn.npy',restrn)
-    np.save('May30base7red.npy',resred)
-    np.save('May30base7grn.npy',resgrn)
+    np.save('May30baseLtrn.npy',restrn)
+    np.save('May30baseLred.npy',resred)
+    np.save('May30baseLgrn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
