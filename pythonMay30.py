@@ -23,7 +23,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
    
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
