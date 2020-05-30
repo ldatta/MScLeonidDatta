@@ -1048,15 +1048,15 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        torch.save(model.state_dict(), 'BaseMay30RLseed{}.pt'.format(seeditr+1))
+        torch.save(model.state_dict(), 'Base2May30RLseed{}.pt'.format(seeditr+1))
         print("model saved")
     print("average Base RL, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May30baseRLtrn.npy',restrn)
-    np.save('May30baseRLred.npy',resred)
-    np.save('May30baseRLgrn.npy',resgrn)
+    np.save('May30base2RLtrn.npy',restrn)
+    np.save('May30base2RLred.npy',resred)
+    np.save('May30base2RLgrn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
