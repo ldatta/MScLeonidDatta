@@ -15,9 +15,9 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
-print("Running RL, tested on R7 and RL. Ezperimenting no bias ")
+print("Running R7, tested on R7 and RL. Ezperimenting no bias ")
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
     fig = plt.figure(figsize=(10, 7))
@@ -504,10 +504,10 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running Base RL, tested on R7 and RL ")
+        print("Running No bias R7, tested on R7 and RL ")
         #torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
         #print("model saved")
-    print("average Base RL, tested on R7 and RL ")
+    print("average No Bias R7, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
