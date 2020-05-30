@@ -323,27 +323,17 @@ def main():
                     c[k,i,j+1]=1
                     c[k,i+1,j+1]=1
     
-# =============================================================================
-#     aaa=a
-#     bbb=b
-#     ccc=c
+    aaa=a
+    bbb=b
+    ccc=c
     
-#     a=np.zeros((60000,56,56,3))
-#     b=np.zeros((10000,56,56,3))
-#     c=np.zeros((10000,56,56,3))
-#     a[:,:,:,0]=aaa
-#     b[:,:,:,0]=bbb
-#     c[:,:,:,0]=ccc
-    
-#     if(GL==1):
-    
-#         else:
-#             a[:,:,:,0]=aaa
-#             b[:,:,:,0]=bbb
-#             c[:,:,:,0]=ccc
-# =============================================================================
-    
-    
+    a=np.zeros((60000,56,56,3))
+    b=np.zeros((10000,56,56,3))
+    c=np.zeros((10000,56,56,3))
+    a[:,:,:,0]=aaa
+    b[:,:,:,0]=bbb
+    c[:,:,:,0]=ccc
+ 
     print("train data is")
     fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
     fig.suptitle('Training Data (blue curve train accyracy in graph)')
@@ -384,15 +374,14 @@ def main():
     
     
     print("first train data a[0]=np.",repr(a[0,20:30,20:30]))
-    a=np.reshape(a,(60000,1,56,56))
-    b=np.reshape(b,(10000,1,56,56))
-    c=np.reshape(c,(10000,1,56,56))
+    
+#     a=np.reshape(a,(60000,1,56,56))
+#     b=np.reshape(b,(10000,1,56,56))
+#     c=np.reshape(c,(10000,1,56,56))
         
-# =============================================================================
-#     a=np.transpose(a, (0,3, 1, 2))
-#     b=np.transpose(b, (0,3, 1, 2))
-#     c=np.transpose(c, (0,3, 1, 2))
-# =============================================================================
+    a=np.transpose(a, (0,3, 1, 2))
+    b=np.transpose(b, (0,3, 1, 2))
+    c=np.transpose(c, (0,3, 1, 2))
     
     
     data=torch.from_numpy(a)
@@ -505,9 +494,9 @@ def main():
         e=(np.arange(0,(args.epochs+0.5),0.5 ))
         print("SeedItr",seeditr+1)
         print(e)
+        print("resulttrn",repr(resulttrn))
         print("resultred",repr(resultred))
         print("resultgrn",repr(resultgrn))
-        print("resulttrn",repr(resulttrn))
         #print("lossarraytrn",repr(lossarraytrn))
         #print("lossarrayred",repr(lossarrayred))
         #print("lossarraygrn",repr(lossarraygrn))
@@ -515,16 +504,16 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running Base L, tested on 7 and L ")
-        torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
-        print("model saved")
-    print("average Base L, tested on 7 and L ")
+        print("Running Base RL, tested on R7 and RL ")
+        #torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
+        #print("model saved")
+    print("average Base RL, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May31baseLtrn.npy',restrn)
-    np.save('May31baseLred.npy',resred)
-    np.save('May31baseLgrn.npy',resgrn)
+#     np.save('May31baseLtrn.npy',restrn)
+#     np.save('May31baseLred.npy',resred)
+#     np.save('May31baseLgrn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
