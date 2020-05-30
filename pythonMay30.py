@@ -17,6 +17,7 @@ import math
 
 GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
+print("Running Base 7, tested on 7 and L ")
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
     fig = plt.figure(figsize=(10, 7))
@@ -65,7 +66,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(3, 4, 3, 1)
+        self.conv1 = nn.Conv2d(1, 4, 3, 1)
         self.conv2 = nn.Conv2d(4, 8, 3, st)
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
@@ -323,16 +324,16 @@ def main():
                     c[k,i+1,j+1]=1
     
 # =============================================================================
-    aaa=a
-    bbb=b
-    ccc=c
+#     aaa=a
+#     bbb=b
+#     ccc=c
     
-    a=np.zeros((60000,56,56,3))
-    b=np.zeros((10000,56,56,3))
-    c=np.zeros((10000,56,56,3))
-    a[:,:,:,0]=aaa
-    b[:,:,:,0]=bbb
-    c[:,:,:,0]=ccc
+#     a=np.zeros((60000,56,56,3))
+#     b=np.zeros((10000,56,56,3))
+#     c=np.zeros((10000,56,56,3))
+#     a[:,:,:,0]=aaa
+#     b[:,:,:,0]=bbb
+#     c[:,:,:,0]=ccc
     
 #     if(GL==1):
     
@@ -382,15 +383,15 @@ def main():
     plt.show()
     
     
-    print("first train data a[0]=np.",repr(a[0,20:30,20:30,0]))
-#     a=np.reshape(a,(60000,1,56,56))
-#     b=np.reshape(b,(10000,1,56,56))
-#     c=np.reshape(c,(10000,1,56,56))
+    print("first train data a[0]=np.",repr(a[0,20:30,20:30]))
+    a=np.reshape(a,(60000,1,56,56))
+    b=np.reshape(b,(10000,1,56,56))
+    c=np.reshape(c,(10000,1,56,56))
         
 # =============================================================================
-    a=np.transpose(a, (0,3, 1, 2))
-    b=np.transpose(b, (0,3, 1, 2))
-    c=np.transpose(c, (0,3, 1, 2))
+#     a=np.transpose(a, (0,3, 1, 2))
+#     b=np.transpose(b, (0,3, 1, 2))
+#     c=np.transpose(c, (0,3, 1, 2))
 # =============================================================================
     
     
@@ -414,7 +415,7 @@ def main():
 #         parser.add_argument('--seed', type=int, default=seeditr+1, metavar='S',
 #                         help='random seed (default: 1)')
         torch.manual_seed(seeditr+1)
-    
+        print("Running Base L, tested on 7 and L ")
     
         train_loader = torch.utils.data.DataLoader(my_dataset,batch_size=args.batch_size, shuffle=True, **kwargs)
         print("train set loaded" )
@@ -514,16 +515,16 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running Base R7, tested on R7 and RL ")
-        torch.save(model.state_dict(), 'BaseMay312R7seed{}.pt'.format(seeditr+1))
+        print("Running Base 7, tested on 7 and L ")
+        torch.save(model.state_dict(), 'BaseMay3127seed{}.pt'.format(seeditr+1))
         print("model saved")
-    print("average Base R7, tested on R7 and RL ")
+    print("average Base 7, tested on 7 and L ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May312baseR7trn.npy',restrn)
-    np.save('May312baseR7red.npy',resred)
-    np.save('May312baseR7grn.npy',resgrn)
+    np.save('May312base7trn.npy',restrn)
+    np.save('May312base7red.npy',resred)
+    np.save('May312base7grn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
