@@ -65,7 +65,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(1, 4, 3, 1)
+        self.conv1 = nn.Conv2d(3, 4, 3, 1)
         self.conv2 = nn.Conv2d(4, 8, 3, st)
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
