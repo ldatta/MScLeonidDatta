@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat May 30 18:44:34 2020
+
+@author: leoniddatta
+"""
+
 from __future__ import print_function
 import argparse
 import torch
@@ -17,6 +25,7 @@ import math
 
 GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
+print("Running Base L, tested on 7 and L ")
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
     fig = plt.figure(figsize=(10, 7))
@@ -65,7 +74,7 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(3, 4, 3, 1)
+        self.conv1 = nn.Conv2d(1, 4, 3, 1)
         self.conv2 = nn.Conv2d(4, 8, 3, st)
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
@@ -323,16 +332,16 @@ def main():
                     c[k,i+1,j+1]=1
     
 # =============================================================================
-    aaa=a
-    bbb=b
-    ccc=c
+#     aaa=a
+#     bbb=b
+#     ccc=c
     
-    a=np.zeros((60000,56,56,3))
-    b=np.zeros((10000,56,56,3))
-    c=np.zeros((10000,56,56,3))
-    a[:,:,:,0]=aaa
-    b[:,:,:,0]=bbb
-    c[:,:,:,0]=ccc
+#     a=np.zeros((60000,56,56,3))
+#     b=np.zeros((10000,56,56,3))
+#     c=np.zeros((10000,56,56,3))
+#     a[:,:,:,0]=aaa
+#     b[:,:,:,0]=bbb
+#     c[:,:,:,0]=ccc
     
 #     if(GL==1):
     
@@ -382,15 +391,15 @@ def main():
     plt.show()
     
     
-    print("first train data a[0]=np.",repr(a[0,20:30,20:30,0]))
-#     a=np.reshape(a,(60000,1,56,56))
-#     b=np.reshape(b,(10000,1,56,56))
-#     c=np.reshape(c,(10000,1,56,56))
+    print("first train data a[0]=np.",repr(a[0,20:30,20:30]))
+    a=np.reshape(a,(60000,1,56,56))
+    b=np.reshape(b,(10000,1,56,56))
+    c=np.reshape(c,(10000,1,56,56))
         
 # =============================================================================
-    a=np.transpose(a, (0,3, 1, 2))
-    b=np.transpose(b, (0,3, 1, 2))
-    c=np.transpose(c, (0,3, 1, 2))
+#     a=np.transpose(a, (0,3, 1, 2))
+#     b=np.transpose(b, (0,3, 1, 2))
+#     c=np.transpose(c, (0,3, 1, 2))
 # =============================================================================
     
     
@@ -414,7 +423,7 @@ def main():
 #         parser.add_argument('--seed', type=int, default=seeditr+1, metavar='S',
 #                         help='random seed (default: 1)')
         torch.manual_seed(seeditr+1)
-    
+        print("Running Base L, tested on 7 and L ")
     
         train_loader = torch.utils.data.DataLoader(my_dataset,batch_size=args.batch_size, shuffle=True, **kwargs)
         print("train set loaded" )
@@ -514,16 +523,16 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running Base RL, tested on R7 and RL ")
-        torch.save(model.state_dict(), 'BaseMay31RLseed{}.pt'.format(seeditr+1))
+        print("Running Base L, tested on 7 and L ")
+        torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
         print("model saved")
-    print("average Base RL, tested on R7 and RL ")
+    print("average Base L, tested on 7 and L ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('May31baseRLtrn.npy',restrn)
-    np.save('May31baseRLred.npy',resred)
-    np.save('May31baseRLgrn.npy',resgrn)
+    np.save('May31baseLtrn.npy',restrn)
+    np.save('May31baseLred.npy',resred)
+    np.save('May31baseLgrn.npy',resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
