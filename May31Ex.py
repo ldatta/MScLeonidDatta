@@ -17,7 +17,7 @@ import math
 
 GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
-print("Running R7, tested on R7 and RL. Ezperimenting no bias ")
+print("Running R7, tested on R7 and RL. Ezperimenting Incresing channels chan to 6 ")
 def plotgraph (xs,y1s,y2s,yts):
     plt.clf()
     fig = plt.figure(figsize=(10, 7))
@@ -66,11 +66,18 @@ class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
         st=2
-        self.conv1 = nn.Conv2d(3, 4, 3, 1,bias=False)
-        self.conv2 = nn.Conv2d(4, 8, 3, st,bias=False)
-        self.conv3 = nn.Conv2d(8, 16, 3, st,bias=False)
-        self.conv4 = nn.Conv2d(16, 32, 3, st,bias=False)
-        self.conv5 = nn.Conv2d(32, 10, 3, st,bias=False)
+#         self.conv1 = nn.Conv2d(6, 4, 3, 1,bias=False)
+#         self.conv2 = nn.Conv2d(4, 8, 3, st,bias=False)
+#         self.conv3 = nn.Conv2d(8, 16, 3, st,bias=False)
+#         self.conv4 = nn.Conv2d(16, 32, 3, st,bias=False)
+#         self.conv5 = nn.Conv2d(32, 10, 3, st,bias=False)
+        
+        self.conv1 = nn.Conv2d(6, 4, 3, 1)
+        self.conv2 = nn.Conv2d(4, 8, 3, st)
+        self.conv3 = nn.Conv2d(8, 16, 3, st)
+        self.conv4 = nn.Conv2d(16, 32, 3, st)
+        self.conv5 = nn.Conv2d(32, 10, 3, st)
+        
         self.GAP=nn.AvgPool2d((2,2), stride=1, padding=0)
         
     def forward(self, x):
@@ -327,9 +334,9 @@ def main():
     bbb=b
     ccc=c
     
-    a=np.zeros((60000,56,56,3))
-    b=np.zeros((10000,56,56,3))
-    c=np.zeros((10000,56,56,3))
+    a=np.zeros((60000,56,56,6))
+    b=np.zeros((10000,56,56,6))
+    c=np.zeros((10000,56,56,6))
     a[:,:,:,0]=aaa
     b[:,:,:,0]=bbb
     c[:,:,:,0]=ccc
@@ -504,10 +511,10 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running No bias R7, tested on R7 and RL ")
+        print("Running no chnn 6 R7, tested on R7 and RL ")
         #torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
         #print("model saved")
-    print("average No Bias R7, tested on R7 and RL ")
+    print("average No chan to 6 R7, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
