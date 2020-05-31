@@ -72,7 +72,7 @@ class Netconv(nn.Module):
 #         self.conv4 = nn.Conv2d(16, 32, 3, st,bias=False)
 #         self.conv5 = nn.Conv2d(32, 10, 3, st,bias=False)
         
-        self.conv1 = nn.Conv2d(6, 4, 3, 1)
+        self.conv1 = nn.Conv2d(10, 4, 3, 1)
         self.conv2 = nn.Conv2d(4, 8, 3, st)
         self.conv3 = nn.Conv2d(8, 16, 3, st)
         self.conv4 = nn.Conv2d(16, 32, 3, st)
@@ -334,9 +334,9 @@ def main():
     bbb=b
     ccc=c
     
-    a=np.zeros((60000,56,56,6))
-    b=np.zeros((10000,56,56,6))
-    c=np.zeros((10000,56,56,6))
+    a=np.zeros((60000,56,56,10))
+    b=np.zeros((10000,56,56,10))
+    c=np.zeros((10000,56,56,10))
     a[:,:,:,0]=aaa
     b[:,:,:,0]=bbb
     c[:,:,:,0]=ccc
@@ -511,10 +511,10 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running no chnn 6 R7, tested on R7 and RL ")
+        print("Running no chnn 10 R7, tested on R7 and RL ")
         #torch.save(model.state_dict(), 'Base2May31Lseed{}.pt'.format(seeditr+1))
         #print("model saved")
-    print("average No chan to 6 R7, tested on R7 and RL ")
+    print("average No chan to 10 R7, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
