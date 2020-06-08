@@ -243,7 +243,7 @@ in_c2=4
 in_c3=8
 in_c4=16
 in_c5=32
-seedItr=10
+seedItr=1
 GLacc=np.zeros((seedItr,in_c2,in_c2,in_c3,in_c3,in_c4,in_c4,in_c5,in_c5))
 R7acc=np.zeros((seedItr,in_c2,in_c2,in_c3,in_c3,in_c4,in_c4,in_c5,in_c5))
 
