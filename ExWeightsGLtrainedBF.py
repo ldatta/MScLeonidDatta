@@ -22,7 +22,6 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math
 
-
 class Netconv(nn.Module):
     def __init__(self):
         super(Netconv, self).__init__()
