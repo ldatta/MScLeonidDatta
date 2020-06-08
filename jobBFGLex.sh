@@ -33,7 +33,6 @@
 #module load cuda/10.0 cudnn/10.0-7.3.0.29
 #module load cuda/9.0 cudnn/9.0-7.4.2.24
 
-
 #module load matlab/R2018b
 
 # Complex or heavy commands should be started with 'srun' (see 'man srun' for more information)
