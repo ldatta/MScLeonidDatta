@@ -282,12 +282,12 @@ for seed_no in range(seedItr):
                                                     model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
                                                     model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
                                                     model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                                                model.cuda()
-                                                print("Seed=",seed_no+1,"conv2 ex",i2,j2,"conv3 ex",i3,j3,"conv4 ex",i4,j4,"conv5 ex",i5,j5)
-                                                print("R7 Data")
-                                                R7acc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, redtest_loader)
-                                                print("GL Data")
-                                                GLacc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, grntest_loader)
+                                                    model.cuda()
+                                                    print("Seed=",seed_no+1,"conv2 ex",i2,j2,"conv3 ex",i3,j3,"conv4 ex",i4,j4,"conv5 ex",i5,j5)
+                                                    print("R7 Data")
+                                                    R7acc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, redtest_loader)
+                                                    print("GL Data")
+                                                    GLacc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, grntest_loader)
                                                     
                             
                             
