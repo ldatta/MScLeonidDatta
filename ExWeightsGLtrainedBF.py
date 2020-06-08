@@ -285,12 +285,11 @@ for seed_no in range(seedItr):
                                                     print("Seed=",seed_no+1,"conv2 ex",i2,j2,"conv3 ex",i3,j3,"conv4 ex",i4,j4,"conv5 ex",i5,j5)
                                                     print("R7 Data")
                                                     R7acc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, redtest_loader)
-                                                    print("GL Data")
-                                                    GLacc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, grntest_loader)
-                                                    np.save('GLtrnBFExResR7Seed1to10.npy',R7acc)
-                                                    np.save('GLtrnBFExResGLSeed1to10.npy',GLacc) 
+#                                                     print("GL Data")
+#                                                     GLacc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, grntest_loader)
+                                                    
                             
                             
             
 np.save('GLtrnBFExResR7Seed1to10.npy',R7acc)
-np.save('GLtrnBFExResGLSeed1to10.npy',GLacc)   
+#np.save('GLtrnBFExResGLSeed1to10.npy',GLacc)   
