@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat May 30 19:26:06 2020
+
 @author: leoniddatta
 """
 
@@ -21,6 +22,9 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import math
+
+#Testing on R7 and GL data
+
 
 class Netconv(nn.Module):
     def __init__(self):
@@ -174,6 +178,21 @@ b[:,:,:,1]=bbb
 c[:,:,:,0]=ccc
 
 
+
+tune_size=1000
+
+btune=b[0:tune_size]
+btest = b[tune_size:,:]
+b2tune=b2[0:tune_size]
+b2test = b2[tune_size:]
+
+ctune=c[0:tune_size]
+ctest = c[tune_size:,:]
+c2tune=c2[0:tune_size]
+c2test = c2[tune_size:]
+
+
+
 fig, ((ax1, ax2,ax3),(ax4,ax5,ax6)) = plt.subplots(2, 3)
 fig.suptitle('Test data1 - green curve accuracy in graph')
 fig.set_figheight(4)
@@ -198,21 +217,45 @@ ax5.imshow(c[4], cmap='gray',  interpolation='nearest')
 ax6.imshow(c[5], cmap='gray',  interpolation='nearest')
 plt.show()
 
-  
-b=np.transpose(b, (0,3, 1, 2))
-c=np.transpose(c, (0,3, 1, 2))
-       
-data2=torch.from_numpy(b)
-target2=torch.from_numpy(b2)
-target2 = torch.tensor(target2, dtype=torch.long)
-my_testdataset = utils.TensorDataset(data2,target2)
-data2=torch.from_numpy(c)
-target2=torch.from_numpy(c2)
-target2 = torch.tensor(target2, dtype=torch.long)
-my_hortestdataset = utils.TensorDataset(data2,target2)
+btune=np.transpose(btune, (0,3, 1, 2))
+ctune=np.transpose(ctune, (0,3, 1, 2))
 
-grntest_loader = torch.utils.data.DataLoader(my_testdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
-redtest_loader = torch.utils.data.DataLoader(my_hortestdataset,batch_size=args.test_batch_size, shuffle=True, **kwargs)
+btest=np.transpose(btest, (0,3, 1, 2))
+ctest=np.transpose(ctest, (0,3, 1, 2))
+  
+
+        
+bdata2tune=torch.from_numpy(btune)
+btarget2tune=torch.from_numpy(b2tune)
+btarget2tune = torch.tensor(btarget2tune, dtype=torch.long)
+my_testdatasettune = utils.TensorDataset(bdata2tune,btarget2tune)
+
+cdata2tune=torch.from_numpy(ctune)
+ctarget2tune=torch.from_numpy(c2tune)
+ctarget2tune = torch.tensor(ctarget2tune, dtype=torch.long)
+my_hortestdatasettune = utils.TensorDataset(cdata2tune,ctarget2tune)
+
+
+bdata2test=torch.from_numpy(btest)
+btarget2test=torch.from_numpy(b2test)
+btarget2test = torch.tensor(btarget2test, dtype=torch.long)
+my_testdatasettest = utils.TensorDataset(bdata2test,btarget2test)
+
+cdata2test=torch.from_numpy(ctest)
+ctarget2test=torch.from_numpy(c2test)
+ctarget2test = torch.tensor(ctarget2test, dtype=torch.long)
+my_hortestdatasettest = utils.TensorDataset(cdata2test,ctarget2test)
+
+
+
+
+grntest_loadertune = torch.utils.data.DataLoader(my_testdatasettune,batch_size=args.test_batch_size, shuffle=True, **kwargs)
+redtest_loadertune = torch.utils.data.DataLoader(my_hortestdatasettune,batch_size=args.test_batch_size, shuffle=True, **kwargs)
+
+grntest_loadertest = torch.utils.data.DataLoader(my_testdatasettest,batch_size=args.test_batch_size, shuffle=True, **kwargs)
+redtest_loadertest = torch.utils.data.DataLoader(my_hortestdatasettest,batch_size=args.test_batch_size, shuffle=True, **kwargs)
+
+
 
 
 def test(args, model, device, test_loader):
@@ -235,60 +278,172 @@ def test(args, model, device, test_loader):
 
 
 
-
-
+#print("Layer No is",layer_no)
 in_c2=4
 in_c3=8
 in_c4=16
 in_c5=32
-seedItr=10
-GLacc=np.zeros((seedItr,in_c2,in_c2,in_c3,in_c3,in_c4,in_c4,in_c5,in_c5))
-R7acc=np.zeros((seedItr,in_c2,in_c2,in_c3,in_c3,in_c4,in_c4,in_c5,in_c5))
 
-for seed_no in range(seedItr):
+
+#R7acc=np.zeros((in_c,in_c))
+
+seed_nos=10
+R7acctune=np.zeros((seed_nos,in_c5,in_c5))
+R7acctest=np.zeros((seed_nos,in_c5,in_c5))
+
+for seed_no in range(10):
+    exchangefoundconv2=False
+    exchangefoundconv3=False
+    exchangefoundconv4=False
+    listtune=[]
+    listtest=[]
+    minacconv2=11
+    minacconv3=11
+    minacconv4=11
+    minacconv5=11
     print("New Seed No is",seed_no+1)
     for i2 in range (in_c2):
         for j2 in range(in_c2):
             model = Netconv()
             model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
+            
             model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
             model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
             model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
             
-            if(i2>j2):
-                model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
-                model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                
-                for i3 in range (in_c3):
-                    for j3 in range(in_c3):
-                        if(i3>j3):
-                            model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
-                            model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
-                            model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
-                            
-                            for i4 in range (in_c4):
-                                for j4 in range(in_c4):
-                                    if(i4>j4):
-                                        model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
-                                        model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                                        model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                                            
-                                        for i5 in range (in_c5):
-                                            for j5 in range(in_c5):
-                                                if(i5>j5):
-                                                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
-                                                    model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                                                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                                                    model.cuda()
-                                                    print("Seed=",seed_no+1,"conv2 ex",i2,j2,"conv3 ex",i3,j3,"conv4 ex",i4,j4,"conv5 ex",i5,j5)
-                                                    print("R7 Data")
-                                                    R7acc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, redtest_loader)
-#                                                     print("GL Data")
-#                                                     GLacc[seed_no,i2,j2,i3,j3,i4,j4,i5,j5]=test(args, model, device, grntest_loader)
-                                                    
-                            
-                            
             
-np.save('GLtrnBFExResR7Seed1to10.npy',R7acc)
-#np.save('GLtrnBFExResGLSeed1to10.npy',GLacc)   
+            if(i2>=j2):
+                if(i2!=j2):
+                  
+                    model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
+                    model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                    model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2)
+                accconv2=test(args, model, device, redtest_loadertune)
+                accconv2test=test(args, model, device, redtest_loadertest)
+                listtune.append(accconv2)
+                listtest.append(accconv2test)
+                if(i2==0 and j2==0):
+                    minacconv2=accconv2
+                if(accconv2>minacconv2):
+                    minacconv2=accconv2
+                    exchangefoundconv2=True
+                    exchangefoundconv2_i=i2
+                    exchangefoundconv2_j=j2
+                    #print("max is",i2,j2)
+    
+    
+    
+    for i3 in range (in_c3):
+        for j3 in range(in_c3):
+            model = Netconv()
+            model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            if(exchangefoundconv2):
+                conv2_i=exchangefoundconv2_i
+                conv2_j=exchangefoundconv2_j
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+                #print("exchanged ",conv2_i,conv2_j)
+            if(i3>=j3):
+                if(i3!=j3):
+                    model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
+                    model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                    model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                print("seed no",seed_no+1,"Checking Conv 3 channel no",i3,j3)
+                accconv3=test(args, model, device, redtest_loadertune)
+                accconv3test=test(args, model, device, redtest_loadertest)
+                listtune.append(accconv3)
+                listtest.append(accconv3test)
+                if(i3==0 and j3==0):
+                    minacconv3=accconv3
+                if(accconv3>minacconv3):
+                    minacconv3=accconv3
+                    exchangefoundconv3=True
+                    exchangefoundconv3_i=i3
+                    exchangefoundconv3_j=j3
+                    
+    for i4 in range (in_c4):
+        for j4 in range(in_c4):
+            model = Netconv()
+            model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            if(exchangefoundconv2):
+                conv2_i=exchangefoundconv2_i
+                conv2_j=exchangefoundconv2_j
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+            if(exchangefoundconv3):
+                conv3_i=exchangefoundconv3_i
+                conv3_j=exchangefoundconv3_j
+                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]+model.conv3.weight[:,conv3_j,:,:]
+                model.conv3.weight[:,conv3_j,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
+                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
+            if(i4>=j4):
+                if(i4!=j4):
+                    model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
+                    model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                    model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4)
+                accconv4=test(args, model, device, redtest_loadertune)
+                accconv4test=test(args, model, device, redtest_loadertest)
+                listtune.append(accconv4)
+                listtest.append(accconv4test)
+                if(i4==0 and j4==0):
+                    minacconv4=accconv4
+                if(accconv4>minacconv4):
+                    minacconv4=accconv4
+                    exchangefoundconv4=True
+                    exchangefoundconv4_i=i4
+                    exchangefoundconv4_j=j4    
+                
+    for i5 in range (in_c5):
+        for j5 in range(in_c5):
+            model = Netconv()
+            model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
+            if(exchangefoundconv2):
+                conv2_i=exchangefoundconv2_i
+                conv2_j=exchangefoundconv2_j
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
+            if(exchangefoundconv3):
+                conv3_i=exchangefoundconv3_i
+                conv3_j=exchangefoundconv3_j
+                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]+model.conv3.weight[:,conv3_j,:,:]
+                model.conv3.weight[:,conv3_j,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
+                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
+            if(exchangefoundconv4):
+                conv4_i=exchangefoundconv4_i
+                conv4_j=exchangefoundconv4_j
+                model.conv4.weight[:,conv4_i,:,:]=model.conv4.weight[:,conv4_i,:,:]+model.conv4.weight[:,conv4_j,:,:]
+                model.conv4.weight[:,conv4_j,:,:]=model.conv4.weight[:,conv4_i,:,:]-model.conv4.weight[:,conv4_j,:,:]
+                model.conv4.weight[:,conv4_i,:,:]=model.conv4.weight[:,conv4_i,:,:]-model.conv4.weight[:,conv4_j,:,:]
+            if(i5>=j5):
+                if(i5!=j5):
+                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
+                    model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5)
+                R7acctune[seed_no,i5,j5]=test(args, model, device, redtest_loadertune)
+                R7acctest[seed_no,i5,j5]=test(args, model, device, redtest_loadertest)
+                listtune.append(R7acctune[seed_no,i5,j5])
+                listtest.append(R7acctest[seed_no,i5,j5])
+    
+    
+    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size1000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size1000testlist'.format(seed=seed_no+1),listtest)
+
+
+
+
+
