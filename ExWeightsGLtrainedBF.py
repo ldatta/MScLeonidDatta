@@ -319,6 +319,7 @@ for seed_no in range(10):
                     model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
                     model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
                 print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2)
+                model.cuda()
                 accconv2=test(args, model, device, redtest_loadertune)
                 accconv2test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv2)
@@ -354,6 +355,7 @@ for seed_no in range(10):
                     model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
                     model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
                 print("seed no",seed_no+1,"Checking Conv 3 channel no",i3,j3)
+                model.cuda()
                 accconv3=test(args, model, device, redtest_loadertune)
                 accconv3test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv3)
@@ -391,6 +393,7 @@ for seed_no in range(10):
                     model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
                     model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
                 print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4)
+                model.cuda()
                 accconv4=test(args, model, device, redtest_loadertune)
                 accconv4test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv4)
@@ -434,6 +437,7 @@ for seed_no in range(10):
                     model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
                     model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
                 print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5)
+                model.cuda()
                 R7acctune[seed_no,i5,j5]=test(args, model, device, redtest_loadertune)
                 R7acctest[seed_no,i5,j5]=test(args, model, device, redtest_loadertest)
                 listtune.append(R7acctune[seed_no,i5,j5])
