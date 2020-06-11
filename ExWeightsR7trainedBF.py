@@ -84,6 +84,35 @@ device = torch.device("cuda" if use_cuda else "cpu")
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
+parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
+parser.add_argument('--batch-size', type=int, default=64, metavar='N',
+                    help='input batch size for training (default: 64)')
+parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
+                    help='input batch size for testing (default: 1000)')
+parser.add_argument('--epochs', type=int, default=20, metavar='N',
+                    help='number of epochs to train (default: 10)')
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+                    help='learning rate (default: 0.01)')
+parser.add_argument('--no-cuda', action='store_true', default=False,
+                    help='disables CUDA training')
+parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
+                    help='SGD momentum (default: 0.5)')
+parser.add_argument('--seed', type=int, default=1, metavar='S',
+                    help='random seed (default: 1)')
+parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+                    help='how many batches to wait before logging training status')
+
+parser.add_argument('--save-model', action='store_true', default=True,
+                    help='For Saving the current Model')
+args = parser.parse_args()
+use_cuda = not args.no_cuda and torch.cuda.is_available()
+
+torch.manual_seed(args.seed)
+
+device = torch.device("cuda" if use_cuda else "cpu")
+
+kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+
 bb=datasets.MNIST('../data', train=False, transform=transforms.Compose([
                        transforms.ToTensor(),
                        transforms.Normalize((0.1307,), (0.3081,))
@@ -177,9 +206,7 @@ c=np.zeros((10000,56,56,inchan))
 b[:,:,:,1]=bbb
 c[:,:,:,0]=ccc
 
-
-
-tune_size=3000
+tune_size=2000
 
 btune=b[0:tune_size]
 btest = b[tune_size:,:]
@@ -258,7 +285,6 @@ redtest_loadertest = torch.utils.data.DataLoader(my_hortestdatasettest,batch_siz
 
 
 
-
 def test(args, model, device, test_loader):
     model.train(mode=False)
     test_loss = 0
@@ -285,23 +311,18 @@ in_c3=8
 in_c4=16
 in_c5=32
 
-
+finallist=[]
 #R7acc=np.zeros((in_c,in_c))
 
 seed_nos=10
-GLacctune=np.zeros((seed_nos,in_c5,in_c5))
-GLacctest=np.zeros((seed_nos,in_c5,in_c5))
 
+
+#for seed_no in range(10):
 for seed_no in range(10):
-    exchangefoundconv2=False
-    exchangefoundconv3=False
-    exchangefoundconv4=False
     listtune=[]
     listtest=[]
-    minacconv2=11
-    minacconv3=11
-    minacconv4=11
-    minacconv5=11
+    maxtillnow=11
+    
     print("New Seed No is",seed_no+1)
     for i2 in range (in_c2):
         for j2 in range(in_c2):
@@ -319,135 +340,97 @@ for seed_no in range(10):
                     model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
                     model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
                     model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2)
-                model.cuda()
+                print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2,"max till now",maxtillnow)
                 accconv2=test(args, model, device, grntest_loadertune)
                 accconv2test=test(args, model, device, grntest_loadertest)
                 listtune.append(accconv2)
                 listtest.append(accconv2test)
                 if(i2==0 and j2==0):
-                    minacconv2=accconv2
-                if(accconv2>minacconv2):
-                    minacconv2=accconv2
-                    exchangefoundconv2=True
-                    exchangefoundconv2_i=i2
-                    exchangefoundconv2_j=j2
-                    #print("max is",i2,j2)
+                    maxtillnow=accconv2
+                
+                if(accconv2<=maxtillnow):
+                    if (i2!=j2):
+                        model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
+                        model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                        model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                        print("not better. swaping back",i2,"and",j2 )
+                if(accconv2>maxtillnow):
+                    maxtillnow=accconv2  
     
     
     
     for i3 in range (in_c3):
         for j3 in range(in_c3):
-            model = Netconv()
-            model.load_state_dict(torch.load('R7models/BaseR7seed{seed}.pt'.format(seed=seed_no+1)))
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            if(exchangefoundconv2):
-                conv2_i=exchangefoundconv2_i
-                conv2_j=exchangefoundconv2_j
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-                #print("exchanged ",conv2_i,conv2_j)
             if(i3>=j3):
                 if(i3!=j3):
                     model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
                     model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
                     model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
                 print("seed no",seed_no+1,"Checking Conv 3 channel no",i3,j3)
-                model.cuda()
                 accconv3=test(args, model, device, grntest_loadertune)
                 accconv3test=test(args, model, device, grntest_loadertest)
                 listtune.append(accconv3)
                 listtest.append(accconv3test)
-                if(i3==0 and j3==0):
-                    minacconv3=accconv3
-                if(accconv3>minacconv3):
-                    minacconv3=accconv3
-                    exchangefoundconv3=True
-                    exchangefoundconv3_i=i3
-                    exchangefoundconv3_j=j3
+                if(accconv3<=maxtillnow):
+                    if(i3!=j3):
+                        model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
+                        model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                        model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                        print("not better. swaping back",i3,"and",j3 )
+                if(accconv3>maxtillnow):
+                    maxtillnow=accconv3    
+                        
+                        
+                  
                     
     for i4 in range (in_c4):
         for j4 in range(in_c4):
-            model = Netconv()
-            model.load_state_dict(torch.load('R7models/BaseR7seed{seed}.pt'.format(seed=seed_no+1)))
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            if(exchangefoundconv2):
-                conv2_i=exchangefoundconv2_i
-                conv2_j=exchangefoundconv2_j
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-            if(exchangefoundconv3):
-                conv3_i=exchangefoundconv3_i
-                conv3_j=exchangefoundconv3_j
-                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]+model.conv3.weight[:,conv3_j,:,:]
-                model.conv3.weight[:,conv3_j,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
-                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
             if(i4>=j4):
                 if(i4!=j4):
                     model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
                     model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
                     model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4)
-                model.cuda()
+                print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4,"max till now",maxtillnow)
                 accconv4=test(args, model, device, grntest_loadertune)
                 accconv4test=test(args, model, device, grntest_loadertest)
                 listtune.append(accconv4)
                 listtest.append(accconv4test)
-                if(i4==0 and j4==0):
-                    minacconv4=accconv4
-                if(accconv4>minacconv4):
-                    minacconv4=accconv4
-                    exchangefoundconv4=True
-                    exchangefoundconv4_i=i4
-                    exchangefoundconv4_j=j4    
+                if(accconv4<=maxtillnow):
+                    if(i4!=j4):
+                        model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
+                        model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                        model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                        print("not better. swaping back",i4,"and",j4 )
+                if(accconv4>maxtillnow):
+                    maxtillnow=accconv4  
                 
     for i5 in range (in_c5):
         for j5 in range(in_c5):
-            model = Netconv()
-            model.load_state_dict(torch.load('R7models/BaseR7seed{seed}.pt'.format(seed=seed_no+1)))
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
-            if(exchangefoundconv2):
-                conv2_i=exchangefoundconv2_i
-                conv2_j=exchangefoundconv2_j
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]+model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_j,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-                model.conv2.weight[:,conv2_i,:,:]=model.conv2.weight[:,conv2_i,:,:]-model.conv2.weight[:,conv2_j,:,:]
-            if(exchangefoundconv3):
-                conv3_i=exchangefoundconv3_i
-                conv3_j=exchangefoundconv3_j
-                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]+model.conv3.weight[:,conv3_j,:,:]
-                model.conv3.weight[:,conv3_j,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
-                model.conv3.weight[:,conv3_i,:,:]=model.conv3.weight[:,conv3_i,:,:]-model.conv3.weight[:,conv3_j,:,:]
-            if(exchangefoundconv4):
-                conv4_i=exchangefoundconv4_i
-                conv4_j=exchangefoundconv4_j
-                model.conv4.weight[:,conv4_i,:,:]=model.conv4.weight[:,conv4_i,:,:]+model.conv4.weight[:,conv4_j,:,:]
-                model.conv4.weight[:,conv4_j,:,:]=model.conv4.weight[:,conv4_i,:,:]-model.conv4.weight[:,conv4_j,:,:]
-                model.conv4.weight[:,conv4_i,:,:]=model.conv4.weight[:,conv4_i,:,:]-model.conv4.weight[:,conv4_j,:,:]
+            
             if(i5>=j5):
                 if(i5!=j5):
                     model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
                     model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
                     model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5)
-                model.cuda()
-                GLacctune[seed_no,i5,j5]=test(args, model, device, grntest_loadertune)
-                GLacctest[seed_no,i5,j5]=test(args, model, device, grntest_loadertest)
-                listtune.append(GLacctune[seed_no,i5,j5])
-                listtest.append(GLacctest[seed_no,i5,j5])
+                print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5,"max till now",maxtillnow)
+                accconv5=test(args, model, device, grntest_loadertune)
+                accconv5test=test(args, model, device, grntest_loadertest)
+                listtune.append(accconv5)
+                listtest.append(accconv5test)
+                if(accconv5<=maxtillnow):
+                    if(i5!=j5):
+                        model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
+                        model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                        model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                        print("not better. swaping back",i5,"and",j5 )
+                if(accconv5>maxtillnow):
+                    maxtillnow=accconv5  
+    finallist.append(maxtillnow)
     
-    np.save('R7trainedGreedyCombresonGLseed{seed}tune_size3000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('R7trainedGreedyCombresonGLseed{seed}tune_size3000ttestlist'.format(seed=seed_no+1),listtest)
+    np.save('R7trainedalwaysKeepBestGLseed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('R7trainedalwaysKeepBestGLseed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
 
 
 
-
-
+print(finallist)
+print("Tune Size 2000")
