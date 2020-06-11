@@ -322,12 +322,12 @@ for seed_no in range(10):
     listtune=[]
     listtest=[]
     maxtillnow=11
-    
+    model = Netconv()
+    model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
     print("New Seed No is",seed_no+1)
     for i2 in range (in_c2):
         for j2 in range(in_c2):
-            model = Netconv()
-            model.load_state_dict(torch.load('GLmodels/BaseGLseed{seed}.pt'.format(seed=seed_no+1)))
+            
             
             model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]+model.conv1.weight[:,1,:,:]
             model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
