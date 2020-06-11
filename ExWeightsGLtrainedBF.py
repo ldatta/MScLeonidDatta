@@ -346,7 +346,7 @@ for seed_no in range(10):
                 if(i2==0 and j2==0):
                     maxtillnow=accconv2
                 
-                if(accconv2<=maxtillnow):
+                if(accconv2<maxtillnow):
                     if (i2!=j2):
                         model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
                         model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
@@ -370,7 +370,7 @@ for seed_no in range(10):
                 accconv3test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv3)
                 listtest.append(accconv3test)
-                if(accconv3<=maxtillnow):
+                if(accconv3<maxtillnow):
                     if(i3!=j3):
                         model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
                         model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
@@ -395,7 +395,7 @@ for seed_no in range(10):
                 accconv4test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv4)
                 listtest.append(accconv4test)
-                if(accconv4<=maxtillnow):
+                if(accconv4<maxtillnow):
                     if(i4!=j4):
                         model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
                         model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
@@ -418,7 +418,7 @@ for seed_no in range(10):
                 accconv5test=test(args, model, device, redtest_loadertest)
                 listtune.append(accconv5)
                 listtest.append(accconv5test)
-                if(accconv5<=maxtillnow):
+                if(accconv5<maxtillnow):
                     if(i5!=j5):
                         model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
                         model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
@@ -428,8 +428,8 @@ for seed_no in range(10):
                     maxtillnow=accconv5  
     finallist.append(maxtillnow)
     
-    np.save('GLtrainedalwaysKeepBestR7seed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('GLtrainedalwaysKeepBestR7seed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
+    np.save('GLtrainedalwaysKeepBetterotequalR7seed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('GLtrainedalwaysKeepBetterotequalR7seed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
 
 
 
