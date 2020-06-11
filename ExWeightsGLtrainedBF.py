@@ -179,7 +179,7 @@ c[:,:,:,0]=ccc
 
 
 
-tune_size=1000
+tune_size=3000
 
 btune=b[0:tune_size]
 btest = b[tune_size:,:]
@@ -444,8 +444,8 @@ for seed_no in range(10):
                 listtest.append(R7acctest[seed_no,i5,j5])
     
     
-    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size1000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size1000testlist'.format(seed=seed_no+1),listtest)
+    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size3000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('GLtrainedGreedyCombresonR7seed{seed}tune_size3000testlist'.format(seed=seed_no+1),listtest)
 
 
 
