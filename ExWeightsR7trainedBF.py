@@ -428,8 +428,8 @@ for seed_no in range(10):
                     maxtillnow=accconv5  
     finallist.append(maxtillnow)
     
-    np.save('R7trainedalwaysKeepBestGLseed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('R7trainedalwaysKeepBestGLseed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
+    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
 
 
 
