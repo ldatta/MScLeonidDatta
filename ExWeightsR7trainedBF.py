@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May 30 19:26:06 2020
-
-@author: leoniddatta
-"""
-
 from __future__ import print_function
 import argparse
 import torch
@@ -328,108 +320,107 @@ for seed_no in range(10):
     model.conv1.weight[:,1,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
     model.conv1.weight[:,0,:,:]=model.conv1.weight[:,0,:,:]-model.conv1.weight[:,1,:,:]
     print("New Seed No is",seed_no+1)
-    for i2 in range (in_c2):
-        for j2 in range(in_c2):
-           
-            if(i2>=j2):
-                if(i2!=j2):
-                  
-                    model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
-                    model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                    model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2,"max till now",maxtillnow)
-                model.cuda()
-                accconv2=test(args, model, device, grntest_loadertune)
-                accconv2test=test(args, model, device, grntest_loadertest)
-                listtune.append(accconv2)
-                listtest.append(accconv2test)
-                if(i2==0 and j2==0):
-                    maxtillnow=accconv2
-                
-                if(accconv2<maxtillnow):
-                    if (i2!=j2):
+    maxtillnow=test(args, model, device, grntest_loadertune)
+    for itr in range(5):
+        for i2 in range (in_c2):
+            for j2 in range(in_c2):
+               
+                if(i2>=j2):
+                    if(i2!=j2):
+                      
                         model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
                         model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
                         model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
-                        print("not better. swaping back",i2,"and",j2 )
-                if(accconv2>maxtillnow):
-                    maxtillnow=accconv2  
-    
-    
-    
-    for i3 in range (in_c3):
-        for j3 in range(in_c3):
-            if(i3>=j3):
-                if(i3!=j3):
-                    model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
-                    model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
-                    model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
-                print("seed no",seed_no+1,"Checking Conv 3 channel no",i3,j3)
-                model.cuda()
-                accconv3=test(args, model, device, grntest_loadertune)
-                accconv3test=test(args, model, device, grntest_loadertest)
-                listtune.append(accconv3)
-                listtest.append(accconv3test)
-                if(accconv3<maxtillnow):
+                    print("seed no",seed_no+1,"Checking Conv 2 channel no",i2,j2,"max till now",maxtillnow)
+                    model.cuda()
+                    accconv2=test(args, model, device, grntest_loadertune)
+                    accconv2test=test(args, model, device, grntest_loadertest)
+                    listtune.append(accconv2)
+                    listtest.append(accconv2test)                
+                    if(accconv2<=maxtillnow):
+                        if (i2!=j2):
+                            model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]+model.conv2.weight[:,j2,:,:]
+                            model.conv2.weight[:,j2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                            model.conv2.weight[:,i2,:,:]=model.conv2.weight[:,i2,:,:]-model.conv2.weight[:,j2,:,:]
+                            print("not better. swaping back",i2,"and",j2 )
+                    if(accconv2>maxtillnow):
+                        maxtillnow=accconv2  
+        
+        
+        
+        for i3 in range (in_c3):
+            for j3 in range(in_c3):
+                if(i3>=j3):
                     if(i3!=j3):
                         model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
                         model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
                         model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
-                        print("not better. swaping back",i3,"and",j3 )
-                if(accconv3>maxtillnow):
-                    maxtillnow=accconv3    
+                    print("seed no",seed_no+1,"Checking Conv 3 channel no",i3,j3)
+                    model.cuda()
+                    accconv3=test(args, model, device, grntest_loadertune)
+                    accconv3test=test(args, model, device, grntest_loadertest)
+                    listtune.append(accconv3)
+                    listtest.append(accconv3test)
+                    if(accconv3<=maxtillnow):
+                        if(i3!=j3):
+                            model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]+model.conv3.weight[:,j3,:,:]
+                            model.conv3.weight[:,j3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                            model.conv3.weight[:,i3,:,:]=model.conv3.weight[:,i3,:,:]-model.conv3.weight[:,j3,:,:]
+                            print("not better. swaping back",i3,"and",j3 )
+                    if(accconv3>maxtillnow):
+                        maxtillnow=accconv3    
+                            
+                            
+                      
                         
-                        
-                  
-                    
-    for i4 in range (in_c4):
-        for j4 in range(in_c4):
-            if(i4>=j4):
-                if(i4!=j4):
-                    model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
-                    model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                    model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4,"max till now",maxtillnow)
-                model.cuda()
-                accconv4=test(args, model, device, grntest_loadertune)
-                accconv4test=test(args, model, device, grntest_loadertest)
-                listtune.append(accconv4)
-                listtest.append(accconv4test)
-                if(accconv4<maxtillnow):
+        for i4 in range (in_c4):
+            for j4 in range(in_c4):
+                if(i4>=j4):
                     if(i4!=j4):
                         model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
                         model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
                         model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
-                        print("not better. swaping back",i4,"and",j4 )
-                if(accconv4>maxtillnow):
-                    maxtillnow=accconv4  
+                    print("seed no",seed_no+1,"Checking Conv 4 channel no",i4,j4,"max till now",maxtillnow)
+                    model.cuda()
+                    accconv4=test(args, model, device, grntest_loadertune)
+                    accconv4test=test(args, model, device, grntest_loadertest)
+                    listtune.append(accconv4)
+                    listtest.append(accconv4test)
+                    if(accconv4<=maxtillnow):
+                        if(i4!=j4):
+                            model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]+model.conv4.weight[:,j4,:,:]
+                            model.conv4.weight[:,j4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                            model.conv4.weight[:,i4,:,:]=model.conv4.weight[:,i4,:,:]-model.conv4.weight[:,j4,:,:]
+                            print("not better. swaping back",i4,"and",j4 )
+                    if(accconv4>maxtillnow):
+                        maxtillnow=accconv4  
+                    
+        for i5 in range (in_c5):
+            for j5 in range(in_c5):
                 
-    for i5 in range (in_c5):
-        for j5 in range(in_c5):
-            
-            if(i5>=j5):
-                if(i5!=j5):
-                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
-                    model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                    model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5,"max till now",maxtillnow)
-                model.cuda()
-                accconv5=test(args, model, device, grntest_loadertune)
-                accconv5test=test(args, model, device, grntest_loadertest)
-                listtune.append(accconv5)
-                listtest.append(accconv5test)
-                if(accconv5<maxtillnow):
+                if(i5>=j5):
                     if(i5!=j5):
                         model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
                         model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
                         model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
-                        print("not better. swaping back",i5,"and",j5 )
-                if(accconv5>maxtillnow):
-                    maxtillnow=accconv5  
-    finallist.append(maxtillnow)
+                    print("seed no",seed_no+1,"Checking Conv 5 channel no",i5,j5,"max till now",maxtillnow)
+                    model.cuda()
+                    accconv5=test(args, model, device, grntest_loadertune)
+                    accconv5test=test(args, model, device, grntest_loadertest)
+                    listtune.append(accconv5)
+                    listtest.append(accconv5test)
+                    if(accconv5<=maxtillnow):
+                        if(i5!=j5):
+                            model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]+model.conv5.weight[:,j5,:,:]
+                            model.conv5.weight[:,j5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                            model.conv5.weight[:,i5,:,:]=model.conv5.weight[:,i5,:,:]-model.conv5.weight[:,j5,:,:]
+                            print("not better. swaping back",i5,"and",j5 )
+                    if(accconv5>maxtillnow):
+                        maxtillnow=accconv5  
+        finallist.append(maxtillnow)
     
-    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}tune_size2000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}tune_size2000testlist'.format(seed=seed_no+1),listtest)
+    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}Itr5tune_size2000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('R7trainedalwaysKeepBetterotequalGLseed{seed}Itr5tune_size2000testlist'.format(seed=seed_no+1),listtest)
 
 
 
