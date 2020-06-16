@@ -400,6 +400,6 @@ for seed_no in range(10):
 print("First 100 of listtune",listtune[:100])
 print("First 100 of listtest",listtest[:100])
 print(finallist)
-print("Tune Size 500, KeepBetter, Iteration 5")
+print("GL trained!Tune Size 500, KeepBetter, Iteration 5")
 
 
