@@ -171,7 +171,7 @@ c=np.zeros((10000,56,56,inchan))
 b[:,:,:,1]=bbb
 c[:,:,:,0]=ccc
 
-tune_size=2000
+tune_size=500
 
 btune=b[0:tune_size]
 btest = b[tune_size:,:]
@@ -393,10 +393,12 @@ for seed_no in range(10):
                         maxtillnow=accconv5  
         finallist.append(maxtillnow)
     
-    np.save('R7trainedalwaysKeepBetterotequalactualGLseed{seed}Itr5tune_size2000tunelist'.format(seed=seed_no+1),listtune)
-    np.save('R7trainedalwaysKeepBetterotequalactualGLseed{seed}Itr5tune_size2000testlist'.format(seed=seed_no+1),listtest)
+    np.save('R7trainedalwaysKeepBetterGLseed{seed}Itr5tune_size500tunelist'.format(seed=seed_no+1),listtune)
+    np.save('R7trainedalwaysKeepBetterGLseed{seed}Itr5tune_size500testlist'.format(seed=seed_no+1),listtest)
 
 
 
+print("First 100 of listtune",listtune[:100])
+print("First 100 of listtest",listtest[:100])
 print(finallist)
-print("Tune Size 2000, KeepBetterotequalactual")
+print("R7 trained! Tune Size 500, KeepBetter, Iteration 5")
