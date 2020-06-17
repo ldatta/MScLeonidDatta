@@ -178,7 +178,7 @@ c[:,:,:,0]=ccc
 
 
 
-tune_size=500
+tune_size=2000
 
 btune=b[0:tune_size]
 btest = b[tune_size:,:]
@@ -313,7 +313,7 @@ for seed_no in range(10):
     minacconv3=accconvmin
     minacconv4=accconvmin
     minacconv5=accconvmin
-    for itr in range(5):
+    for itr in range(10):
         exchangefoundconv2=False
         exchangefoundconv3=False
         exchangefoundconv4=False
@@ -459,13 +459,13 @@ for seed_no in range(10):
                 model2.conv5.weight[:,conv5_i,:,:]=model2.conv5.weight[:,conv5_i,:,:]-model2.conv5.weight[:,conv5_j,:,:]
         model=model2   
     
-    np.save('GLtrainedKeepBestOfLayerGLseed{seed}Itr5tune_size500tunelist'.format(seed=seed_no+1),listtune)
-    np.save('GLtrainedKeepBestOfLayerGLseed{seed}Itr5tune_size500testlist'.format(seed=seed_no+1),listtest)
+    np.save('GLtrainedKeepBestOfLayerGLseed{seed}Itr10tune_size2000tunelist'.format(seed=seed_no+1),listtune)
+    np.save('GLtrainedKeepBestOfLayerGLseed{seed}Itr10tune_size2000testlist'.format(seed=seed_no+1),listtest)
     
 
 print("First 200 of listtune",listtune[:200])
 print("First 200 of listtest",listtest[:200])
 #print(finallist)
-print("GL trained! Tune Size 500, Keep the best of layers , Iteration 5")
+print("GL trained! Tune Size 2000, Keep the best of layers , Iteration 10")
 
 
