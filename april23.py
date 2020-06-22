@@ -15,7 +15,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
 
 def npsave(restrn,resred,resgrn): 
@@ -537,7 +537,7 @@ def main():
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
     e=(np.arange(0,(40+0.5),0.5 ))
     plotgraph(e,np.mean(resred, axis=0),np.mean(resgrn, axis=0),np.mean(restrn, axis=0))
-    
+    print("GL =",GL)
 if __name__ == '__main__':
     main()
     
