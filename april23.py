@@ -157,7 +157,7 @@ def test(args, model, device, test_loader):
     return acc,test_loss
 
 def main():
-    no_epochs=40
+    no_epochs=100
     sitr=10
     
     restrn=np.zeros((sitr,(no_epochs*2)+1))
@@ -521,7 +521,7 @@ def main():
         resgrn[seeditr]=resultgrn
         #if args.save_model:
         print("Running GL Base , tested on R7 and GL ")
-        #torch.save(model.state_dict(), 'BaseGLseed{}.pt'.format(seeditr+1))
+        torch.save(model.state_dict(), 'BaseGLseed{}chan4.pt'.format(seeditr+1))
         print("model saved")
     print("average Base  GL, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
@@ -535,8 +535,8 @@ def main():
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
     print("resred=np.",repr(np.mean(resred, axis=0)))
     print("resgrn=np.",repr(np.mean(resgrn, axis=0)))
-    e=(np.arange(0,(40+0.5),0.5 ))
-    plotgraph(e,np.mean(resred, axis=0),np.mean(resgrn, axis=0),np.mean(restrn, axis=0))
+    e=(np.arange(0,(10+0.5),0.5 ))
+    #plotgraph(e,np.mean(resred, axis=0),np.mean(resgrn, axis=0),np.mean(restrn, axis=0))
     print("GL =",GL)
 if __name__ == '__main__':
     main()
