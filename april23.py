@@ -520,16 +520,16 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running GL Base , tested on R7 and GL ")
+        print("Running GL Base chan4 , tested on R7 and GL ")
         torch.save(model.state_dict(), 'BaseGLseed{}chan4.pt'.format(seeditr+1))
         print("model saved")
     print("average Base  GL, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('GLbaserestrnseed1to10.npy',restrn)
-    np.save('GLbaseresredseed1to10.npy',resred)
-    np.save('GLbaseresgrnseed1to10.npy',resgrn)
+    np.save('GLbaserestrnseed1to10chan4.npy',restrn)
+    np.save('GLbaseresredseed1to10chan4.npy',resred)
+    np.save('GLbaseresgrnseed1to10chan4.npy',resgrn)
     npsave(restrn,resred,resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
