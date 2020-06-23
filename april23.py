@@ -15,7 +15,7 @@ import matplotlib.lines as mlines
 
 import math 
 
-GL=1 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
+GL=0 #SET GL=0 for Red-7-shaped training Data , Set GL=1 for Green-L-shaped training Data
 print("GL =",GL)
 
 def npsave(restrn,resred,resgrn): 
@@ -520,16 +520,16 @@ def main():
         resred[seeditr]=resultred
         resgrn[seeditr]=resultgrn
         #if args.save_model:
-        print("Running GL Base chan4 , tested on R7 and GL ")
-        torch.save(model.state_dict(), 'BaseGLseed{}chan4.pt'.format(seeditr+1))
+        print("Running R7 Base chan4 , tested on R7 and GL ")
+        torch.save(model.state_dict(), 'BaseR7seed{}chan4.pt'.format(seeditr+1))
         print("model saved")
     print("average Base  GL, tested on R7 and RL ")
     print("restrn=np.",repr(restrn))
     print("resred=np.",repr(resred))
     print("resgrn=np.",repr(resgrn))
-    np.save('GLbaserestrnseed1to10chan4.npy',restrn)
-    np.save('GLbaseresredseed1to10chan4.npy',resred)
-    np.save('GLbaseresgrnseed1to10chan4.npy',resgrn)
+    np.save('R7baserestrnseed1to10chan4.npy',restrn)
+    np.save('R7baseresredseed1to10chan4.npy',resred)
+    np.save('R7baseresgrnseed1to10chan4.npy',resgrn)
     npsave(restrn,resred,resgrn)
     print("average res ")
     print("restrn=np.",repr(np.mean(restrn, axis=0)))
